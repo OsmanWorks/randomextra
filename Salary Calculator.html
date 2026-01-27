@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chaajao Salary Calculator</title>
+<style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #0a0a0a;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.container {
+  background: #1a1a1a;
+  padding: 35px;
+  border-radius: 20px;
+  width: 100%;
+  max-width: 500px;
+  box-shadow: 0 10px 50px rgba(220, 38, 38, 0.3);
+  border: 1px solid #2a2a2a;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+h1 {
+  font-size: 32px;
+  font-weight: 700;
+  color: #dc2626;
+  margin-bottom: 5px;
+  text-shadow: 0 0 20px rgba(220, 38, 38, 0.5);
+}
+
+.subtitle {
+  font-size: 14px;
+  color: #888;
+  font-weight: 400;
+}
+
+.form-section {
+  margin-bottom: 25px;
+}
+
+.section-title {
+  font-size: 12px;
+  text-transform: uppercase;
+  color: #dc2626;
+  font-weight: 600;
+  letter-spacing: 1px;
+  margin-bottom: 15px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #2a2a2a;
+}
+
+.input-group {
+  margin-bottom: 15px;
+}
+
+label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: #ccc;
+}
+
+.input-wrapper {
+  position: relative;
+}
+
+input {
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 10px;
+  border: 2px solid #2a2a2a;
+  background: #0f0f0f;
+  color: white;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+input:focus {
+  outline: none;
+  border-color: #dc2626;
+  background: #1a0000;
+  box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.1);
+}
+
+input::placeholder {
+  color: #555;
+  font-weight: 400;
+}
+
+.currency-symbol {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #666;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+button {
+  width: 100%;
+  padding: 16px;
+  border-radius: 12px;
+  border: none;
+  font-weight: 700;
+  font-size: 17px;
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 10px;
+  box-shadow: 0 6px 20px rgba(220, 38, 38, 0.4);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(220, 38, 38, 0.6);
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+}
+
+button:active {
+  transform: translateY(-1px);
+}
+
+.result {
+  margin-top: 25px;
+  padding: 0;
+  background: transparent;
+  border-radius: 12px;
+  display: none;
+  animation: slideIn 0.4s ease;
+}
+
+.result.show {
+  display: block;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.result-section {
+  background: #0f0f0f;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 15px;
+  border: 1px solid #2a2a2a;
+}
+
+.result-title {
+  font-size: 11px;
+  text-transform: uppercase;
+  color: #888;
+  font-weight: 600;
+  letter-spacing: 1px;
+  margin-bottom: 12px;
+}
+
+.result-line {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  font-size: 15px;
+  color: #ccc;
+  border-bottom: 1px solid #1a1a1a;
+}
+
+.result-line:last-child {
+  border-bottom: none;
+}
+
+.result-line .label {
+  color: #999;
+  font-weight: 400;
+}
+
+.result-line .value {
+  font-weight: 700;
+  color: white;
+}
+
+.result-line.addition .value {
+  color: #22c55e;
+}
+
+.result-line.deduction .value {
+  color: #ef4444;
+}
+
+.net-salary {
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 15px;
+  border: none;
+}
+
+.net-salary .result-line {
+  border: none;
+  padding: 0;
+}
+
+.net-salary .label {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: rgba(255,255,255,0.8);
+}
+
+.net-salary .value {
+  font-size: 28px;
+  font-weight: 800;
+  color: white;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+@media (max-width: 500px) {
+  .container {
+    padding: 25px;
+  }
+  
+  h1 {
+    font-size: 26px;
+  }
+  
+  .grid-2 {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>CHAAJAO</h1>
+    <p class="subtitle">Salary Calculator</p>
+  </div>
+  
+  <div class="form-section">
+    <div class="section-title">Basic Information</div>
+    <div class="input-group">
+      <label>Monthly Gross Salary</label>
+      <div class="input-wrapper">
+        <input type="number" id="gross" placeholder="50000" min="0">
+        <span class="currency-symbol">PKR</span>
+      </div>
+    </div>
+    
+    <div class="input-group">
+      <label>Income Tax</label>
+      <div class="input-wrapper">
+        <input type="number" id="tax" placeholder="0" min="0" value="0">
+        <span class="currency-symbol">PKR</span>
+      </div>
+    </div>
+  </div>
+  
+  <div class="form-section">
+    <div class="section-title">Additions</div>
+    <div class="grid-2">
+      <div class="input-group">
+        <label>Overtime (Minutes)</label>
+        <input type="number" id="ot" placeholder="1053" min="0" value="0">
+      </div>
+      
+      <div class="input-group">
+        <label>Extra Days</label>
+        <input type="number" id="extra" placeholder="1" min="0" value="0">
+      </div>
+    </div>
+  </div>
+  
+  <div class="form-section">
+    <div class="section-title">Deductions</div>
+    <div class="grid-2">
+      <div class="input-group">
+        <label>Late (Minutes)</label>
+        <input type="number" id="late" placeholder="137" min="0" value="0">
+      </div>
+      
+      <div class="input-group">
+        <label>Absent (Days)</label>
+        <input type="number" id="absent" placeholder="0" min="0" value="0">
+      </div>
+    </div>
+  </div>
+  
+  <button onclick="calculate()">Calculate Salary</button>
+  
+  <div class="result" id="output"></div>
+</div>
+
+<script>
+function formatCurrency(amount) {
+  return amount.toLocaleString('en-PK', {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0
+  });
+}
+
+function calculate() {
+  let gross = Number(document.getElementById("gross").value);
+  
+  if (!gross || gross <= 0) {
+    alert('Please enter a valid gross salary');
+    return;
+  }
+  
+  let ot = Number(document.getElementById("ot").value) || 0;
+  let late = Number(document.getElementById("late").value) || 0;
+  let absent = Number(document.getElementById("absent").value) || 0;
+  let extra = Number(document.getElementById("extra").value) || 0;
+  let tax = Number(document.getElementById("tax").value) || 0;
+  
+  let perDay = gross / 30;
+  let perHour = perDay / 9;
+  let perMin = perHour / 60;
+  
+  let extraDayAmount = extra * perDay;
+  let otAmount = (ot / 60) * perHour;
+  let lateDeduction = late * perMin;
+  let absentDeduction = absent * perDay;
+  
+  let totalAdd = extraDayAmount + otAmount;
+  let totalDed = lateDeduction + absentDeduction + tax;
+  let net = gross + totalAdd - totalDed;
+  
+  let html = `
+    <div class="result-section">
+      <div class="result-title">Base Salary</div>
+      <div class="result-line">
+        <span class="label">Gross Salary</span>
+        <span class="value">${formatCurrency(gross)} PKR</span>
+      </div>
+    </div>
+  `;
+  
+  if (totalAdd > 0) {
+    html += `<div class="result-section">
+      <div class="result-title">Additions</div>`;
+    
+    if (extraDayAmount > 0) {
+      html += `
+        <div class="result-line addition">
+          <span class="label">Extra Days (${extra})</span>
+          <span class="value">+${formatCurrency(extraDayAmount)} PKR</span>
+        </div>
+      `;
+    }
+    
+    if (otAmount > 0) {
+      html += `
+        <div class="result-line addition">
+          <span class="label">Overtime (${ot} min)</span>
+          <span class="value">+${formatCurrency(otAmount)} PKR</span>
+        </div>
+      `;
+    }
+    
+    html += `</div>`;
+  }
+  
+  if (totalDed > 0) {
+    html += `<div class="result-section">
+      <div class="result-title">Deductions</div>`;
+    
+    if (lateDeduction > 0) {
+      html += `
+        <div class="result-line deduction">
+          <span class="label">Late (${late} min)</span>
+          <span class="value">-${formatCurrency(lateDeduction)} PKR</span>
+        </div>
+      `;
+    }
+    
+    if (absentDeduction > 0) {
+      html += `
+        <div class="result-line deduction">
+          <span class="label">Absent (${absent} days)</span>
+          <span class="value">-${formatCurrency(absentDeduction)} PKR</span>
+        </div>
+      `;
+    }
+    
+    if (tax > 0) {
+      html += `
+        <div class="result-line deduction">
+          <span class="label">Income Tax</span>
+          <span class="value">-${formatCurrency(tax)} PKR</span>
+        </div>
+      `;
+    }
+    
+    html += `</div>`;
+  }
+  
+  html += `
+    <div class="net-salary">
+      <div class="result-line">
+        <span class="label">Net Payable</span>
+        <span class="value">${formatCurrency(net)} PKR</span>
+      </div>
+    </div>
+  `;
+  
+  document.getElementById("output").innerHTML = html;
+  document.getElementById("output").classList.add('show');
+}
+
+document.querySelectorAll('input').forEach(input => {
+  input.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+      calculate();
+    }
+  });
+});
+</script>
+</body>
+</html>
