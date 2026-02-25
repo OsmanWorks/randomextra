@@ -1,453 +1,943 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Chaajao Salary Calculator</title>
-<style>
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: #0a0a0a;
-  color: white;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  padding: 20px;
-}
-
-.container {
-  background: #1a1a1a;
-  padding: 35px;
-  border-radius: 20px;
-  width: 100%;
-  max-width: 500px;
-  box-shadow: 0 10px 50px rgba(220, 38, 38, 0.3);
-  border: 1px solid #2a2a2a;
-}
-
-.header {
-  text-align: center;
-  margin-bottom: 30px;
-}
-
-h1 {
-  font-size: 32px;
-  font-weight: 700;
-  color: #dc2626;
-  margin-bottom: 5px;
-  text-shadow: 0 0 20px rgba(220, 38, 38, 0.5);
-}
-
-.subtitle {
-  font-size: 14px;
-  color: #888;
-  font-weight: 400;
-}
-
-.form-section {
-  margin-bottom: 25px;
-}
-
-.section-title {
-  font-size: 12px;
-  text-transform: uppercase;
-  color: #dc2626;
-  font-weight: 600;
-  letter-spacing: 1px;
-  margin-bottom: 15px;
-  padding-bottom: 8px;
-  border-bottom: 2px solid #2a2a2a;
-}
-
-.input-group {
-  margin-bottom: 15px;
-}
-
-label {
-  display: block;
-  font-size: 13px;
-  font-weight: 500;
-  margin-bottom: 8px;
-  color: #ccc;
-}
-
-.input-wrapper {
-  position: relative;
-}
-
-input {
-  width: 100%;
-  padding: 14px 16px;
-  border-radius: 10px;
-  border: 2px solid #2a2a2a;
-  background: #0f0f0f;
-  color: white;
-  font-size: 16px;
-  transition: all 0.3s ease;
-  font-weight: 500;
-}
-
-input:focus {
-  outline: none;
-  border-color: #dc2626;
-  background: #1a0000;
-  box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.1);
-}
-
-input::placeholder {
-  color: #555;
-  font-weight: 400;
-}
-
-.currency-symbol {
-  position: absolute;
-  right: 16px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #666;
-  font-size: 14px;
-  font-weight: 600;
-}
-
-button {
-  width: 100%;
-  padding: 16px;
-  border-radius: 12px;
-  border: none;
-  font-weight: 700;
-  font-size: 17px;
-  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
-  color: white;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  margin-top: 10px;
-  box-shadow: 0 6px 20px rgba(220, 38, 38, 0.4);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-
-button:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 25px rgba(220, 38, 38, 0.6);
-  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-}
-
-button:active {
-  transform: translateY(-1px);
-}
-
-.result {
-  margin-top: 25px;
-  padding: 0;
-  background: transparent;
-  border-radius: 12px;
-  display: none;
-  animation: slideIn 0.4s ease;
-}
-
-.result.show {
-  display: block;
-}
-
-@keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.result-section {
-  background: #0f0f0f;
-  border-radius: 12px;
-  padding: 20px;
-  margin-bottom: 15px;
-  border: 1px solid #2a2a2a;
-}
-
-.result-title {
-  font-size: 11px;
-  text-transform: uppercase;
-  color: #888;
-  font-weight: 600;
-  letter-spacing: 1px;
-  margin-bottom: 12px;
-}
-
-.result-line {
-  display: flex;
-  justify-content: space-between;
-  padding: 10px 0;
-  font-size: 15px;
-  color: #ccc;
-  border-bottom: 1px solid #1a1a1a;
-}
-
-.result-line:last-child {
-  border-bottom: none;
-}
-
-.result-line .label {
-  color: #999;
-  font-weight: 400;
-}
-
-.result-line .value {
-  font-weight: 700;
-  color: white;
-}
-
-.result-line.addition .value {
-  color: #22c55e;
-}
-
-.result-line.deduction .value {
-  color: #ef4444;
-}
-
-.net-salary {
-  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
-  border-radius: 12px;
-  padding: 20px;
-  margin-top: 15px;
-  border: none;
-}
-
-.net-salary .result-line {
-  border: none;
-  padding: 0;
-}
-
-.net-salary .label {
-  font-size: 13px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  color: rgba(255,255,255,0.8);
-}
-
-.net-salary .value {
-  font-size: 28px;
-  font-weight: 800;
-  color: white;
-  text-shadow: 0 2px 10px rgba(0,0,0,0.3);
-}
-
-.grid-2 {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 15px;
-}
-
-@media (max-width: 500px) {
-  .container {
-    padding: 25px;
-  }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   
-  h1 {
-    font-size: 26px;
-  }
+  <!-- 🔍 Primary Meta Tags -->
+  <title>Usman Khan | Visual Artist & Video Editor — High-Impact Content Creator</title>
+  <meta name="description" content="Muhammad Usman Khan — Professional Video Editor & Visual Artist from Pakistan. Specializing in Reels, Podcasts, Ed-Tech content & long-form videos. 550+ projects, 89M+ views.">
+  <meta name="keywords" content="video editor, visual artist, reels, podcast editing, ed-tech, youtube editor, pakistan, freelance video editor">
+  <meta name="author" content="Muhammad Usman Khan">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://usmankhan.portfolio.com/">
   
-  .grid-2 {
-    grid-template-columns: 1fr;
+  <!-- 🌐 Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://usmankhan.portfolio.com/">
+  <meta property="og:title" content="Usman Khan | Visual Artist & Video Editor">
+  <meta property="og:description" content="Creating high-impact reels, podcasts & educational content. 4+ years experience. Let's work together!">
+  <meta property="og:image" content="https://usmankhan.portfolio.com/og-image.jpg">
+  <meta property="og:locale" content="en_PK">
+  
+  <!-- 🐦 Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://usmankhan.portfolio.com/">
+  <meta property="twitter:title" content="Usman Khan | Visual Artist & Video Editor">
+  <meta property="twitter:description" content="Professional video editor specializing in Ed-Tech & marketing content. Available for freelance projects.">
+  <meta property="twitter:image" content="https://usmankhan.portfolio.com/og-image.jpg">
+  
+  <!-- 🎨 Theme & Icons -->
+  <meta name="theme-color" content="#08090f">
+  <meta name="msapplication-TileColor" content="#00d2ff">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎬</text></svg>">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  
+  <!-- 🔗 Preconnect for Performance -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://www.youtube-nocookie.com">
+  
+  <!-- 🎨 Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- 🧠 Structured Data (JSON-LD) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Muhammad Usman Khan",
+    "jobTitle": "Visual Artist & Video Editor",
+    "url": "https://usmankhan.portfolio.com",
+    "image": "https://usmankhan.portfolio.com/my-picture.png",
+    "sameAs": [
+      "https://www.linkedin.com/in/usmankhan07/",
+      "https://wa.me/923072969303"
+    ],
+    "worksFor": {
+      "@type": "Organization",
+      "name": "Chaajao Technologies"
+    },
+    "knowsAbout": ["Video Editing", "Motion Graphics", "Color Grading", "Podcast Production", "Ed-Tech Content"],
+    "areaServed": "Pakistan",
+    "availability": "AvailableForWork"
   }
-}
-</style>
+  </script>
+  
+  <style>
+    /* ===== CSS VARIABLES ===== */
+    :root {
+      --bg: #08090f;
+      --card: #0e0f1a;
+      --blue: #00d2ff;
+      --blue2: #0099ff;
+      --white: #f0f0ee;
+      --grey: #1a1b2e;
+      --muted: #5a5c70;
+      --muted2: #8a8ca0;
+      --border: rgba(255,255,255,0.07);
+      --borderb: rgba(0,210,255,0.15);
+      --focus: rgba(0,210,255,0.4);
+    }
+
+    /* ===== RESET & BASE ===== */
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior:smooth; scroll-padding-top:80px; }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior:auto; }
+      *, *::before, *::after { animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important; }
+    }
+    body {
+      background: var(--bg);
+      color: var(--white);
+      font-family: 'Nunito', sans-serif;
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    :focus-visible {
+      outline: 2px solid var(--focus);
+      outline-offset: 2px;
+    }
+    img { max-width: 100%; height: auto; display: block; }
+    iframe { border: 0; }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; cursor: pointer; border: none; background: none; }
+
+    /* ===== CANVAS & NOISE ===== */
+    #canvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0.5; }
+    .noise {
+      position: fixed; inset: 0; z-index: 1; pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+      opacity: 0.5;
+    }
+    nav, .sidebar, .wrap, section, .marquee-wrap, .contact-section, footer { position: relative; z-index: 2; }
+
+    /* ===== SIDEBAR ===== */
+    .sidebar {
+      position: fixed; left: 22px; top: 50%; transform: translateY(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 14px; z-index: 500;
+    }
+    .sb-line { width:1px; height:48px; background: linear-gradient(to bottom, transparent, var(--blue)); }
+    .sb-line-b { width:1px; height:48px; background: linear-gradient(to bottom, var(--blue), transparent); }
+    .sidebar a {
+      width:32px; height:32px; border-radius:50%; border:1px solid var(--border);
+      display:flex; align-items:center; justify-content:center; color: var(--muted2);
+      font-size:.85rem; transition:all .3s;
+    }
+    .sidebar a:hover, .sidebar a:focus { color:var(--blue); border-color:var(--blue); background:rgba(0,210,255,.08); transform:scale(1.15); }
+    .sidebar a i { pointer-events: none; }
+
+    /* ===== NAVIGATION ===== */
+    nav {
+      position: fixed; top:0; left:0; right:0; height: 60px;
+      display: flex; align-items:center; justify-content:space-between;
+      padding: 0 5%; transition: background .4s, border-color .4s; z-index: 600;
+    }
+    nav.solid { background: rgba(8,9,15,0.95); backdrop-filter: blur(14px); border-bottom: 1px solid var(--border); }
+    .nav-logo { font-family: 'Anton', sans-serif; font-size: 1.4rem; letter-spacing: 3px; color: var(--white); }
+    .nav-logo span { color: var(--blue); }
+    .nav-links { display:flex; align-items:center; gap:4px; }
+    .nav-links a {
+      color: var(--muted2); font-size:.75rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase;
+      padding:6px 14px; border-radius:4px; border:1px solid transparent; transition: all .25s;
+    }
+    .nav-links a:hover, .nav-links a:focus { color:var(--white); border-color:var(--border); background:rgba(255,255,255,.04); }
+
+    /* ===== LAYOUT ===== */
+    .wrap { max-width:1200px; margin:0 auto; padding:0 5%; }
+
+    /* ===== HERO SECTION ===== */
+    .hero {
+      min-height: 100vh; display: flex; align-items:center;
+      padding: 80px 5% 60px; position: relative; overflow:hidden;
+    }
+    .hero-bg-num {
+      position:absolute; right:-2%; bottom:-8%;
+      font-family:'Anton',sans-serif; font-size:38vw;
+      color:rgba(0,210,255,.03); line-height:1; pointer-events:none; user-select:none; z-index:0;
+    }
+    .hero-inner {
+      position:relative; z-index:1; display:grid; grid-template-columns:1fr 380px;
+      gap:80px; align-items:center; width:100%; max-width:1200px; margin:0 auto;
+    }
+    .hero-line { overflow:hidden; }
+    .hero-line span {
+      display:block; transform: translateY(110%);
+      animation: slideUp .8s cubic-bezier(.77,0,.18,1) forwards;
+    }
+    .hero-line:nth-child(2) span { animation-delay:.1s; }
+    .hero-line:nth-child(3) span { animation-delay:.2s; }
+    @keyframes slideUp { to { transform:translateY(0); } }
+
+    .hero-name { font-family:'Anton',sans-serif; font-size: clamp(4rem,8vw,9rem); line-height:.95; letter-spacing:-1px; color: var(--white); }
+    .hero-name.blue { color: var(--blue); }
+    .hero-name.sm { font-size:clamp(1.4rem,3vw,3rem); color:#3a3b55; letter-spacing:4px; }
+
+    .hero-tag {
+      display:inline-flex; align-items:center; gap:10px;
+      background: rgba(0,210,255,.08); border:1px solid rgba(0,210,255,.2);
+      border-radius:4px; padding:7px 14px; margin-bottom:20px;
+      animation: fadeUp .6s .5s both;
+    }
+    .tag-dot { width:6px; height:6px; border-radius:50%; background:var(--blue); animation:blink 2s infinite; box-shadow:0 0 6px var(--blue); }
+    @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:.3;} }
+    .hero-tag span { font-size:.7rem; font-weight:800; letter-spacing:.18em; text-transform:uppercase; color:var(--blue); }
+
+    .hero-desc {
+      color:var(--muted2); font-size:1rem; line-height:1.8; max-width:480px; margin-bottom:36px; font-weight:400;
+      animation: fadeUp .6s .6s both;
+    }
+    .hero-btns { display:flex; gap:14px; flex-wrap:wrap; animation: fadeUp .6s .7s both; }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(14px);} to{opacity:1;transform:none;} }
+
+    /* ===== BUTTONS ===== */
+    .btn-blue, .btn-wire {
+      display:inline-flex; align-items:center; gap:8px; font-size:.78rem; font-weight:800;
+      letter-spacing:.1em; text-transform:uppercase; padding:14px 28px; border-radius:4px;
+      transition:all .3s; position:relative; overflow:hidden;
+    }
+    .btn-blue {
+      background:var(--blue); color:#000; border:1px solid var(--blue);
+    }
+    .btn-blue::before {
+      content:''; position:absolute; inset:0;
+      background:linear-gradient(135deg,transparent,rgba(255,255,255,.2),transparent);
+      transform:translateX(-100%) skewX(-15deg); transition:transform .5s;
+    }
+    .btn-blue:hover::before, .btn-blue:focus::before { transform:translateX(200%) skewX(-15deg); }
+    .btn-blue:hover, .btn-blue:focus { background:#33ddff; transform:translateY(-2px); box-shadow:0 10px 30px rgba(0,210,255,.35); }
+
+    .btn-wire {
+      background:transparent; color:var(--white); border:1px solid rgba(255,255,255,.15);
+    }
+    .btn-wire:hover, .btn-wire:focus { border-color:var(--blue); color:var(--blue); background:rgba(0,210,255,.06); transform:translateY(-2px); }
+
+    /* ===== HERO PHOTO & STATS ===== */
+    .hero-photo-col { animation: fadeUp .8s .4s both; }
+    .hero-photo-wrap { position:relative; width:100%; }
+    .hero-photo-wrap img {
+      width:100%; border-radius:8px; filter:grayscale(15%) contrast(1.05);
+      border:1px solid var(--border); box-shadow:0 30px 80px rgba(0,0,0,.6);
+      transition:filter .4s;
+    }
+    .hero-photo-wrap img:hover, .hero-photo-wrap img:focus { filter:grayscale(0%); }
+    .hero-photo-wrap::before, .hero-photo-wrap::after {
+      content:''; position:absolute; width:55px; height:55px; border-radius:2px; z-index:2;
+    }
+    .hero-photo-wrap::before { top:-8px; left:-8px; border-top:2px solid var(--blue); border-left:2px solid var(--blue); }
+    .hero-photo-wrap::after { bottom:-8px; right:-8px; border-bottom:2px solid var(--blue2); border-right:2px solid var(--blue2); }
+
+    .hero-stats { display:flex; gap:10px; flex-wrap:wrap; margin-top:18px; }
+    .hstat {
+      background:var(--grey); border:1px solid var(--border); border-radius:4px;
+      padding:10px 16px; text-align:center; transition:all .3s; flex:1;
+    }
+    .hstat:hover, .hstat:focus-within { border-color:var(--blue); transform:translateY(-3px); box-shadow:0 8px 24px rgba(0,0,0,.4); }
+    .hstat-val { font-family:'Anton',sans-serif; font-size:1.6rem; color:var(--blue); line-height:1; }
+    .hstat-lbl { font-size:.6rem; font-weight:800; letter-spacing:.12em; text-transform:uppercase; color:var(--muted2); margin-top:3px; }
+
+    /* ===== SCROLL INDICATOR ===== */
+    .scroll-ind {
+      position:absolute; bottom:28px; left:50%; transform:translateX(-50%);
+      display:flex; flex-direction:column; align-items:center; gap:8px; z-index:3;
+      animation: fadeUp 1s 1.2s both;
+    }
+    .scroll-ind span { font-size:.6rem; font-weight:800; letter-spacing:.25em; text-transform:uppercase; color:var(--muted); }
+    .scroll-bar { width:1px; height:40px; background:linear-gradient(to bottom,var(--blue),transparent); animation:scrollPulse 2s ease-in-out infinite; }
+    @keyframes scrollPulse { 0%,100%{opacity:1;transform:scaleY(1)} 50%{opacity:.3;transform:scaleY(.4)} }
+
+    /* ===== MARQUEE ===== */
+    .marquee-wrap {
+      background:var(--blue); padding:13px 0; overflow:hidden;
+      border-top:1px solid rgba(255,255,255,.1); border-bottom:1px solid rgba(255,255,255,.1);
+    }
+    .marquee-track { display:flex; white-space:nowrap; animation:marquee 22s linear infinite; }
+    @keyframes marquee { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+    .marquee-item {
+      font-family:'Anton',sans-serif; font-size:.95rem; letter-spacing:.25em; text-transform:uppercase;
+      color:#000; padding:0 28px; display:inline-flex; align-items:center; gap:24px;
+    }
+    .marquee-item::after { content:'✦'; opacity:.5; font-size:.65rem; }
+
+    /* ===== SECTIONS ===== */
+    .section { padding:90px 0; }
+    .sec-label { display:flex; align-items:center; gap:16px; margin-bottom:44px; }
+    .sec-num { font-family:'Anton',sans-serif; font-size:.85rem; color:var(--blue); letter-spacing:.15em; }
+    .sec-title { font-family:'Anton',sans-serif; font-size:clamp(2rem,4vw,3.2rem); letter-spacing:1px; line-height:1; }
+    .sec-rule { flex:1; height:1px; background:var(--border); }
+
+    /* ===== VIDEO COMPONENTS ===== */
+    .sr-wrap {
+      position:relative; border-radius:10px; overflow:hidden;
+      border:1px solid var(--borderb);
+      box-shadow:0 30px 80px rgba(0,0,0,.7), 0 0 60px rgba(0,210,255,.04);
+      max-width:960px; margin:0 auto;
+    }
+    .sr-badge {
+      position:absolute; top:14px; left:14px; z-index:3;
+      background:rgba(0,150,200,.85); backdrop-filter:blur(8px);
+      color:#fff; font-size:.62rem; font-weight:800; letter-spacing:.22em; text-transform:uppercase;
+      padding:5px 12px; border-radius:3px; display:flex; align-items:center; gap:7px;
+    }
+    .sr-badge-dot { width:6px; height:6px; border-radius:50%; background:#fff; animation:blink 1.5s infinite; }
+
+    .vbox { background:#000; }
+    .vbox.ls { aspect-ratio:16/9; }
+    .vbox.pt { aspect-ratio:9/16; }
+    .vbox iframe { width:100%; height:100%; display:block; }
+
+    .pg4 { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:12px; }
+    .pg2 { display:grid; grid-template-columns:repeat(2,1fr); gap:12px; }
+
+    .vc {
+      background:var(--card); border:1px solid var(--border); border-radius:8px; overflow:hidden;
+      transition:all .35s cubic-bezier(.4,0,.2,1); position:relative;
+    }
+    .vc:hover, .vc:focus-within { transform:translateY(-6px); border-color:var(--borderb); box-shadow:0 20px 60px rgba(0,0,0,.6); }
+    .vc::before {
+      content:''; position:absolute; top:0; left:0; right:0; height:2px;
+      background:linear-gradient(90deg,var(--blue),var(--blue2));
+      transform:scaleX(0); transform-origin:left; transition:transform .35s; z-index:3;
+    }
+    .vc:hover::before, .vc:focus-within::before { transform:scaleX(1); }
+
+    .play-ov {
+      position:absolute; inset:0; z-index:5; display:flex; flex-direction:column;
+      align-items:center; justify-content:center; gap:10px;
+      background:rgba(8,9,15,.55); backdrop-filter:blur(2px); cursor:pointer; transition:background .25s;
+    }
+    .play-ov.gone { display:none; }
+    .play-ov:hover, .play-ov:focus { background:rgba(8,9,15,.35); }
+    .pring {
+      width:56px; height:56px; border-radius:50%; border:2px solid var(--blue);
+      background:rgba(0,210,255,.1); display:flex; align-items:center; justify-content:center;
+      color:var(--blue); font-size:1rem; padding-left:3px; transition:all .28s;
+    }
+    .play-ov:hover .pring, .play-ov:focus .pring {
+      background:var(--blue); color:#000; transform:scale(1.1); box-shadow:0 0 30px rgba(0,210,255,.5);
+    }
+    .plbl { font-size:.6rem; font-weight:800; letter-spacing:.2em; text-transform:uppercase; color:rgba(255,255,255,.55); }
+
+    .vc-ft {
+      padding:9px 14px; border-top:1px solid var(--border);
+      display:flex; justify-content:space-between; align-items:center; background:rgba(0,0,0,.2);
+    }
+    .vc-ft a {
+      font-size:.6rem; font-weight:800; letter-spacing:.12em; text-transform:uppercase;
+      color:var(--muted2); display:flex; align-items:center; gap:5px; transition:color .2s;
+    }
+    .vc-ft a:hover, .vc-ft a:focus { color:var(--blue); }
+
+    /* ===== SEE MORE ===== */
+    .see-more { display:flex; flex-direction:column; align-items:center; gap:14px; padding:50px 0 0; text-align:center; }
+    .sm-line { width:1px; height:40px; background:linear-gradient(to bottom,transparent,rgba(0,210,255,.4)); }
+    .sm-btn {
+      display:inline-flex; align-items:center; gap:12px; background:transparent; color:var(--white);
+      border:1px solid rgba(255,255,255,.12); padding:14px 40px; border-radius:4px;
+      font-size:.78rem; font-weight:800; letter-spacing:.15em; text-transform:uppercase; transition:all .3s;
+    }
+    .sm-btn:hover, .sm-btn:focus { border-color:var(--blue); color:var(--blue); background:rgba(0,210,255,.06); transform:translateY(-3px); box-shadow:0 10px 30px rgba(0,0,0,.4); }
+    .sm-arr { width:26px; height:26px; border-radius:3px; background:rgba(0,210,255,.1); display:flex; align-items:center; justify-content:center; font-size:.7rem; transition:all .3s; }
+    .sm-btn:hover .sm-arr, .sm-btn:focus .sm-arr { background:rgba(0,210,255,.22); transform:translateX(3px); }
+    .sm-sub { font-size:.65rem; color:var(--muted); letter-spacing:.1em; }
+
+    /* ===== ABOUT SECTION ===== */
+    .about-wrap {
+      display:grid; grid-template-columns:1fr 1fr; border:1px solid var(--border);
+      border-radius:10px; overflow:hidden; background:var(--card);
+    }
+    .about-left { position:relative; min-height:440px; }
+    .about-left img { width:100%; height:100%; object-fit:cover; filter:grayscale(20%); transition:filter .4s; }
+    .about-left img:hover, .about-left img:focus { filter:grayscale(0%); }
+    .about-left-ov { position:absolute; inset:0; background:linear-gradient(135deg,rgba(0,210,255,.1),transparent); }
+    .about-right { padding:50px 40px; display:flex; flex-direction:column; justify-content:center; gap:16px; border-left:1px solid var(--border); }
+    .about-right p { font-size:.95rem; color:var(--muted2); line-height:1.85; font-weight:400; }
+    .about-right strong { color:var(--white); font-weight:700; }
+    .about-tags { display:flex; flex-wrap:wrap; gap:8px; margin-top:6px; }
+    .atag {
+      font-size:.65rem; font-weight:800; letter-spacing:.1em; text-transform:uppercase;
+      color:var(--blue); background:rgba(0,210,255,.08); border:1px solid rgba(0,210,255,.18);
+      padding:5px 12px; border-radius:3px; transition:all .25s;
+    }
+    .atag:hover, .atag:focus { background:var(--blue); color:#000; }
+
+    /* ===== CONTACT SECTION ===== */
+    .contact-section { padding:0 5% 90px; max-width:1200px; margin:0 auto; }
+    .contact-inner { display:grid; grid-template-columns:1fr 1fr; border:1px solid var(--border); border-radius:10px; overflow:hidden; }
+    .contact-left {
+      background:var(--blue); padding:60px 40px; display:flex; flex-direction:column;
+      justify-content:center; gap:16px; position:relative; overflow:hidden;
+    }
+    .contact-left::before, .contact-left::after {
+      content:''; position:absolute; border-radius:50%; background:rgba(255,255,255,.08);
+    }
+    .contact-left::before { width:280px; height:280px; top:-100px; right:-80px; }
+    .contact-left::after { width:180px; height:180px; bottom:-70px; left:-50px; background:rgba(255,255,255,.05); }
+    .cl-h { font-family:'Anton',sans-serif; font-size:clamp(1.8rem,3.5vw,3rem); line-height:1.05; color:#000; position:relative; z-index:1; }
+    .cl-s { font-size:.82rem; color:rgba(0,0,0,.6); font-weight:700; letter-spacing:.05em; position:relative; z-index:1; }
+    .contact-right { background:var(--card); padding:60px 40px; display:flex; flex-direction:column; justify-content:center; gap:12px; }
+    .cbtn {
+      display:inline-flex; align-items:center; gap:10px; padding:14px 24px; border-radius:5px;
+      font-size:.82rem; font-weight:800; border:1px solid transparent; transition:all .3s; letter-spacing:.04em;
+    }
+    .cbtn-wa { background:rgba(37,211,102,.1); color:#25d366; border-color:rgba(37,211,102,.2); }
+    .cbtn-wa:hover, .cbtn-wa:focus { background:#25d366; color:#000; transform:translateY(-2px); box-shadow:0 8px 24px rgba(37,211,102,.3); }
+    .cbtn-em { background:rgba(240,240,238,.06); color:var(--white); border-color:var(--border); }
+    .cbtn-em:hover, .cbtn-em:focus { background:var(--white); color:#000; transform:translateY(-2px); }
+    .cbtn-li { background:rgba(0,119,181,.1); color:#4da6d4; border-color:rgba(0,119,181,.2); }
+    .cbtn-li:hover, .cbtn-li:focus { background:#0077b5; color:#fff; transform:translateY(-2px); box-shadow:0 8px 24px rgba(0,119,181,.3); }
+
+    /* ===== FOOTER ===== */
+    footer {
+      border-top:1px solid var(--border); padding:24px 5%;
+      display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;
+    }
+    .f-logo { font-family:'Anton',sans-serif; font-size:1.2rem; letter-spacing:3px; color:var(--white); }
+    .f-logo span { color:var(--blue); }
+    .f-copy { font-size:.7rem; color:var(--muted); letter-spacing:.06em; }
+    .f-copy a { color:var(--blue); }
+
+    /* ===== REVEAL ANIMATIONS ===== */
+    .rv { opacity:0; transform:translateY(28px); transition:opacity .7s cubic-bezier(.4,0,.2,1), transform .7s cubic-bezier(.4,0,.2,1); }
+    .rv.in { opacity:1; transform:none; }
+    .d1{transition-delay:.1s} .d2{transition-delay:.2s} .d3{transition-delay:.3s}
+
+    /* ===== RESPONSIVE ===== */
+    @media(max-width:1024px){
+      .hero-inner { grid-template-columns:1fr; gap:40px; text-align:center; }
+      .hero-desc { margin:0 auto 36px; }
+      .hero-btns { justify-content:center; }
+      .hero-tag { justify-content:center; }
+      .about-wrap { grid-template-columns:1fr; }
+      .about-left { min-height:280px; }
+      .contact-inner { grid-template-columns:1fr; }
+      .pg4 { grid-template-columns:repeat(2,1fr); }
+      .sidebar { display:none; }
+    }
+    @media(max-width:640px){
+      nav { height:auto; padding:10px 5%; flex-wrap:wrap; gap:6px; }
+      .nav-links { width:100%; justify-content:center; flex-wrap:wrap; gap:4px; }
+      .nav-links a { font-size:.68rem; padding:5px 10px; }
+      .hero { padding:70px 5% 50px; }
+      .hero-btns { flex-direction:column; align-items:center; }
+      .hero-btns a { width:100%; max-width:280px; justify-content:center; }
+      .pg4, .pg2 { grid-template-columns:1fr; }
+      .contact-right, .contact-left, .about-right { padding:30px 24px; }
+      .sec-rule { display:none; }
+      footer { flex-direction:column; text-align:center; }
+      .sidebar { display:none; }
+    }
+
+    /* ===== PRINT STYLES (For CV) ===== */
+    @media print {
+      body { background:#fff; color:#000; }
+      nav, .sidebar, .hero-btns, .marquee-wrap, .play-ov, footer { display:none !important; }
+      .hero { min-height:auto; padding:20px; }
+      .hero-name { font-size:2rem; color:#000; }
+      .hero-desc { color:#333; }
+      .vc, .about-wrap, .contact-inner { border:1px solid #ccc; box-shadow:none; }
+      iframe { display:none; }
+    }
+  </style>
 </head>
 <body>
-<div class="container">
-  <div class="header">
-    <h1>CHAAJAO</h1>
-    <p class="subtitle">Salary Calculator</p>
+
+<!-- Background Effects -->
+<canvas id="canvas" aria-hidden="true"></canvas>
+<div class="noise" aria-hidden="true"></div>
+
+<!-- Sidebar Navigation -->
+<aside class="sidebar" aria-label="Quick links">
+  <div class="sb-line"></div>
+  <a href="mailto:usmankhan07editor@gmail.com" title="Email" aria-label="Send email">
+    <i class="fas fa-envelope" aria-hidden="true"></i>
+  </a>
+  <a href="https://wa.me/923072969303?text=Hi%20Usman%2C%20I%20visited%20your%20portfolio%20and%20would%20like%20to%20discuss%20a%20video%20editing%20project." target="_blank" rel="noopener noreferrer" title="WhatsApp" aria-label="Chat on WhatsApp">
+    <i class="fab fa-whatsapp" aria-hidden="true"></i>
+  </a>
+  <a href="https://www.linkedin.com/in/usmankhan07/" target="_blank" rel="noopener noreferrer" title="LinkedIn" aria-label="View LinkedIn profile">
+    <i class="fab fa-linkedin" aria-hidden="true"></i>
+  </a>
+  <div class="sb-line-b"></div>
+</aside>
+
+<!-- Main Navigation -->
+<nav id="mainNav" role="navigation" aria-label="Main navigation">
+  <a class="nav-logo" href="#" aria-label="Usman Khan - Home">UK<span>.</span></a>
+  <div class="nav-links">
+    <a href="#about">About</a>
+    <a href="all-projects.html">Portfolio</a>
+    <a href="#contact">Contact</a>
   </div>
-  
-  <div class="form-section">
-    <div class="section-title">Basic Information</div>
-    <div class="input-group">
-      <label>Monthly Gross Salary</label>
-      <div class="input-wrapper">
-        <input type="number" id="gross" placeholder="50000" min="0">
-        <span class="currency-symbol">PKR</span>
+</nav>
+
+<!-- Hero Section -->
+<section class="hero" id="about" aria-labelledby="hero-title">
+  <div class="hero-bg-num" aria-hidden="true">4</div>
+  <div class="hero-inner">
+    <div>
+      <div class="hero-tag">
+        <div class="tag-dot" aria-hidden="true"></div>
+        <span>Visual Artist &amp; Video Editor</span>
+      </div>
+      <h1 id="hero-title">
+        <div class="hero-line"><span class="hero-name">USMAN</span></div>
+        <div class="hero-line"><span class="hero-name blue">KHAN</span></div>
+        <div class="hero-line"><span class="hero-name sm">THE EDIT MASTER</span></div>
+      </h1>
+      <p class="hero-desc">I help brands, creators, and companies reach their audience through high-impact reels, podcasts, and long-form videos. Specialized in Informative &amp; Ed-Tech content with 100% precision.</p>
+      <div class="hero-btns">
+        <a href="#showreel" class="btn-blue"><i class="fas fa-play" aria-hidden="true"></i> Explore Portfolio</a>
+        <a href="https://wa.me/923072969303?text=Hi%20Usman%2C%20I%20visited%20your%20portfolio%20and%20would%20like%20to%20discuss%20a%20video%20editing%20project." target="_blank" rel="noopener noreferrer" class="btn-wire">
+          <i class="fab fa-whatsapp" aria-hidden="true"></i> Hire Me
+        </a>
       </div>
     </div>
-    
-    <div class="input-group">
-      <label>Income Tax</label>
-      <div class="input-wrapper">
-        <input type="number" id="tax" placeholder="0" min="0" value="0">
-        <span class="currency-symbol">PKR</span>
+    <div class="hero-photo-col">
+      <div class="hero-photo-wrap">
+        <!-- 🔧 Replace with your actual image -->
+        <img src="my-picture.png" alt="Muhammad Usman Khan — Professional Video Editor" width="380" height="480" loading="lazy" onerror="this.src='https://via.placeholder.com/380x480/0e0f1a/00d2ff?text=Your+Photo';this.onerror=null;">
+      </div>
+      <div class="hero-stats" role="list" aria-label="Key statistics">
+        <div class="hstat" role="listitem">
+          <div class="hstat-val" data-target="550" data-suffix="+">0</div>
+          <div class="hstat-lbl">Videos</div>
+        </div>
+        <div class="hstat" role="listitem">
+          <div class="hstat-val" data-target="89" data-suffix="M+">0</div>
+          <div class="hstat-lbl">Views</div>
+        </div>
+        <div class="hstat" role="listitem">
+          <div class="hstat-val" data-target="4" data-suffix="yr+">0</div>
+          <div class="hstat-lbl">Exp</div>
+        </div>
       </div>
     </div>
   </div>
-  
-  <div class="form-section">
-    <div class="section-title">Additions</div>
-    <div class="grid-2">
-      <div class="input-group">
-        <label>Overtime (Minutes)</label>
-        <input type="number" id="ot" placeholder="1053" min="0" value="0">
-      </div>
-      
-      <div class="input-group">
-        <label>Extra Days</label>
-        <input type="number" id="extra" placeholder="1" min="0" value="0">
-      </div>
-    </div>
+  <div class="scroll-ind" aria-hidden="true">
+    <span>Scroll</span>
+    <div class="scroll-bar"></div>
   </div>
-  
-  <div class="form-section">
-    <div class="section-title">Deductions</div>
-    <div class="grid-2">
-      <div class="input-group">
-        <label>Late (Minutes)</label>
-        <input type="number" id="late" placeholder="137" min="0" value="0">
-      </div>
-      
-      <div class="input-group">
-        <label>Absent (Days)</label>
-        <input type="number" id="absent" placeholder="0" min="0" value="0">
-      </div>
-    </div>
+</section>
+
+<!-- Skills Marquee -->
+<div class="marquee-wrap" aria-label="Skills and services">
+  <div class="marquee-track">
+    <span class="marquee-item">Video Editing</span>
+    <span class="marquee-item">Motion Graphics</span>
+    <span class="marquee-item">Color Grading</span>
+    <span class="marquee-item">Reels</span>
+    <span class="marquee-item">Podcasts</span>
+    <span class="marquee-item">Ed-Tech Content</span>
+    <span class="marquee-item">Premiere Pro</span>
+    <span class="marquee-item">After Effects</span>
+    <!-- Duplicate for seamless loop -->
+    <span class="marquee-item">Video Editing</span>
+    <span class="marquee-item">Motion Graphics</span>
+    <span class="marquee-item">Color Grading</span>
+    <span class="marquee-item">Reels</span>
+    <span class="marquee-item">Podcasts</span>
+    <span class="marquee-item">Ed-Tech Content</span>
+    <span class="marquee-item">Premiere Pro</span>
+    <span class="marquee-item">After Effects</span>
   </div>
-  
-  <button onclick="calculate()">Calculate Salary</button>
-  
-  <div class="result" id="output"></div>
 </div>
 
+<!-- Showreel Section -->
+<div class="wrap">
+  <section class="section" id="showreel" aria-labelledby="showreel-title">
+    <div class="sec-label rv">
+      <span class="sec-num">01</span>
+      <h2 id="showreel-title" class="sec-title">SHOWREEL</h2>
+      <div class="sec-rule"></div>
+    </div>
+    <div class="sr-wrap rv d1">
+      <div class="sr-badge"><div class="sr-badge-dot" aria-hidden="true"></div> SHOWREEL 2025</div>
+      <div class="vbox ls">
+        <iframe 
+          src="https://www.youtube-nocookie.com/embed/P0OZp1dbb0g?autoplay=1&mute=1&loop=1&playlist=P0OZp1dbb0g&rel=0&modestbranding=1"
+          title="Usman Khan Showreel 2025"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen
+          loading="lazy">
+        </iframe>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- Featured Work Section -->
+<div class="wrap">
+  <section class="section" id="work" aria-labelledby="work-title">
+    <div class="sec-label rv">
+      <span class="sec-num">02</span>
+      <h2 id="work-title" class="sec-title">FEATURED WORK</h2>
+      <div class="sec-rule"></div>
+    </div>
+
+    <!-- Reels Grid -->
+    <div class="pg4">
+      <!-- Reel 1 -->
+      <article class="vc rv">
+        <div class="vbox pt" style="position:relative">
+          <button class="play-ov" onclick="loadVid(this,'https://www.youtube-nocookie.com/embed/qvABBZOzxIA?autoplay=1&rel=0&modestbranding=1')" aria-label="Play reel: Quick Cut Reel">
+            <div class="pring"><i class="fas fa-play" aria-hidden="true"></i></div>
+            <div class="plbl">Play Reel</div>
+          </button>
+          <iframe 
+            data-src="https://www.youtube-nocookie.com/embed/qvABBZOzxIA?rel=0&modestbranding=1"
+            title="Quick Cut Reel"
+            loading="lazy"
+            allowfullscreen>
+          </iframe>
+        </div>
+        <div class="vc-ft">
+          <a href="https://youtube.com/shorts/qvABBZOzxIA" target="_blank" rel="noopener noreferrer">
+            Watch Reel <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i>
+          </a>
+        </div>
+      </article>
+
+      <!-- Reel 2 -->
+      <article class="vc rv d1">
+        <div class="vbox pt" style="position:relative">
+          <button class="play-ov" onclick="loadVid(this,'https://www.youtube-nocookie.com/embed/ahxMFjt9bKk?autoplay=1&rel=0&modestbranding=1')" aria-label="Play reel: Motion Graphics Demo">
+            <div class="pring"><i class="fas fa-play" aria-hidden="true"></i></div>
+            <div class="plbl">Play Reel</div>
+          </button>
+          <iframe 
+            data-src="https://www.youtube-nocookie.com/embed/ahxMFjt9bKk?rel=0&modestbranding=1"
+            title="Motion Graphics Demo"
+            loading="lazy"
+            allowfullscreen>
+          </iframe>
+        </div>
+        <div class="vc-ft">
+          <a href="https://youtube.com/shorts/ahxMFjt9bKk" target="_blank" rel="noopener noreferrer">
+            Watch Reel <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i>
+          </a>
+        </div>
+      </article>
+
+      <!-- Reel 3 -->
+      <article class="vc rv d2">
+        <div class="vbox pt" style="position:relative">
+          <button class="play-ov" onclick="loadVid(this,'https://www.youtube-nocookie.com/embed/PxtZWx0hAaI?autoplay=1&rel=0&modestbranding=1')" aria-label="Play reel: Color Grading Sample">
+            <div class="pring"><i class="fas fa-play" aria-hidden="true"></i></div>
+            <div class="plbl">Play Reel</div>
+          </button>
+          <iframe 
+            data-src="https://www.youtube-nocookie.com/embed/PxtZWx0hAaI?rel=0&modestbranding=1"
+            title="Color Grading Sample"
+            loading="lazy"
+            allowfullscreen>
+          </iframe>
+        </div>
+        <div class="vc-ft">
+          <a href="https://youtube.com/shorts/PxtZWx0hAaI" target="_blank" rel="noopener noreferrer">
+            Watch Reel <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i>
+          </a>
+        </div>
+      </article>
+
+      <!-- Reel 4 -->
+      <article class="vc rv d3">
+        <div class="vbox pt" style="position:relative">
+          <button class="play-ov" onclick="loadVid(this,'https://www.youtube-nocookie.com/embed/jTZZndniYVc?autoplay=1&rel=0&modestbranding=1')" aria-label="Play reel: Ed-Tech Promo">
+            <div class="pring"><i class="fas fa-play" aria-hidden="true"></i></div>
+            <div class="plbl">Play Reel</div>
+          </button>
+          <iframe 
+            data-src="https://www.youtube-nocookie.com/embed/jTZZndniYVc?rel=0&modestbranding=1"
+            title="Ed-Tech Promo"
+            loading="lazy"
+            allowfullscreen>
+          </iframe>
+        </div>
+        <div class="vc-ft">
+          <a href="https://youtube.com/shorts/jTZZndniYVc" target="_blank" rel="noopener noreferrer">
+            Watch Reel <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i>
+          </a>
+        </div>
+      </article>
+    </div>
+
+    <!-- Long-form Videos -->
+    <div class="pg2">
+      <!-- Video 1 -->
+      <article class="vc rv">
+        <div class="vbox ls" style="position:relative">
+          <button class="play-ov" onclick="loadVid(this,'https://www.youtube-nocookie.com/embed/jL-qLryhBs0?autoplay=1&rel=0&modestbranding=1')" aria-label="Play video: MDCAT Success Story">
+            <div class="pring"><i class="fas fa-play" aria-hidden="true"></i></div>
+            <div class="plbl">Play Video</div>
+          </button>
+          <iframe 
+            data-src="https://www.youtube-nocookie.com/embed/jL-qLryhBs0?rel=0&modestbranding=1"
+            title="MDCAT Success Story"
+            loading="lazy"
+            allowfullscreen>
+          </iframe>
+        </div>
+        <div class="vc-ft">
+          <a href="https://youtu.be/jL-qLryhBs0" target="_blank" rel="noopener noreferrer">
+            Watch Full Video <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i>
+          </a>
+        </div>
+      </article>
+
+      <!-- Video 2 -->
+      <article class="vc rv d1">
+        <div class="vbox ls" style="position:relative">
+          <button class="play-ov" onclick="loadVid(this,'https://www.youtube-nocookie.com/embed/Dz7SG_VWSd8?autoplay=1&rel=0&modestbranding=1')" aria-label="Play video: Podcast Editing Sample">
+            <div class="pring"><i class="fas fa-play" aria-hidden="true"></i></div>
+            <div class="plbl">Play Video</div>
+          </button>
+          <iframe 
+            data-src="https://www.youtube-nocookie.com/embed/Dz7SG_VWSd8?rel=0&modestbranding=1"
+            title="Podcast Editing Sample"
+            loading="lazy"
+            allowfullscreen>
+          </iframe>
+        </div>
+        <div class="vc-ft">
+          <a href="https://youtu.be/Dz7SG_VWSd8" target="_blank" rel="noopener noreferrer">
+            Watch Full Video <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i>
+          </a>
+        </div>
+      </article>
+    </div>
+
+    <!-- See More CTA -->
+    <div class="see-more rv">
+      <div class="sm-line" aria-hidden="true"></div>
+      <a href="all-projects.html" class="sm-btn">
+        <span class="sm-arr"><i class="fas fa-arrow-right" aria-hidden="true"></i></span>
+        See More My Work
+      </a>
+      <div class="sm-sub">8+ more projects &nbsp;·&nbsp; Reels &amp; Long-form</div>
+    </div>
+  </section>
+</div>
+
+<!-- About Section -->
+<div class="wrap">
+  <section class="section" id="about-me" aria-labelledby="about-title">
+    <div class="sec-label rv">
+      <span class="sec-num">03</span>
+      <h2 id="about-title" class="sec-title">ABOUT ME</h2>
+      <div class="sec-rule"></div>
+    </div>
+    <div class="about-wrap rv d1">
+      <div class="about-left">
+        <!-- 🔧 Replace with your actual about image -->
+        <img src="About.png" alt="Muhammad Usman Khan working on video editing" width="600" height="440" loading="lazy" onerror="this.src='https://via.placeholder.com/600x440/0e0f1a/00d2ff?text=About+Photo';this.onerror=null;">
+        <div class="about-left-ov" aria-hidden="true"></div>
+      </div>
+      <div class="about-right">
+        <p>Hi, I'm <strong>Muhammad Usman Khan</strong>, a Video Editor with 4+ years of experience in digital and educational media.</p>
+        <p>I create social media ads, YouTube videos, reels, podcasts, and promotional content using Adobe Premiere Pro and After Effects. I handle complete workflows including editing, green screen work, and content optimization.</p>
+        <p>Currently working at Chaajao and also serving freelance clients, helping brands and creators produce high-performing video content.</p>
+        <p>My focus is on delivering clean, engaging, and result-driven visuals.</p>
+        <div class="about-tags" role="list" aria-label="Skills and tools">
+          <span class="atag" role="listitem">Premiere Pro</span>
+          <span class="atag" role="listitem">After Effects</span>
+          <span class="atag" role="listitem">Reels</span>
+          <span class="atag" role="listitem">Long-form</span>
+          <span class="atag" role="listitem">Ed-Tech</span>
+          <span class="atag" role="listitem">Podcasts</span>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- Contact Section -->
+<div class="contact-section" id="contact" aria-labelledby="contact-title">
+  <div class="sec-label rv" style="max-width:1200px;margin:0 auto 30px;">
+    <span class="sec-num">04</span>
+    <h2 id="contact-title" class="sec-title">LET'S TALK</h2>
+    <div class="sec-rule"></div>
+  </div>
+  <div class="contact-inner rv d1">
+    <div class="contact-left">
+      <h2 class="cl-h">LET'S CREATE SOMETHING EPIC.</h2>
+      <p class="cl-s">Available for new projects — Let's talk</p>
+    </div>
+    <div class="contact-right">
+      <a href="https://wa.me/923072969303?text=Hi%20Usman%2C%20I%20visited%20your%20portfolio%20and%20would%20like%20to%20discuss%20a%20video%20editing%20project." target="_blank" rel="noopener noreferrer" class="cbtn cbtn-wa">
+        <i class="fab fa-whatsapp" aria-hidden="true"></i> WhatsApp
+      </a>
+      <a href="mailto:usmankhan07editor@gmail.com" class="cbtn cbtn-em">
+        <i class="fas fa-envelope" aria-hidden="true"></i> Email
+      </a>
+      <a href="https://www.linkedin.com/in/usmankhan07/" target="_blank" rel="noopener noreferrer" class="cbtn cbtn-li">
+        <i class="fab fa-linkedin" aria-hidden="true"></i> LinkedIn
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer role="contentinfo">
+  <div class="f-logo" aria-label="Usman Khan Portfolio">UK<span>.</span></div>
+  <div class="f-copy">
+    © 2025 <a href="#">Usman Khan</a> — Visual Artist. All rights reserved.
+  </div>
+</footer>
+
+<!-- JavaScript -->
 <script>
-function formatCurrency(amount) {
-  return amount.toLocaleString('en-PK', {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0
-  });
+// ===== VIDEO LOADER =====
+function loadVid(overlay, src) {
+  const box = overlay.closest('.vbox');
+  const iframe = box.querySelector('iframe');
+  if (iframe && !iframe.src.includes('youtube')) {
+    iframe.src = src;
+    overlay.classList.add('gone');
+    // Focus management for accessibility
+    iframe.focus();
+  }
 }
 
-function calculate() {
-  let gross = Number(document.getElementById("gross").value);
-  
-  if (!gross || gross <= 0) {
-    alert('Please enter a valid gross salary');
-    return;
+// ===== NAV SCROLL EFFECT (Debounced) =====
+let scrollTimeout;
+window.addEventListener('scroll', function() {
+  if (scrollTimeout) cancelAnimationFrame(scrollTimeout);
+  scrollTimeout = requestAnimationFrame(() => {
+    document.getElementById('mainNav').classList.toggle('solid', window.scrollY > 60);
+  });
+}, { passive: true });
+
+// ===== PARTICLE CANVAS (Optimized) =====
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+let W, H, particles = [], animationId;
+
+function resize() {
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', () => {
+  cancelAnimationFrame(animationId);
+  resize();
+  particles = [];
+  for (let i = 0; i < Math.min(70, Math.floor((W*H)/20000)); i++) particles.push(new Particle());
+  drawCanvas();
+}, { passive: true });
+
+class Particle {
+  constructor() { this.reset(); }
+  reset() {
+    this.x = Math.random() * W;
+    this.y = Math.random() * H;
+    this.r = Math.random() * 1.4 + 0.4;
+    this.vx = (Math.random() - 0.5) * 0.3;
+    this.vy = (Math.random() - 0.5) * 0.3;
+    this.alpha = Math.random() * 0.5 + 0.1;
+    this.col = Math.random() > 0.5 ? '0,210,255' : '0,153,255';
   }
-  
-  let ot = Number(document.getElementById("ot").value) || 0;
-  let late = Number(document.getElementById("late").value) || 0;
-  let absent = Number(document.getElementById("absent").value) || 0;
-  let extra = Number(document.getElementById("extra").value) || 0;
-  let tax = Number(document.getElementById("tax").value) || 0;
-  
-  let perDay = gross / 30;
-  let perHour = perDay / 9;
-  let perMin = perHour / 60;
-  
-  let extraDayAmount = extra * perDay;
-  let otAmount = (ot / 60) * perHour;
-  let lateDeduction = late * perMin;
-  let absentDeduction = absent * perDay;
-  
-  let totalAdd = extraDayAmount + otAmount;
-  let totalDed = lateDeduction + absentDeduction + tax;
-  let net = gross + totalAdd - totalDed;
-  
-  let html = `
-    <div class="result-section">
-      <div class="result-title">Base Salary</div>
-      <div class="result-line">
-        <span class="label">Gross Salary</span>
-        <span class="value">${formatCurrency(gross)} PKR</span>
-      </div>
-    </div>
-  `;
-  
-  if (totalAdd > 0) {
-    html += `<div class="result-section">
-      <div class="result-title">Additions</div>`;
-    
-    if (extraDayAmount > 0) {
-      html += `
-        <div class="result-line addition">
-          <span class="label">Extra Days (${extra})</span>
-          <span class="value">+${formatCurrency(extraDayAmount)} PKR</span>
-        </div>
-      `;
-    }
-    
-    if (otAmount > 0) {
-      html += `
-        <div class="result-line addition">
-          <span class="label">Overtime (${ot} min)</span>
-          <span class="value">+${formatCurrency(otAmount)} PKR</span>
-        </div>
-      `;
-    }
-    
-    html += `</div>`;
+  update() {
+    this.x += this.vx; this.y += this.vy;
+    if (this.x < -10 || this.x > W+10 || this.y < -10 || this.y > H+10) this.reset();
   }
-  
-  if (totalDed > 0) {
-    html += `<div class="result-section">
-      <div class="result-title">Deductions</div>`;
-    
-    if (lateDeduction > 0) {
-      html += `
-        <div class="result-line deduction">
-          <span class="label">Late (${late} min)</span>
-          <span class="value">-${formatCurrency(lateDeduction)} PKR</span>
-        </div>
-      `;
-    }
-    
-    if (absentDeduction > 0) {
-      html += `
-        <div class="result-line deduction">
-          <span class="label">Absent (${absent} days)</span>
-          <span class="value">-${formatCurrency(absentDeduction)} PKR</span>
-        </div>
-      `;
-    }
-    
-    if (tax > 0) {
-      html += `
-        <div class="result-line deduction">
-          <span class="label">Income Tax</span>
-          <span class="value">-${formatCurrency(tax)} PKR</span>
-        </div>
-      `;
-    }
-    
-    html += `</div>`;
+  draw() {
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(${this.col},${this.alpha})`;
+    ctx.fill();
   }
-  
-  html += `
-    <div class="net-salary">
-      <div class="result-line">
-        <span class="label">Net Payable</span>
-        <span class="value">${formatCurrency(net)} PKR</span>
-      </div>
-    </div>
-  `;
-  
-  document.getElementById("output").innerHTML = html;
-  document.getElementById("output").classList.add('show');
 }
 
-document.querySelectorAll('input').forEach(input => {
-  input.addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') {
-      calculate();
+// Initialize particles based on screen size
+for (let i = 0; i < Math.min(70, Math.floor((window.innerWidth*window.innerHeight)/20000)); i++) {
+  particles.push(new Particle());
+}
+
+function drawCanvas() {
+  ctx.clearRect(0, 0, W, H);
+  for (let i = 0; i < particles.length; i++) {
+    for (let j = i + 1; j < particles.length; j++) {
+      const dx = particles[i].x - particles[j].x;
+      const dy = particles[i].y - particles[j].y;
+      const d = Math.sqrt(dx*dx + dy*dy);
+      if (d < 110) {
+        ctx.beginPath();
+        ctx.moveTo(particles[i].x, particles[i].y);
+        ctx.lineTo(particles[j].x, particles[j].y);
+        ctx.strokeStyle = `rgba(0,210,255,${0.07 * (1 - d/110)})`;
+        ctx.lineWidth = 0.5;
+        ctx.stroke();
+      }
     }
-  });
+    particles[i].draw();
+    particles[i].update();
+  }
+  animationId = requestAnimationFrame(drawCanvas);
+}
+drawCanvas();
+
+// ===== INTERSECTION OBSERVERS =====
+document.addEventListener('DOMContentLoaded', function() {
+  // Counter Animation
+  const counters = document.querySelectorAll('[data-target]');
+  const counterObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      const el = entry.target;
+      const target = +el.dataset.target;
+      const suffix = el.dataset.suffix || '';
+      const duration = 2000;
+      const start = performance.now();
+      
+      function updateCounter(currentTime) {
+        const progress = Math.min((currentTime - start) / duration, 1);
+        const ease = 1 - Math.pow(1 - progress, 3);
+        const current = Math.floor(ease * target);
+        el.textContent = current + suffix;
+        if (progress < 1) requestAnimationFrame(updateCounter);
+      }
+      requestAnimationFrame(updateCounter);
+      counterObserver.unobserve(el);
+    });
+  }, { threshold: 0.5 });
+  counters.forEach(c => counterObserver.observe(c));
+
+  // Reveal Animations
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.rv').forEach(el => revealObserver.observe(el));
+
+  // Lazy Load Videos
+  const videoObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const iframe = entry.target.querySelector('iframe[data-src]');
+        if (iframe && iframe.dataset.src) {
+          iframe.src = iframe.dataset.src;
+          iframe.removeAttribute('data-src');
+        }
+        videoObserver.unobserve(entry.target);
+      }
+    });
+  }, { rootMargin: '100px', threshold: 0.2 });
+  document.querySelectorAll('.vc, .sr-wrap').forEach(el => videoObserver.observe(el));
+});
+
+// ===== CLEANUP ON UNLOAD =====
+window.addEventListener('beforeunload', () => {
+  cancelAnimationFrame(animationId);
 });
 </script>
+
 </body>
 </html>
