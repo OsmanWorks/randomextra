@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chaajao Technologies – Salary Calculator</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --red:#B31312;--red-glow:rgba(179,19,18,0.3);
+  --purple:#37306B;--bg:#0e0e14;--panel:#13131c;
+  --border:rgba(255,255,255,0.07);--text:rgba(255,255,255,0.85);
+  --muted:rgba(255,255,255,0.35);--dim:rgba(255,255,255,0.08);
+}
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+.layout{display:flex;min-height:100vh}
+.sidebar{width:248px;flex-shrink:0;background:var(--panel);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:28px 20px;position:relative;overflow:hidden}
+.sidebar::before{content:'';position:absolute;bottom:-60px;left:-60px;width:220px;height:220px;background:radial-gradient(circle,rgba(179,19,18,0.06),transparent 70%);pointer-events:none}
+.logo-area{position:relative;z-index:1;margin-bottom:32px}
+.logo-area h1{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:0.06em;color:white;line-height:1.1}
+.logo-area p{font-size:0.68rem;color:var(--muted);margin-top:5px}
+.nav-label{font-size:0.62rem;font-weight:700;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.14em;margin-bottom:8px;position:relative;z-index:1}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 13px;border-radius:10px;font-size:0.83rem;font-weight:500;color:var(--muted);cursor:pointer;transition:all 0.2s;margin-bottom:3px;position:relative;z-index:1;border:1px solid transparent}
+.nav-item.active{background:linear-gradient(135deg,rgba(179,19,18,0.18),rgba(55,48,107,0.18));border-color:rgba(179,19,18,0.25);color:white}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--red);box-shadow:0 0 8px var(--red);flex-shrink:0}
+.nav-item.active .dot{animation:pulse 1.8s ease-in-out infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 4px var(--red)}50%{box-shadow:0 0 10px var(--red)}}
+.inactive-dot{width:7px;height:7px;border-radius:50%;background:var(--border);flex-shrink:0;display:inline-block}
+.sidebar-footer{margin-top:auto;position:relative;z-index:1;padding-top:18px;border-top:1px solid var(--border);font-size:0.68rem;color:var(--muted);line-height:1.6}
+.sidebar-footer strong{color:rgba(255,255,255,0.5)}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.topbar{height:60px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 28px;background:var(--panel);flex-shrink:0}
+.topbar-title{font-family:'Bebas Neue',sans-serif;font-size:1.35rem;letter-spacing:0.08em;color:white}
+.topbar-badge{background:linear-gradient(135deg,var(--red),var(--purple));color:white;font-size:0.7rem;font-weight:600;padding:5px 14px;border-radius:100px;letter-spacing:0.06em}
+.tab-nav{display:flex;border-bottom:1px solid var(--border);background:var(--panel);padding:0 28px;flex-shrink:0}
+.tab-btn{padding:13px 20px;font-family:'Outfit',sans-serif;font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);background:none;border:none;cursor:pointer;border-bottom:2px solid transparent;transition:all 0.2s}
+.tab-btn.active{color:white;border-bottom-color:var(--red)}
+.tab-btn:hover{color:rgba(255,255,255,0.7)}
+.tab-page{display:none;padding:22px 28px;overflow-y:auto;flex:1}
+.tab-page.active{display:block}
+.panel{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:22px;position:relative;overflow:hidden;margin-bottom:16px;animation:panelIn 0.4s ease forwards;opacity:0;transform:translateY(12px)}
+@keyframes panelIn{to{opacity:1;transform:translateY(0)}}
+.panel-accent{position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--red),var(--purple))}
+.panel-title{font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:rgba(255,255,255,0.6);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.panel-title::before{content:'';width:12px;height:2px;background:var(--red);border-radius:2px;display:inline-block}
+
+/* UPLOAD */
+.upload-zone{border:2px dashed rgba(179,19,18,0.35);border-radius:12px;padding:32px 20px;text-align:center;cursor:pointer;transition:all 0.3s;background:rgba(179,19,18,0.04);position:relative}
+.upload-zone:hover,.upload-zone.drag{border-color:var(--red);background:rgba(179,19,18,0.09)}
+.upload-zone input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.upload-icon{font-size:2rem;margin-bottom:8px}
+.upload-title{font-size:0.95rem;font-weight:700;color:white;margin-bottom:5px}
+.upload-sub{font-size:0.73rem;color:var(--muted)}
+.upload-sub span{color:rgba(255,120,120,0.9);font-weight:600}
+
+/* SHIFT PILLS */
+.shift-row{display:flex;gap:10px;margin-bottom:18px}
+.shift-pill{flex:1;padding:11px;border-radius:10px;border:1px solid var(--border);background:var(--dim);color:var(--muted);font-family:'Outfit',sans-serif;font-size:0.82rem;font-weight:600;cursor:pointer;transition:all 0.2s;text-align:center}
+.shift-pill.active{background:linear-gradient(135deg,rgba(179,19,18,0.2),rgba(55,48,107,0.2));border-color:rgba(179,19,18,0.4);color:white}
+.shift-pill .st{font-size:0.65rem;color:var(--muted);margin-top:3px}
+.shift-pill.active .st{color:rgba(255,255,255,0.45)}
+
+/* TABLE */
+.tbl-wrap{overflow-x:auto;border-radius:10px;border:1px solid var(--border)}
+.att-tbl{width:100%;border-collapse:collapse;font-size:0.79rem}
+.att-tbl th{background:rgba(179,19,18,0.1);color:rgba(255,255,255,0.5);font-size:0.61rem;font-weight:700;text-transform:uppercase;letter-spacing:0.09em;padding:9px 10px;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap}
+.att-tbl td{padding:7px 10px;border-bottom:1px solid rgba(255,255,255,0.03);vertical-align:middle;white-space:nowrap}
+.att-tbl tr:last-child td{border-bottom:none}
+.att-tbl tr:hover td{background:rgba(255,255,255,0.015)}
+.att-tbl tr.is-hol td{opacity:0.4}
+.badge{display:inline-block;font-size:0.68rem;font-weight:700;padding:2px 8px;border-radius:5px}
+.b-late{color:#f87171;background:rgba(248,113,113,0.1)}
+.b-ot{color:#4ade80;background:rgba(74,222,128,0.1)}
+.b-ok{color:#4ade80}
+.b-abs{color:rgba(255,255,255,0.25)}
+.b-hol{color:#a78bfa;background:rgba(167,139,250,0.1)}
+.b-warn{color:#fbbf24;background:rgba(251,191,36,0.1)}
+
+/* SUMMARY */
+.sum-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.sum-card{flex:1;min-width:110px;background:var(--dim);border:1px solid var(--border);border-radius:11px;padding:12px 14px}
+.sc-lbl{font-size:0.6rem;font-weight:700;text-transform:uppercase;letter-spacing:0.09em;color:rgba(255,255,255,0.4);margin-bottom:5px;line-height:1.4}
+.sc-val{font-family:'Bebas Neue',sans-serif;font-size:1.25rem;letter-spacing:0.04em}
+.sc-val.red{color:#f87171}.sc-val.green{color:#4ade80}.sc-val.purple{color:#a78bfa}.sc-val.white{color:white}
+.send-btn{width:100%;margin-top:16px;padding:13px;background:linear-gradient(135deg,var(--red),var(--purple));color:white;border:none;border-radius:11px;font-family:'Outfit',sans-serif;font-size:0.88rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;cursor:pointer;transition:all 0.25s;box-shadow:0 4px 14px rgba(179,19,18,0.2)}
+.send-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(179,19,18,0.28)}
+
+/* SALARY PAGE */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.field{margin-bottom:15px}
+.field:last-of-type{margin-bottom:0}
+.field label{display:block;font-size:0.72rem;font-weight:600;color:rgba(255,255,255,0.7);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:7px}
+.irow{display:flex;align-items:center;background:var(--dim);border:1px solid var(--border);border-radius:9px;overflow:hidden;transition:border-color 0.2s,box-shadow 0.2s}
+.irow:focus-within{border-color:rgba(179,19,18,0.5);box-shadow:0 0 0 3px rgba(179,19,18,0.1)}
+.itag{padding:0 13px;font-size:0.72rem;font-weight:700;color:rgba(255,120,120,0.95);background:rgba(179,19,18,0.15);border-right:1px solid var(--border);height:43px;display:flex;align-items:center;white-space:nowrap;flex-shrink:0}
+.irow input{flex:1;background:transparent;border:none;outline:none;padding:0 13px;height:43px;font-family:'Outfit',sans-serif;font-size:0.92rem;font-weight:500;color:white}
+.irow input::placeholder{color:rgba(255,255,255,0.1);font-weight:300}
+.auto-tag{font-size:0.62rem;color:rgba(74,222,128,0.7);margin-top:4px;display:none}
+.calc-btn{width:100%;margin-top:18px;padding:13px;background:linear-gradient(135deg,var(--red),var(--purple));color:white;border:none;border-radius:11px;font-family:'Outfit',sans-serif;font-size:0.88rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;cursor:pointer;transition:all 0.25s;box-shadow:0 4px 14px rgba(179,19,18,0.2)}
+.calc-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(179,19,18,0.28)}
+.sgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stat{background:var(--dim);border:1px solid var(--border);border-radius:11px;padding:14px;transition:border-color 0.2s}
+.stat:hover{border-color:rgba(179,19,18,0.3)}
+.s-lbl{font-size:0.62rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:rgba(255,255,255,0.5);margin-bottom:5px}
+.s-val{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:0.04em;color:white}
+.s-val.red{color:#f87171}.s-val.green{color:#4ade80}.s-val.purple{color:#a78bfa}
+.s-val.ph{color:rgba(255,255,255,0.15);font-family:'Outfit',sans-serif;font-size:0.82rem}
+.net-panel{display:none}
+.net-panel.show{display:block;animation:panelIn 0.4s ease forwards;opacity:0}
+.net-inner{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px}
+.net-lbl{font-size:0.7rem;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.5)}
+.net-amt{font-family:'Bebas Neue',sans-serif;font-size:clamp(1.8rem,4vw,2.6rem);letter-spacing:0.04em;color:white;line-height:1;margin-top:3px}
+.net-badge{padding:7px 18px;border-radius:100px;font-size:0.78rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase}
+.net-badge.up{background:rgba(74,222,128,0.12);border:1px solid rgba(74,222,128,0.3);color:#4ade80}
+.net-badge.down{background:rgba(248,113,113,0.12);border:1px solid rgba(248,113,113,0.3);color:#f87171}
+.disc-strip{margin-top:14px;padding:10px 14px;background:rgba(179,19,18,0.06);border:1px solid rgba(179,19,18,0.18);border-radius:9px;font-size:0.72rem;color:rgba(255,255,255,0.3);line-height:1.5}
+.alert-bar{display:none;margin-bottom:14px;padding:11px 15px;border-radius:9px;font-size:0.75rem;font-weight:500;align-items:center;gap:10px}
+.alert-bar.green{background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.25);color:rgba(74,222,128,0.9)}
+.alert-bar.yellow{background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.25);color:rgba(251,191,36,0.9)}
+.alert-bar.show{display:flex}
+.note-box{background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.2);border-radius:10px;padding:11px 14px;font-size:0.73rem;color:rgba(251,191,36,0.85);line-height:1.6;margin-bottom:16px}
+.note-box strong{color:rgba(251,191,36,1)}
+.parse-overlay{display:none;position:fixed;inset:0;background:rgba(8,9,15,0.88);z-index:999;align-items:center;justify-content:center;flex-direction:column;gap:16px}
+.parse-overlay.show{display:flex}
+.parse-spin{width:44px;height:44px;border:3px solid var(--border);border-top-color:var(--red);border-radius:50%;animation:spin 0.8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.parse-txt{font-size:0.88rem;color:rgba(255,255,255,0.55);font-weight:500}
+
+@media(max-width:900px){.sidebar{display:none}.tab-page{padding:14px}.two-col{grid-template-columns:1fr}.topbar,.tab-nav{padding:0 14px}}
+</style>
+</head>
+<body>
+
+<div class="parse-overlay" id="parse-overlay">
+  <div class="parse-spin"></div>
+  <div class="parse-txt">PDF parse ho raha hai...</div>
+</div>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="logo-area">
+      <h1>CHAAJAO<br>TECHNOLOGIES</h1>
+      <p>HR Salary System</p>
+    </div>
+    <div class="nav-label">Navigation</div>
+    <div class="nav-item active" onclick="switchTab('attendance')">
+      <span class="dot"></span> Attendance Log
+    </div>
+    <div class="nav-item" onclick="switchTab('salary')">
+      <span class="inactive-dot"></span> Salary Calculator
+    </div>
+    <div class="sidebar-footer">
+      <strong>v3.0</strong> · Internal Use Only<br>
+      © 2025 Chaajao Technologies<br><br>
+      <strong>Salary Period:</strong> 26 → 25<br>
+      <strong>Basis:</strong> Hamesha 30 days<br>
+      <strong>Late Grace:</strong> 60 min free<br>
+      <strong>OT Rule:</strong> 60+ min/day valid
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-title" id="topbar-title">Attendance Log</div>
+      <div class="topbar-badge">26 → 25 Cycle · 30-Day Basis</div>
+    </div>
+    <div class="tab-nav">
+      <button class="tab-btn active" onclick="switchTab('attendance')" id="tab-att">📋 Attendance Log</button>
+      <button class="tab-btn" onclick="switchTab('salary')" id="tab-sal">💰 Salary Calculator</button>
+    </div>
+
+    <!-- TAB 1: ATTENDANCE -->
+    <div class="tab-page active" id="page-attendance">
+
+      <div class="panel" style="animation-delay:0.05s">
+        <div class="panel-accent"></div>
+        <div class="panel-title">PDF Upload Karo</div>
+        <div class="note-box">
+          <strong>📧 Email se attendance PDF download karo</strong> aur yahan upload karo — system khud saari timings read karega, late minutes aur OT automatically calculate ho jayenge. Koi manual entry nahi!
+        </div>
+        <div class="upload-zone" id="upload-zone">
+          <input type="file" id="pdf-input" accept=".pdf" onchange="handlePDF(this)">
+          <div class="upload-icon">📄</div>
+          <div class="upload-title">PDF Yahan Drop Karo ya Click Karo</div>
+          <div class="upload-sub">Sirf <span>Attendance PDF</span> · Email wali file</div>
+        </div>
+      </div>
+
+      <div class="panel" id="data-panel" style="display:none;animation-delay:0.1s">
+        <div class="panel-accent"></div>
+        <div class="panel-title">Attendance Data</div>
+
+        <div class="alert-bar green" id="parse-success"></div>
+        <div class="alert-bar yellow" id="parse-warn"></div>
+
+        <div class="note-box">
+          <strong>⚠️ Apni shift select karo:</strong> PDF mein shift info nahi hoti — confirm karo aur sahi shift select karo.
+        </div>
+
+        <div class="shift-row">
+          <div class="shift-pill active" id="pillA" onclick="selectShift('A')">
+            🌅 Shift A
+            <div class="st">9:00 AM – 6:00 PM</div>
+          </div>
+          <div class="shift-pill" id="pillB" onclick="selectShift('B')">
+            🌆 Shift B
+            <div class="st">10:00 AM – 7:00 PM</div>
+          </div>
+        </div>
+
+        <div class="tbl-wrap">
+          <table class="att-tbl">
+            <thead>
+              <tr>
+                <th>#</th><th>Date</th><th>Day</th><th>Type</th>
+                <th>Check-In</th><th>Check-Out</th><th>Status</th>
+                <th>Late Min</th><th>Raw OT</th><th>Valid OT</th>
+              </tr>
+            </thead>
+            <tbody id="att-body"></tbody>
+          </table>
+        </div>
+
+        <div class="sum-row">
+          <div class="sum-card"><div class="sc-lbl">Period</div><div class="sc-val purple" id="sum-period">—</div></div>
+          <div class="sum-card"><div class="sc-lbl">Working Days</div><div class="sc-val white" id="sum-wdays">—</div></div>
+          <div class="sum-card"><div class="sc-lbl">Present</div><div class="sc-val green" id="sum-present">—</div></div>
+          <div class="sum-card"><div class="sc-lbl">Absent / Leave</div><div class="sc-val red" id="sum-absent">—</div></div>
+          <div class="sum-card"><div class="sc-lbl">Total Late Min</div><div class="sc-val red" id="sum-late">—</div></div>
+          <div class="sum-card">
+            <div class="sc-lbl">Valid OT Min<br><span style="font-size:0.55rem;font-family:'Outfit',sans-serif;font-weight:400;color:rgba(255,255,255,0.3)">(60-min rule applied)</span></div>
+            <div class="sc-val green" id="sum-ot">—</div>
+          </div>
+        </div>
+
+        <button class="send-btn" onclick="sendToSalary()">✅ Salary Calculator mein bhejo →</button>
+      </div>
+    </div>
+
+    <!-- TAB 2: SALARY -->
+    <div class="tab-page" id="page-salary">
+
+      <div class="alert-bar green" id="autofill-alert">
+        ✅ <span>Attendance se data auto-fill ho gaya! Sirf gross salary enter karo.</span>
+      </div>
+
+      <div class="two-col">
+        <div class="panel" style="animation-delay:0.05s">
+          <div class="panel-accent"></div>
+          <div class="panel-title">Details Enter Karo</div>
+
+          <div class="field">
+            <label>Monthly Gross Salary</label>
+            <div class="irow">
+              <span class="itag">PKR ₨</span>
+              <input type="number" id="gross" placeholder="e.g. 50000" min="0">
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Total Late Minutes</label>
+            <div class="irow">
+              <span class="itag">MIN</span>
+              <input type="number" id="lateMin" placeholder="e.g. 75" min="0">
+            </div>
+            <div class="auto-tag" id="late-auto">⚡ Auto-filled from PDF</div>
+          </div>
+
+          <div class="field">
+            <label>Valid OT Minutes <small style="font-size:0.6rem;color:var(--muted);text-transform:none;letter-spacing:0">(60-min rule applied)</small></label>
+            <div class="irow">
+              <span class="itag">MIN</span>
+              <input type="number" id="otMin" placeholder="e.g. 120" min="0">
+            </div>
+            <div class="auto-tag" id="ot-auto">⚡ Auto-filled from PDF</div>
+          </div>
+
+          <button class="calc-btn" onclick="calculate()">Calculate Net Salary</button>
+        </div>
+
+        <div class="panel" style="animation-delay:0.12s">
+          <div class="panel-accent"></div>
+          <div class="panel-title">Breakdown</div>
+          <div class="sgrid">
+            <div class="stat"><div class="s-lbl">Daily Rate</div><div class="s-val ph" id="r-daily">—</div></div>
+            <div class="stat"><div class="s-lbl">Hourly Rate</div><div class="s-val ph" id="r-hourly">—</div></div>
+            <div class="stat"><div class="s-lbl">Per Minute Rate</div><div class="s-val ph" id="r-permin">—</div></div>
+            <div class="stat"><div class="s-lbl">Chargeable Late</div><div class="s-val ph" id="r-clate">—</div></div>
+            <div class="stat"><div class="s-lbl">Late Deduction</div><div class="s-val ph" id="r-deduct">—</div></div>
+            <div class="stat"><div class="s-lbl">OT Pay</div><div class="s-val ph" id="r-ot">—</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel net-panel" id="net-panel">
+        <div class="panel-accent"></div>
+        <div class="net-inner">
+          <div>
+            <div class="net-lbl">Final Net Salary</div>
+            <div class="net-amt" id="r-net">PKR 0</div>
+          </div>
+          <div class="net-badge up" id="r-badge">—</div>
+        </div>
+        <div class="disc-strip">
+          ⚠️ Official Chaajao Technologies policy · Salary period 26–25 · Hamesha 30-day basis · 9-hour workday · Pehle 60 min late free · OT sirf 60+ min wale din valid
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+  'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+var currentShift = 'A';
+var SHIFTS = {
+  A:{ sH:9,  sM:0,  eH:18, eM:0 },
+  B:{ sH:10, sM:0,  eH:19, eM:0 }
+};
+var parsedRows = [];
+
+/* ── TAB SWITCH ── */
+function switchTab(t){
+  document.getElementById('page-attendance').classList.toggle('active', t==='attendance');
+  document.getElementById('page-salary').classList.toggle('active', t==='salary');
+  document.getElementById('tab-att').classList.toggle('active', t==='attendance');
+  document.getElementById('tab-sal').classList.toggle('active', t==='salary');
+  document.getElementById('topbar-title').textContent = t==='attendance'?'Attendance Log':'Salary Calculator';
+  var navs = document.querySelectorAll('.nav-item');
+  navs[0].classList.toggle('active', t==='attendance');
+  navs[1].classList.toggle('active', t==='salary');
+}
+
+/* ── SHIFT ── */
+function selectShift(s){
+  currentShift=s;
+  document.getElementById('pillA').classList.toggle('active',s==='A');
+  document.getElementById('pillB').classList.toggle('active',s==='B');
+  if(parsedRows.length) renderTable();
+}
+
+/* ── DRAG DROP ── */
+var uz=document.getElementById('upload-zone');
+uz.addEventListener('dragover',function(e){e.preventDefault();uz.classList.add('drag')});
+uz.addEventListener('dragleave',function(){uz.classList.remove('drag')});
+uz.addEventListener('drop',function(e){
+  e.preventDefault();uz.classList.remove('drag');
+  var f=e.dataTransfer.files[0];
+  if(f&&f.type==='application/pdf') processPDF(f);
+});
+function handlePDF(inp){if(inp.files[0]) processPDF(inp.files[0]);}
+
+/* ── PDF PROCESS ── */
+function processPDF(file){
+  document.getElementById('parse-overlay').classList.add('show');
+  var reader=new FileReader();
+  reader.onload=function(e){
+    var arr=new Uint8Array(e.target.result);
+    pdfjsLib.getDocument({data:arr}).promise.then(function(pdf){
+      var txt='';
+      var ps=[];
+      for(var i=1;i<=pdf.numPages;i++) ps.push(i);
+      var chain=Promise.resolve();
+      ps.forEach(function(pn){
+        chain=chain.then(function(){
+          return pdf.getPage(pn).then(function(pg){
+            return pg.getTextContent().then(function(tc){
+              // preserve position info for better parsing
+              var items=tc.items.slice().sort(function(a,b){
+                var ay=Math.round(a.transform[5]/5)*5;
+                var by=Math.round(b.transform[5]/5)*5;
+                if(ay!==by) return by-ay; // top to bottom
+                return a.transform[4]-b.transform[4]; // left to right
+              });
+              var lastY=null;
+              items.forEach(function(it){
+                var y=Math.round(it.transform[5]/5)*5;
+                if(lastY!==null && Math.abs(y-lastY)>3) txt+='\n';
+                txt+=it.str+' ';
+                lastY=y;
+              });
+              txt+='\n';
+            });
+          });
+        });
+      });
+      chain.then(function(){
+        document.getElementById('parse-overlay').classList.remove('show');
+        parsePDF(txt);
+      });
+    }).catch(function(err){
+      document.getElementById('parse-overlay').classList.remove('show');
+      alert('PDF read nahi ho saka: '+err.message);
+    });
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+/* ── PARSE ── */
+function parsePDF(text){
+  parsedRows=[];
+  var lines=text.split('\n');
+  var MONTHS={jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10,dec:11};
+  var DAY_NAMES=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+
+  // Regex to find date like "26-Jan-26" or "01-Feb-26"
+  var dateRe=/\b(\d{1,2})[-\/]([A-Za-z]{3})[-\/](\d{2,4})\b/;
+  var timeRe=/\b([01]?\d|2[0-3]):([0-5]\d)\b/g;
+
+  // Try to group lines by date occurrence
+  // Strategy: for each line, check if it contains a date
+  // Then gather context from same and adjacent lines
+
+  // First pass: collect all date positions
+  var allText=text;
+  var bigRe=/\b(\d{1,2})[-\/]([A-Za-z]{3})[-\/](\d{2,4})\b/g;
+  var match;
+  var segments=[];
+  var lastIdx=0;
+
+  while((match=bigRe.exec(allText))!==null){
+    if(segments.length>0){
+      segments[segments.length-1].seg=allText.slice(segments[segments.length-1].pos, match.index);
+    }
+    var d=parseInt(match[1]);
+    var mKey=match[2].toLowerCase().slice(0,3);
+    var mNum=MONTHS[mKey];
+    var y=parseInt(match[3]);
+    if(y<100) y+=2000;
+    var dateObj=new Date(y,mNum,d);
+    var dayName=DAY_NAMES[dateObj.getDay()];
+    segments.push({
+      date:match[0], d:d, m:mNum, y:y, dayName:dayName,
+      pos:match.index, seg:''
+    });
+  }
+  if(segments.length>0){
+    segments[segments.length-1].seg=allText.slice(segments[segments.length-1].pos);
+  }
+
+  segments.forEach(function(s){
+    var seg=s.seg;
+    var row={
+      date:s.date, day:s.dayName, d:s.d, m:s.m, y:s.y,
+      type:'Working Day', cin:null, cout:null,
+      absent:false, holiday:false, remark:''
+    };
+
+    // Detect type
+    if(/holiday/i.test(seg) && !/working day/i.test(seg)) row.holiday=true;
+    if(/working\s*day/i.test(seg)) row.type='Working Day';
+    if(/\bholiday\b/i.test(seg) && !/working/i.test(seg)){ row.type='Holiday'; row.holiday=true; }
+
+    // Detect absent reasons
+    if(/\bleave\b/i.test(seg)){
+      row.absent=true;
+      row.remark='Leave';
+    }
+    if(/public\s*holiday/i.test(seg)){
+      row.absent=true;
+      row.type='Holiday';
+      row.holiday=true;
+      // Get remark after "public holiday"
+      var rem=seg.match(/public\s*holiday\s*([A-Za-z\s]{2,25})/i);
+      row.remark=rem?'Public Holiday: '+rem[1].trim():'Public Holiday';
+    }
+    if(/\bAbsent\b/.test(seg) && !row.holiday) row.absent=true;
+
+    // Extract times
+    var times=[];
+    var tm;
+    timeRe.lastIndex=0;
+    while((tm=timeRe.exec(seg))!==null){
+      // skip if looks like a date year e.g. 20:26
+      times.push(tm[0]);
+    }
+    if(times.length>=2){ row.cin=times[0]; row.cout=times[1]; }
+    else if(times.length===1){ row.cin=times[0]; }
+
+    // Sunday = holiday
+    if(s.dayName==='Sunday' && row.type==='Holiday') row.holiday=true;
+
+    parsedRows.push(row);
+  });
+
+  if(!parsedRows.length){
+    alert('PDF mein attendance data nahi mila. Check karo ke sahi Chaajao attendance PDF hai.');
+    return;
+  }
+
+  renderTable();
+
+  // Show panel
+  var dp=document.getElementById('data-panel');
+  dp.style.display='block';
+  dp.style.animation='none'; void dp.offsetWidth; dp.style.animation='';
+
+  var ps=document.getElementById('parse-success');
+  ps.textContent='✅ '+parsedRows.length+' rows parse ho gayi! Shift confirm karo phir salary calculator mein bhejo.';
+  ps.classList.add('show');
+}
+
+/* ── RENDER TABLE ── */
+function toMin(t){
+  if(!t) return null;
+  var p=t.split(':');
+  return parseInt(p[0])*60+parseInt(p[1]);
+}
+
+function renderTable(){
+  var sh=SHIFTS[currentShift];
+  var sIn=sh.sH*60+sh.sM;
+  var sOut=sh.eH*60+sh.eM;
+  var tbody=document.getElementById('att-body');
+  tbody.innerHTML='';
+
+  var totLate=0,totValidOT=0,wDays=0,present=0,absent=0;
+  var warnings=[];
+
+  parsedRows.forEach(function(row,idx){
+    var tr=document.createElement('tr');
+    var late=0,rawOT=0,validOT=0;
+    var statusHtml='';
+    var isWork=!row.holiday;
+
+    if(row.holiday){
+      tr.classList.add('is-hol');
+      statusHtml='<span class="badge b-hol">'+(row.remark||'Holiday')+'</span>';
+    } else if(row.absent){
+      statusHtml='<span class="badge b-abs">'+(row.remark||'Absent')+'</span>';
+      wDays++; absent++;
+    } else if(!row.cin||!row.cout){
+      statusHtml='<span class="badge b-warn">Data Missing</span>';
+      warnings.push(row.date);
+      if(isWork) wDays++;
+    } else {
+      var aIn=toMin(row.cin), aOut=toMin(row.cout);
+      late=Math.max(0,aIn-sIn);
+      rawOT=Math.max(0,aOut-sOut);
+      validOT=rawOT>=60?rawOT:0;
+      if(isWork){ wDays++; present++; totLate+=late; totValidOT+=validOT; }
+      var parts=[];
+      if(late>0) parts.push('<span class="badge b-late">Late '+late+' min</span>');
+      if(rawOT>0&&validOT===0) parts.push('<span class="badge b-warn">OT &lt;60 (ignored)</span>');
+      if(validOT>0) parts.push('<span class="badge b-ot">OT '+validOT+' min</span>');
+      if(!parts.length) parts.push('<span class="badge b-ok">✓ OK</span>');
+      statusHtml=parts.join(' ');
+    }
+
+    var cinColor=row.cin?'white':'rgba(255,255,255,0.2)';
+    var coutColor=row.cout?'white':'rgba(255,255,255,0.2)';
+
+    tr.innerHTML=
+      '<td style="color:rgba(255,255,255,0.3);font-size:0.72rem">'+(idx+1)+'</td>'+
+      '<td style="font-weight:600;color:rgba(255,255,255,0.85);font-size:0.8rem">'+row.date+'</td>'+
+      '<td style="color:'+(row.day==='Sunday'?'#f87171':'var(--muted)')+';font-size:0.75rem">'+row.day+'</td>'+
+      '<td><span class="badge '+(row.holiday?'b-hol':'b-ok')+'" style="font-size:0.62rem;background:transparent">'+row.type+'</span></td>'+
+      '<td style="font-weight:600;color:'+cinColor+'">'+(row.cin||'—')+'</td>'+
+      '<td style="font-weight:600;color:'+coutColor+'">'+(row.cout||'—')+'</td>'+
+      '<td>'+statusHtml+'</td>'+
+      '<td>'+(late>0?'<span class="badge b-late">'+late+'</span>':'<span style="color:rgba(255,255,255,0.15)">0</span>')+'</td>'+
+      '<td>'+(rawOT>0?'<span style="color:#fbbf24;font-weight:600;font-size:0.8rem">'+rawOT+'</span>':'<span style="color:rgba(255,255,255,0.15)">0</span>')+'</td>'+
+      '<td>'+(validOT>0?'<span class="badge b-ot">'+validOT+'</span>':'<span style="color:rgba(255,255,255,0.15)">0</span>')+'</td>';
+
+    tbody.appendChild(tr);
+  });
+
+  // Summary
+  document.getElementById('sum-wdays').textContent=wDays;
+  document.getElementById('sum-present').textContent=present;
+  document.getElementById('sum-absent').textContent=absent;
+  document.getElementById('sum-late').textContent=totLate+' min';
+  document.getElementById('sum-ot').textContent=totValidOT+' min';
+
+  if(parsedRows.length){
+    document.getElementById('sum-period').textContent=parsedRows[0].date+' → '+parsedRows[parsedRows.length-1].date;
+  }
+
+  // Warnings
+  var wb=document.getElementById('parse-warn');
+  if(warnings.length){
+    wb.textContent='⚠️ '+warnings.length+' din ka time nahi mila ('+warnings.slice(0,3).join(', ')+(warnings.length>3?'...':'')+') — manually check karo.';
+    wb.classList.add('show');
+  } else { wb.classList.remove('show'); }
+
+  window._calcData={late:totLate, ot:totValidOT};
+}
+
+/* ── SEND TO SALARY ── */
+function sendToSalary(){
+  if(!window._calcData){alert('Pehle PDF upload karo.');return;}
+  document.getElementById('lateMin').value=window._calcData.late;
+  document.getElementById('otMin').value=window._calcData.ot;
+  document.getElementById('late-auto').style.display='block';
+  document.getElementById('ot-auto').style.display='block';
+  var a=document.getElementById('autofill-alert');
+  a.classList.add('show');
+  setTimeout(function(){a.classList.remove('show');},4000);
+  switchTab('salary');
+}
+
+/* ── SALARY CALC ── */
+function fmt(n,d){
+  d=d===undefined?2:d;
+  return 'PKR '+parseFloat(n).toLocaleString('en-PK',{minimumFractionDigits:d,maximumFractionDigits:d});
+}
+function calculate(){
+  var gross=parseFloat(document.getElementById('gross').value)||0;
+  var lateMin=parseFloat(document.getElementById('lateMin').value)||0;
+  var otMin=parseFloat(document.getElementById('otMin').value)||0;
+  if(gross<=0){alert('Gross salary enter karo.');return;}
+  var daily=gross/30;
+  var hourly=daily/9;
+  var perMin=hourly/60;
+  var chargeLate=lateMin>60?lateMin-60:0;
+  var lateDeduct=chargeLate*perMin;
+  var otPay=(otMin/60)*hourly;
+  var net=gross+otPay-lateDeduct;
+  function sv(id,txt,cls){var el=document.getElementById(id);el.textContent=txt;el.className='s-val '+(cls||'');}
+  sv('r-daily', fmt(daily),            'purple');
+  sv('r-hourly',fmt(hourly),           'purple');
+  sv('r-permin',fmt(perMin,4),         '');
+  sv('r-clate', chargeLate+' min',     chargeLate>0?'red':'green');
+  sv('r-deduct','− '+fmt(lateDeduct),  'red');
+  sv('r-ot',    '+ '+fmt(otPay),       'green');
+  document.getElementById('r-net').textContent=fmt(net);
+  var badge=document.getElementById('r-badge');
+  if(net>=gross){badge.textContent='↑ Net Increase';badge.className='net-badge up';}
+  else{badge.textContent='↓ Net Deduction';badge.className='net-badge down';}
+  var np=document.getElementById('net-panel');
+  np.classList.remove('show');void np.offsetWidth;np.classList.add('show');
+}
+document.addEventListener('keydown',function(e){
+  if(e.key==='Enter'&&document.getElementById('page-salary').classList.contains('active')) calculate();
+});
+</script>
+</body>
+</html>
