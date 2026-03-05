@@ -1065,38 +1065,42 @@ async function ytFetch(url){
 
 async function loadYouTube(){
   const content = eid('yt-content');
-  content.innerHTML = `<div class="yt-loading"><div class="yt-loading-spinner"></div><p>YouTube data load ho rahi hai...</p></div>`;
+  content.innerHTML = '<div class="yt-loading"><div class="yt-loading-spinner"></div><p>YouTube data load ho rahi hai...</p></div>';
   eid('yt-hero').innerHTML = '';
   try {
-    // Channel stats
-    const chData = await ytFetch(`${YT_BASE}/channels?part=statistics,snippet&id=${YT_CHANNEL_ID}&key=${YT_API_KEY}`);
-    if(!chData.items?.length) throw new Error('Channel nahi mila. Channel ID check karein.');
+    // Step 1: Channel stats
+    const chData = await ytFetch(YT_BASE+'/channels?part=statistics,snippet&id='+YT_CHANNEL_ID+'&key='+YT_API_KEY);
+    if(!chData.items||!chData.items.length) throw new Error('Channel nahi mila.');
     const ch = chData.items[0];
-    const stats = ch.statistics;
-    renderYtHero(ch.snippet, stats);
+    renderYtHero(ch.snippet, ch.statistics);
 
-    // Get all videos via search
-    let videos = [], pageToken = '';
-    for(let page=0; page<5; page++){
-      const url = `${YT_BASE}/search?part=id,snippet&channelId=${YT_CHANNEL_ID}&maxResults=50&order=viewCount&type=video&key=${YT_API_KEY}${pageToken?'&pageToken='+pageToken:''}`;
-      const data = await ytFetch(url);
-      const ids = (data.items||[]).filter(i=>i.id?.videoId).map(i=>i.id.videoId);
-      if(!ids.length) break;
-      // Get video stats
-      const vData = await ytFetch(`${YT_BASE}/videos?part=statistics,snippet,contentDetails&id=${ids.join(',')}&key=${YT_API_KEY}`);
-      videos = videos.concat(vData.items||[]);
-      if(!data.nextPageToken) break;
-      pageToken = data.nextPageToken;
+    // Step 2: Get video IDs from uploads playlist (UC -> UU avoids search API CORS)
+    const uploadsPlaylist = 'UU' + YT_CHANNEL_ID.slice(2);
+    let allVideoIds = [], pageToken = '';
+    for(let page=0; page<10; page++){
+      const ptParam = pageToken ? '&pageToken='+pageToken : '';
+      const plData = await ytFetch(YT_BASE+'/playlistItems?part=contentDetails&playlistId='+uploadsPlaylist+'&maxResults=50&key='+YT_API_KEY+ptParam);
+      const ids = (plData.items||[]).map(function(i){return i.contentDetails&&i.contentDetails.videoId;}).filter(Boolean);
+      allVideoIds = allVideoIds.concat(ids);
+      if(!plData.nextPageToken || allVideoIds.length >= 500) break;
+      pageToken = plData.nextPageToken;
     }
-    ytVideos = videos;
+    if(!allVideoIds.length) throw new Error('Koi video nahi mili playlist mein.');
+
+    // Step 3: Get full stats in batches of 50
+    let allVideos = [];
+    for(let i=0; i<allVideoIds.length; i+=50){
+      const batch = allVideoIds.slice(i,i+50).join(',');
+      const vData = await ytFetch(YT_BASE+'/videos?part=statistics,snippet,contentDetails&id='+batch+'&key='+YT_API_KEY);
+      allVideos = allVideos.concat(vData.items||[]);
+    }
+
+    ytVideos = allVideos;
     ytRender();
     buildYtBarChart();
+    showToast('YouTube: '+allVideos.length+' videos load ho gayi!');
   } catch(err){
-    content.innerHTML = `<div class="yt-error">
-      <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
-      <h3>Data load nahi hua</h3>
-      <p>${err.message}</p>
-    </div>`;
+    content.innerHTML = '<div class="yt-error"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg><h3>Data load nahi hua</h3><p style="color:#CC0000;font-size:13px">'+err.message+'</p></div>';
     showToast('YouTube error: '+err.message);
   }
 }
