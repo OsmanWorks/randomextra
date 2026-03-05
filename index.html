@@ -617,16 +617,19 @@ table.yt-dt td.num{text-align:right;font-weight:700;color:var(--ink);}
   <div class="yt-hero" id="yt-hero"></div>
   <div>
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px;">
-      <div><div class="yt-section-title" id="yt-section-title">Top Videos by Views</div><div class="yt-section-sub">Real-time YouTube API se — latest data</div></div>
-      <div style="display:flex;align-items:center;gap:8px;">
-        <div class="view-toggle"><div class="vt-btn active" id="vt-grid" onclick="ytSetView('grid',this)"><svg viewBox="0 0 24 24"><path d="M3 3h7v7H3zm11 0h7v7h-7zM3 14h7v7H3zm11 0h7v7h-7z"/></svg>Grid</div><div class="vt-btn" id="vt-list" onclick="ytSetView('list',this)"><svg viewBox="0 0 24 24"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>List</div></div>
-        <select class="cc-select" id="yt-sort" onchange="ytRender()"><option value="views">Views (High to Low)</option><option value="likes">Likes (High to Low)</option><option value="comments">Comments</option><option value="date">Newest First</option></select>
+      <div>
+        <div class="yt-section-title">Videos — Title &amp; Views</div>
+        <div class="yt-section-sub">Sorted by views — YouTube API se real-time</div>
       </div>
+      <select class="cc-select" id="yt-sort" onchange="ytRender()">
+        <option value="views">Views (High to Low)</option>
+        <option value="date">Newest First</option>
+      </select>
     </div>
     <div id="yt-content"></div>
   </div>
   <div class="chart-card">
-    <div class="cc-head"><div><div class="cc-title">Top 10 Videos — Views Comparison</div><div class="cc-sub">Horizontal bar chart</div></div></div>
+    <div class="cc-head"><div><div class="cc-title">Top 10 Videos — Views</div><div class="cc-sub">Bar chart</div></div></div>
     <div style="height:320px;position:relative;"><canvas id="ytBarChart"></canvas></div>
   </div>
 </div>
@@ -1132,107 +1135,56 @@ function renderYtHero(snippet, stats){
     </div>`;
 }
 
-function ytSetView(v, el){
-  ytView = v;
-  document.querySelectorAll('.vt-btn').forEach(b=>b.classList.remove('active'));
-  el.classList.add('active');
-  ytRender();
-}
+function ytSetView(v,el){}  // removed
 
 function parseDuration(dur){
   if(!dur) return '';
-  const m = dur.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
+  const m=dur.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
   if(!m) return '';
-  const h=parseInt(m[1]||0), mn=parseInt(m[2]||0), s=parseInt(m[3]||0);
-  if(h) return `${h}:${String(mn).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-  return `${mn}:${String(s).padStart(2,'0')}`;
+  const h=parseInt(m[1]||0),mn=parseInt(m[2]||0),s=parseInt(m[3]||0);
+  if(h) return h+':'+String(mn).padStart(2,'0')+':'+String(s).padStart(2,'0');
+  return mn+':'+String(s).padStart(2,'0');
 }
 
 function ytSorted(){
-  const sort = eid('yt-sort').value;
+  const sort=eid('yt-sort').value;
   return [...ytVideos].sort((a,b)=>{
-    if(sort==='views')  return (parseInt(b.statistics?.viewCount||0))-(parseInt(a.statistics?.viewCount||0));
-    if(sort==='likes')  return (parseInt(b.statistics?.likeCount||0))-(parseInt(a.statistics?.likeCount||0));
-    if(sort==='comments') return (parseInt(b.statistics?.commentCount||0))-(parseInt(a.statistics?.commentCount||0));
-    if(sort==='date')   return new Date(b.snippet?.publishedAt)-new Date(a.snippet?.publishedAt);
+    if(sort==='views') return parseInt(b.statistics&&b.statistics.viewCount||0)-parseInt(a.statistics&&a.statistics.viewCount||0);
+    if(sort==='date')  return new Date(b.snippet&&b.snippet.publishedAt)-new Date(a.snippet&&a.snippet.publishedAt);
     return 0;
   });
 }
 
 function ytRender(){
-  const sorted = ytSorted();
-  const title = eid('yt-sort').value === 'date' ? 'Latest Videos' :
-                eid('yt-sort').value === 'likes' ? 'Top Videos by Likes' :
-                eid('yt-sort').value === 'comments' ? 'Top Videos by Comments' : 'Top Videos by Views';
-  eid('yt-section-title').textContent = title;
-  if(ytView==='grid') renderYtGrid(sorted);
-  else renderYtList(sorted);
+  const sorted=ytSorted();
+  renderYtSimple(sorted);
   buildYtBarChart();
 }
 
-function renderYtGrid(videos){
+function renderYtSimple(videos){
   if(!videos.length){eid('yt-content').innerHTML='<p style="color:var(--ink3);padding:20px">Koi video nahi mili.</p>';return;}
-  const html = videos.slice(0,20).map((v,i)=>{
-    const s = v.statistics||{}, sn = v.snippet||{};
-    const thumb = sn.thumbnails?.medium?.url || sn.thumbnails?.default?.url || '';
-    const dur = parseDuration(v.contentDetails?.duration);
-    const views = parseInt(s.viewCount||0);
-    const likes = parseInt(s.likeCount||0);
-    const date = sn.publishedAt ? new Date(sn.publishedAt).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}) : '';
-    return `<div class="yt-card" onclick="window.open('https://youtube.com/watch?v=${v.id}','_blank')">
-      <div class="yt-thumb">
-        ${thumb?`<img src="${thumb}" alt="" loading="lazy">`:`<div class="yt-thumb-placeholder"><svg viewBox="0 0 24 24"><use href="#i-youtube"/></svg></div>`}
-        <div class="yt-rank">#${i+1}</div>
-        ${dur?`<div class="yt-duration">${dur}</div>`:''}
-      </div>
-      <div class="yt-info">
-        <div class="yt-title">${sn.title||'Untitled'}</div>
-        <div class="yt-meta">
-          <span class="yt-views-badge">👁 ${fn(views)}</span>
-          <span class="yt-meta-item"><svg viewBox="0 0 24 24"><path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z"/></svg>${fn(likes)}</span>
-          <span class="yt-meta-item">${date}</span>
-        </div>
-      </div>
-    </div>`;
+  const rows=videos.map(function(v,i){
+    const s=v.statistics||{}, sn=v.snippet||{};
+    const views=parseInt(s.viewCount||0);
+    const date=sn.publishedAt?new Date(sn.publishedAt).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}):'';
+    return '<tr>'
+      +'<td style="width:42px;text-align:center"><div class="yt-rank-badge '+(i<3?'top':'')+'">'+(i+1)+'</div></td>'
+      +'<td style="font-size:13px;font-weight:600;color:var(--ink);padding:10px 14px;line-height:1.4">'+(sn.title||'Untitled')+'</td>'
+      +'<td style="text-align:right;font-weight:700;color:#CC0000;white-space:nowrap;padding:10px 14px">'+fn(views)+'</td>'
+      +'<td style="text-align:right;color:var(--ink3);font-size:11.5px;white-space:nowrap;padding:10px 14px">'+date+'</td>'
+      +'</tr>';
   }).join('');
-  eid('yt-content').innerHTML = `<div class="yt-videos-grid">${html}</div>`;
+  eid('yt-content').innerHTML='<div class="yt-table-card"><table class="yt-dt" style="table-layout:auto">'
+    +'<thead><tr>'
+    +'<th style="width:42px">#</th>'
+    +'<th>Title</th>'
+    +'<th class="num">Views</th>'
+    +'<th class="num">Date</th>'
+    +'</tr></thead>'
+    +'<tbody>'+rows+'</tbody>'
+    +'</table></div>';
 }
 
-function renderYtList(videos){
-  if(!videos.length){eid('yt-content').innerHTML='<p style="color:var(--ink3);padding:20px">Koi video nahi mili.</p>';return;}
-  const rows = videos.slice(0,30).map((v,i)=>{
-    const s = v.statistics||{}, sn = v.snippet||{};
-    const thumb = sn.thumbnails?.default?.url||'';
-    const views = parseInt(s.viewCount||0);
-    const likes = parseInt(s.likeCount||0);
-    const comments = parseInt(s.commentCount||0);
-    const dur = parseDuration(v.contentDetails?.duration);
-    const date = sn.publishedAt ? new Date(sn.publishedAt).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'2-digit'}) : '';
-    return `<tr onclick="window.open('https://youtube.com/watch?v=${v.id}','_blank')" style="cursor:pointer">
-      <td><div class="yt-row-title-cell">
-        <div class="yt-rank-badge ${i<3?'top':''}">${i+1}</div>
-        ${thumb?`<img class="yt-row-thumb" src="${thumb}" alt="" loading="lazy">`:''}
-        <span class="yt-row-title">${sn.title||'Untitled'}</span>
-      </div></td>
-      <td class="num" style="color:#CC0000">${fn(views)}</td>
-      <td class="num">${fn(likes)}</td>
-      <td class="num">${fn(comments)}</td>
-      <td class="num" style="color:var(--ink3)">${dur}</td>
-      <td class="num" style="color:var(--ink3)">${date}</td>
-    </tr>`;
-  }).join('');
-  eid('yt-content').innerHTML = `<div class="yt-table-card"><div style="overflow-x:auto"><table class="yt-dt">
-    <thead><tr>
-      <th>Video</th>
-      <th class="num">Views</th>
-      <th class="num">Likes</th>
-      <th class="num">Comments</th>
-      <th class="num">Duration</th>
-      <th class="num">Date</th>
-    </tr></thead>
-    <tbody>${rows}</tbody>
-  </table></div></div>`;
-}
 
 function buildYtBarChart(){
   const sorted = [...ytVideos].sort((a,b)=>parseInt(b.statistics?.viewCount||0)-parseInt(a.statistics?.viewCount||0)).slice(0,10);
