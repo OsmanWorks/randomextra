@@ -753,7 +753,7 @@ function renderOverview(){
   const tCls=tDiff===null?'neu':tDiff>0?'up':'dn';
 
   let html=`
-  <div class="section-label">Latest Snapshot · ${fd(last.date)}</div>
+  <div class="section-label">Latest Snapshot · ${fd(L.date)}</div>
   <div class="total-card">
     <div class="lbl">TOTAL REACH</div>
     <div class="num">${tot.toLocaleString()}</div>
