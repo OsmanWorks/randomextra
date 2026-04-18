@@ -7,346 +7,224 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Chaajao">
 <meta name="theme-color" content="#0d0d0d">
-<meta name="mobile-web-app-capable" content="yes">
-<link rel="manifest" href="./manifest.json">
-<link rel="apple-touch-icon" href="./icon-192.png">
 <title>Chaajao Analytics</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root {
-  --red:#E63946; --red2:#c1121f; --red-dim:rgba(230,57,70,.12); --red-glow:rgba(230,57,70,.25);
-  --bg:#0d0d0d; --bg2:#141414; --bg3:#1a1a1a; --bg4:#222;
-  --border:rgba(255,255,255,.07); --border2:rgba(255,255,255,.04);
-  --text:#f0f0f0; --text2:#a0a0a0; --muted:#555;
-  --green:#22c55e; --dn:#E63946;
+:root{
+  --red:#E63946;--red2:#c1121f;--red-dim:rgba(230,57,70,.1);--red-glow:rgba(230,57,70,.2);
+  --bg:#0d0d0d;--bg2:#141414;--bg3:#1c1c1c;--bg4:#222;
+  --border:rgba(255,255,255,.08);--border2:rgba(255,255,255,.04);
+  --text:#f5f5f5;--text2:#888;--muted:#444;
+  --green:#22c55e;
   --safe-top:env(safe-area-inset-top,0px);
   --safe-bottom:env(safe-area-inset-bottom,0px);
-  --safe-left:env(safe-area-inset-left,0px);
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-html{font-size:16px;}
 body{
-  font-family:'DM Sans',sans-serif;
+  font-family:'Inter',sans-serif;
   background:var(--bg);color:var(--text);
   min-height:100vh;overflow-x:hidden;
-  padding-bottom:calc(70px + var(--safe-bottom));
-  padding-top:calc(56px + var(--safe-top));
+  padding-bottom:calc(64px + var(--safe-bottom));
+  padding-top:calc(52px + var(--safe-top));
+  font-size:14px;line-height:1.5;
 }
 
-/* ══ TOPBAR ══ */
+/* TOPBAR */
 #topbar{
   position:fixed;top:0;left:0;right:0;z-index:100;
-  height:calc(56px + var(--safe-top));
+  height:calc(52px + var(--safe-top));
   padding-top:var(--safe-top);
-  background:rgba(13,13,13,.92);
-  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  background:rgba(13,13,13,.95);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
   border-bottom:1px solid var(--border);
   display:flex;align-items:center;justify-content:space-between;
   padding-left:16px;padding-right:16px;
 }
-.logo-wrap{display:flex;align-items:center;gap:10px;}
+.logo-wrap{display:flex;align-items:center;gap:9px;}
 .logo-box{
-  width:34px;height:34px;background:var(--red);border-radius:9px;
+  width:30px;height:30px;background:var(--red);border-radius:8px;
   display:flex;align-items:center;justify-content:center;
-  font-family:'Syne',sans-serif;font-size:14px;font-weight:800;color:#fff;
-  box-shadow:0 0 16px var(--red-glow);flex-shrink:0;
+  font-size:12px;font-weight:700;color:#fff;letter-spacing:.3px;flex-shrink:0;
 }
-.logo-text{font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:#fff;letter-spacing:.5px;}
-.logo-sub{font-size:9px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-top:1px;}
-.tb-right{display:flex;align-items:center;gap:8px;}
-.tb-badge{
-  font-size:10px;font-weight:600;color:var(--text2);
-  background:var(--bg3);border:1px solid var(--border);
-  border-radius:20px;padding:4px 10px;white-space:nowrap;
-}
+.logo-name{font-size:14px;font-weight:600;color:#fff;letter-spacing:.2px;}
+.tb-right{display:flex;align-items:center;gap:6px;}
+.tb-date{font-size:11px;color:var(--text2);background:var(--bg3);border:1px solid var(--border);border-radius:20px;padding:3px 9px;display:none;}
 .icon-btn{
-  width:34px;height:34px;border-radius:8px;border:none;
-  background:var(--bg3);color:var(--text2);cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
-  transition:all .2s;
+  width:32px;height:32px;border-radius:8px;border:none;
+  background:transparent;color:var(--text2);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:all .15s;
 }
-.icon-btn:active{background:var(--bg4);transform:scale(.93);}
-.icon-btn svg{width:16px;height:16px;}
+.icon-btn:active{background:var(--bg3);}
+.icon-btn svg{width:15px;height:15px;}
 
-/* ══ BOTTOM NAV ══ */
+/* OFFLINE BANNER */
+#offline-banner{
+  display:none;position:fixed;
+  top:calc(52px + var(--safe-top));
+  left:0;right:0;z-index:99;
+  background:#7C3504;
+  padding:10px 16px;
+  display:none;align-items:center;gap:10px;
+}
+#offline-banner.show{display:flex;}
+.offline-dot{width:7px;height:7px;border-radius:50%;background:#EF9F27;flex-shrink:0;}
+.offline-text{font-size:12px;font-weight:500;color:#FAC775;flex:1;}
+
+/* BOTTOM NAV */
 #bottom-nav{
   position:fixed;bottom:0;left:0;right:0;z-index:100;
-  height:calc(60px + var(--safe-bottom));
+  height:calc(58px + var(--safe-bottom));
   padding-bottom:var(--safe-bottom);
-  background:rgba(13,13,13,.95);
-  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  background:rgba(13,13,13,.97);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
   border-top:1px solid var(--border);
   display:flex;align-items:stretch;
 }
 .nav-item{
   flex:1;display:flex;flex-direction:column;align-items:center;
-  justify-content:center;gap:3px;cursor:pointer;
-  font-size:9px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;
-  color:var(--muted);border:none;background:none;
-  transition:all .2s;padding-bottom:2px;
+  justify-content:center;gap:4px;cursor:pointer;
+  font-size:9px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;
+  color:var(--muted);border:none;background:none;transition:color .15s;
 }
-.nav-item svg{width:20px;height:20px;transition:all .2s;}
+.nav-item svg{width:18px;height:18px;transition:color .15s;}
 .nav-item.active{color:var(--red);}
-.nav-item.active svg{filter:drop-shadow(0 0 6px var(--red-glow));}
-.nav-item:active{opacity:.6;}
+.nav-item:active{opacity:.5;}
 
-/* ══ PAGE SECTIONS ══ */
-.page{display:none;padding:16px 14px;flex-direction:column;gap:14px;animation:fadeUp .3s ease;}
+/* PAGES */
+.page{display:none;padding:16px 14px;flex-direction:column;gap:12px;}
 .page.active{display:flex;}
-@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 
-/* ══ UPLOAD PAGE ══ */
-#page-upload{padding:20px 16px;}
-.upload-hero{
-  background:linear-gradient(135deg,rgba(230,57,70,.1),rgba(230,57,70,.03));
-  border:1px solid rgba(230,57,70,.2);border-radius:16px;
-  padding:28px 20px;text-align:center;margin-bottom:14px;
+/* LOADING */
+#loading-screen{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  min-height:60vh;gap:16px;text-align:center;padding:32px;
 }
-.upload-icon-wrap{
-  width:64px;height:64px;background:var(--red-dim);border-radius:16px;
-  display:flex;align-items:center;justify-content:center;margin:0 auto 16px;
+.spinner{
+  width:32px;height:32px;border:2px solid var(--border);
+  border-top-color:var(--red);border-radius:50%;
+  animation:spin .7s linear infinite;
 }
-.upload-icon-wrap svg{width:30px;height:30px;fill:var(--red);}
-.upload-hero h2{font-family:'Syne',sans-serif;font-size:20px;color:#fff;margin-bottom:8px;}
-.upload-hero p{font-size:13px;color:var(--text2);line-height:1.6;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-title{font-size:14px;font-weight:500;color:var(--text2);}
+.loading-sub{font-size:12px;color:var(--muted);}
 
-.card{
-  background:var(--bg2);border:1px solid var(--border);
-  border-radius:14px;overflow:hidden;
+/* ERROR */
+#error-screen{
+  display:none;flex-direction:column;align-items:center;justify-content:center;
+  min-height:60vh;gap:12px;text-align:center;padding:32px;
 }
-.card-header{
-  padding:14px 16px;border-bottom:1px solid var(--border2);
-  display:flex;align-items:center;gap:10px;
-}
-.card-icon{
-  width:32px;height:32px;border-radius:8px;
-  display:flex;align-items:center;justify-content:center;flex-shrink:0;
-}
-.card-title{font-size:13px;font-weight:600;color:#fff;}
-.card-sub{font-size:11px;color:var(--muted);margin-top:2px;}
-.card-body{padding:14px 16px;}
-
-.gs-row{display:flex;gap:8px;align-items:stretch;}
-.gs-input{
-  flex:1;padding:10px 12px;border-radius:9px;
-  border:1px solid var(--border);background:var(--bg3);
-  color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;
-  outline:none;transition:border .15s;min-width:0;
-}
-.gs-input:focus{border-color:var(--red);}
-.gs-input::placeholder{color:var(--muted);}
-.btn-red{
+.error-icon{font-size:36px;margin-bottom:4px;}
+.error-title{font-size:16px;font-weight:600;color:var(--text);}
+.error-sub{font-size:13px;color:var(--text2);line-height:1.6;max-width:280px;}
+.btn-retry{
   background:var(--red);color:#fff;border:none;border-radius:9px;
-  padding:10px 16px;font-family:'DM Sans',sans-serif;font-size:13px;
-  font-weight:600;cursor:pointer;white-space:nowrap;
-  transition:all .15s;box-shadow:0 2px 12px var(--red-glow);
+  padding:10px 24px;font-size:13px;font-weight:600;cursor:pointer;margin-top:8px;
 }
-.btn-red:active{background:var(--red2);transform:scale(.97);}
-#gs-status{font-size:12px;color:var(--muted);margin-top:10px;min-height:16px;line-height:1.5;}
 
-.divider{
-  display:flex;align-items:center;gap:10px;padding:4px 0;
-}
-.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border);}
-.divider span{font-size:10px;color:var(--muted);font-weight:600;letter-spacing:1px;text-transform:uppercase;white-space:nowrap;}
+/* SECTION */
+.sec-label{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);padding:0 1px;}
 
-.drop-zone{
-  background:var(--bg3);border:2px dashed rgba(230,57,70,.2);
-  border-radius:14px;padding:28px 16px;text-align:center;cursor:pointer;
-  transition:all .2s;
-}
-.drop-zone:active,.drop-zone.dragover{border-color:var(--red);background:var(--red-dim);}
-.drop-zone p{font-size:13px;color:var(--text2);margin-top:8px;line-height:1.5;}
-.drop-zone span{font-size:11px;color:var(--muted);}
-.btn-outline{
-  display:inline-flex;align-items:center;gap:6px;
-  padding:8px 18px;border-radius:8px;
-  border:1px solid var(--border);background:transparent;
-  color:var(--text2);font-family:'DM Sans',sans-serif;
-  font-size:12px;font-weight:600;cursor:pointer;margin-top:12px;
-  transition:all .15s;
-}
-.btn-outline:active{background:var(--bg4);}
-#file-input{display:none;}
-
-/* ══ OVERVIEW CARDS ══ */
-.section-label{
-  font-size:10px;font-weight:700;letter-spacing:2px;
-  text-transform:uppercase;color:var(--muted);
-  padding:0 2px;
-}
+/* TOTAL CARD */
 .total-card{
-  background:linear-gradient(135deg,rgba(230,57,70,.12),rgba(230,57,70,.04));
-  border:1px solid rgba(230,57,70,.2);border-radius:16px;
-  padding:20px 18px;
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:16px;padding:20px;
 }
-.total-card .lbl{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--red);margin-bottom:6px;}
-.total-card .num{font-family:'Syne',sans-serif;font-size:40px;font-weight:800;color:#fff;line-height:1;}
-.total-card .chg{font-size:13px;font-weight:600;margin-top:8px;}
+.total-card .lbl{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text2);margin-bottom:8px;}
+.total-card .num{font-size:36px;font-weight:700;color:#fff;letter-spacing:-1px;line-height:1;}
+.total-card .chg{font-size:12px;margin-top:8px;}
+.total-card .date-tag{font-size:11px;color:var(--muted);margin-top:4px;}
 
-.platform-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+/* PLATFORM GRID */
+.plat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
 .plat-card{
   background:var(--bg2);border:1px solid var(--border);
-  border-radius:13px;padding:14px 14px 12px;
-  position:relative;overflow:hidden;transition:border-color .2s;
+  border-radius:12px;padding:14px 12px;position:relative;overflow:hidden;
 }
-.plat-card::before{
+.plat-card::after{
   content:'';position:absolute;top:0;left:0;right:0;height:2px;
-  background:var(--plat-color);opacity:.6;
+  background:var(--pc);
 }
-.plat-card:active{border-color:rgba(255,255,255,.15);}
 .plat-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
-.plat-icon-wrap{display:flex;align-items:center;gap:7px;}
-.plat-icon-wrap svg{width:15px;height:15px;}
-.plat-name-sm{font-size:11px;font-weight:600;color:var(--text2);}
-.plat-dot{width:6px;height:6px;border-radius:50%;background:var(--plat-color);box-shadow:0 0 6px var(--plat-color);}
-.plat-num{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:#fff;line-height:1;margin-bottom:5px;}
-.plat-chg{font-size:11px;font-weight:600;}
+.plat-info{display:flex;align-items:center;gap:6px;}
+.plat-info svg{width:13px;height:13px;}
+.plat-name{font-size:11px;font-weight:500;color:var(--text2);}
+.plat-num{font-size:22px;font-weight:700;color:#fff;letter-spacing:-.5px;margin-bottom:4px;}
+.plat-delta{font-size:11px;font-weight:500;}
+.up{color:var(--green);}
+.dn{color:var(--red);}
+.neu{color:var(--muted);}
 
-/* ══ WEEKLY TABLE — CARD STYLE ══ */
-.week-plat-card{
-  background:var(--bg2);border:1px solid var(--border);
-  border-radius:13px;padding:14px 14px;
-  display:flex;flex-direction:column;gap:10px;
-}
-.week-plat-header{display:flex;align-items:center;gap:9px;}
-.week-plat-header svg{width:16px;height:16px;}
-.week-plat-name{font-size:13px;font-weight:600;color:#fff;flex:1;}
-.week-nums{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;}
-.week-num-item{text-align:center;}
-.week-num-lbl{font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);margin-bottom:4px;}
-.week-num-val{font-size:15px;font-weight:700;color:#fff;}
-.week-num-val.this{color:var(--red);font-size:17px;}
-.week-chg-row{
-  background:var(--bg3);border-radius:8px;padding:8px 12px;
-  display:flex;align-items:center;justify-content:space-between;
-}
-.week-chg-lbl{font-size:10px;color:var(--muted);font-weight:600;}
-.week-total-card{
-  background:linear-gradient(135deg,rgba(230,57,70,.1),transparent);
-  border:1px solid rgba(230,57,70,.2);border-radius:13px;padding:16px;
-}
-.week-total-row{display:flex;align-items:center;justify-content:space-between;}
-.week-total-lbl{font-size:12px;font-weight:700;color:#fff;}
-.week-total-sub{font-size:10px;color:var(--muted);margin-top:3px;}
+/* WEEKLY */
+.week-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:14px;}
+.week-head{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
+.week-head svg{width:14px;height:14px;}
+.week-head-name{font-size:13px;font-weight:600;color:#fff;flex:1;}
+.week-cols{display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;}
+.week-col{text-align:center;padding:8px 4px;border-radius:8px;}
+.week-col.this{background:var(--red-dim);border:1px solid rgba(230,57,70,.15);}
+.week-col-lbl{font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);margin-bottom:5px;}
+.week-col.this .week-col-lbl{color:var(--red);}
+.week-col-val{font-size:16px;font-weight:700;color:#fff;}
+.week-col.this .week-col-val{font-size:18px;color:var(--red);}
+.week-footer{margin-top:10px;padding-top:10px;border-top:1px solid var(--border2);display:flex;align-items:center;justify-content:space-between;}
+.week-footer-lbl{font-size:11px;color:var(--muted);}
 
-/* ══ MONTHLY ══ */
-.month-card{
-  background:var(--bg2);border:1px solid var(--border);
-  border-radius:13px;padding:16px;
+.total-growth-card{
+  background:var(--bg2);border:1px solid rgba(230,57,70,.2);
+  border-radius:12px;padding:16px;
 }
+.tg-head{font-size:12px;font-weight:600;color:var(--text2);margin-bottom:6px;}
+.tg-num{font-size:28px;font-weight:700;letter-spacing:-.5px;}
+
+/* MONTHLY */
+.month-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px;}
 .month-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
-.month-name{font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:#fff;}
-.month-total{font-size:12px;color:var(--text2);}
-.month-platforms{display:flex;flex-direction:column;gap:8px;}
-.month-plat-row{display:flex;align-items:center;gap:8px;}
-.month-plat-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
-.month-plat-name{font-size:12px;color:var(--text2);flex:1;}
-.month-plat-num{font-size:13px;font-weight:700;color:#fff;}
-.month-plat-chg{font-size:11px;font-weight:700;min-width:55px;text-align:right;}
+.month-name{font-size:15px;font-weight:600;color:#fff;}
+.month-total-num{font-size:13px;color:var(--text2);}
+.month-row{display:flex;align-items:center;gap:8px;padding:5px 0;}
+.month-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.month-nm{font-size:12px;color:var(--text2);flex:1;}
+.month-val{font-size:12px;font-weight:600;color:#fff;}
+.month-chg{font-size:11px;font-weight:600;min-width:60px;text-align:right;}
 .month-divider{height:1px;background:var(--border2);margin:4px 0;}
 
-/* ══ TRENDS ══ */
-.chart-card{
-  background:var(--bg2);border:1px solid var(--border);
-  border-radius:14px;padding:16px;
-}
-.chart-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
-.chart-title{font-size:13px;font-weight:700;color:#fff;}
-.chart-sub-text{font-size:11px;color:var(--muted);margin-top:2px;}
+/* CHART */
+.chart-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px;}
+.chart-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;}
+.chart-title{font-size:13px;font-weight:600;color:#fff;}
+.chart-sub{font-size:11px;color:var(--muted);margin-top:2px;}
 .chart-sel{
-  background:var(--bg3);border:1px solid var(--border);
-  color:var(--text);font-family:'DM Sans',sans-serif;
-  font-size:11px;font-weight:600;border-radius:7px;
-  padding:6px 10px;cursor:pointer;outline:none;max-width:120px;
+  background:var(--bg3);border:1px solid var(--border);color:var(--text);
+  font-family:'Inter',sans-serif;font-size:11px;border-radius:7px;
+  padding:5px 8px;cursor:pointer;outline:none;
 }
-.chart-box{position:relative;height:180px;}
+.chart-box{position:relative;height:170px;}
 
-/* ══ SETTINGS/INFO ══ */
-.info-row{
-  display:flex;align-items:center;gap:12px;
-  padding:14px 16px;border-bottom:1px solid var(--border2);
+/* PILL */
+.pill{
+  font-size:10px;font-weight:600;padding:2px 7px;border-radius:20px;
+  display:inline-flex;align-items:center;gap:2px;
 }
-.info-row:last-child{border-bottom:none;}
-.info-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.info-icon svg{width:17px;height:17px;}
-.info-text{flex:1;min-width:0;}
-.info-title{font-size:13px;font-weight:600;color:#fff;}
-.info-desc{font-size:11px;color:var(--muted);margin-top:2px;line-height:1.4;}
-.info-action{font-size:12px;font-weight:600;color:var(--red);cursor:pointer;white-space:nowrap;padding:4px 0;}
+.pill.up{background:rgba(34,197,94,.1);color:var(--green);}
+.pill.dn{background:rgba(230,57,70,.1);color:var(--red);}
+.pill.neu{background:var(--bg3);color:var(--muted);}
 
-/* ══ BADGES ══ */
-.up{color:var(--green);}
-.dn{color:var(--dn);}
-.neu{color:var(--muted);}
-.chg-pill{
-  font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;
-  display:inline-flex;align-items:center;gap:3px;
-}
-.chg-pill.up{background:rgba(34,197,94,.12);color:var(--green);}
-.chg-pill.dn{background:rgba(230,57,70,.12);color:var(--dn);}
-.chg-pill.neu{background:var(--bg3);color:var(--muted);}
-
-/* ══ EMPTY STATE ══ */
-.empty-state{
-  text-align:center;padding:48px 24px;
-  display:flex;flex-direction:column;align-items:center;gap:12px;
-}
-.empty-state svg{width:40px;height:40px;fill:var(--muted);}
-.empty-state h3{font-family:'Syne',sans-serif;font-size:18px;color:var(--text2);}
-.empty-state p{font-size:13px;color:var(--muted);line-height:1.6;max-width:260px;}
-.empty-state .btn-red{margin-top:8px;}
-
-/* ══ PWA BANNER ══ */
-#pwa-banner{
-  display:none;position:fixed;
-  bottom:calc(70px + var(--safe-bottom) + 10px);
-  left:14px;right:14px;z-index:200;
-  background:var(--bg3);border:1px solid var(--border);
-  border-radius:14px;padding:14px;
-  box-shadow:0 8px 32px rgba(0,0,0,.6);
-  animation:slideUp .4s cubic-bezier(.34,1.56,.64,1);
-}
-@keyframes slideUp{from{transform:translateY(80px);opacity:0}to{transform:translateY(0);opacity:1}}
-.pwa-row{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
-.pwa-icon{width:40px;height:40px;background:var(--red);border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:#fff;flex-shrink:0;}
-.pwa-title{font-size:13px;font-weight:700;color:#fff;}
-.pwa-sub{font-size:11px;color:var(--muted);margin-top:2px;}
-.pwa-btns{display:flex;gap:8px;}
-.pwa-install{flex:1;background:var(--red);color:#fff;border:none;border-radius:9px;padding:10px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;}
-.pwa-dismiss{background:var(--bg4);color:var(--muted);border:none;border-radius:9px;padding:10px 14px;font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;}
-
-/* ══ TOAST ══ */
+/* TOAST */
 #toast{
-  position:fixed;bottom:calc(74px + var(--safe-bottom));
+  position:fixed;bottom:calc(68px + var(--safe-bottom));
   left:50%;transform:translateX(-50%);
   background:var(--bg3);border:1px solid var(--border);
-  border-radius:20px;padding:10px 18px;font-size:12px;
-  font-weight:600;color:#fff;display:none;
-  white-space:nowrap;z-index:999;
-  box-shadow:0 4px 20px rgba(0,0,0,.5);
+  border-radius:20px;padding:9px 16px;font-size:12px;font-weight:500;
+  color:#fff;white-space:nowrap;z-index:999;
+  box-shadow:0 4px 20px rgba(0,0,0,.5);opacity:0;transition:opacity .2s;
 }
+#toast.show{opacity:1;}
 
-/* ══ PRINT ══ */
-@media print{
-  #topbar,#bottom-nav,#pwa-banner,#toast,#page-upload,#page-trends{display:none!important;}
-  body{padding:0!important;background:#fff!important;color:#111!important;}
-  .page{display:flex!important;}
-  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}
-}
-
-/* ══ TABLET+ ADJUSTMENTS ══ */
 @media(min-width:600px){
   body{max-width:600px;margin:0 auto;}
-  .platform-grid{grid-template-columns:repeat(3,1fr);}
-}
-@media(min-width:900px){
-  body{max-width:900px;padding-top:70px;}
-  #topbar{height:70px;}
-  .platform-grid{grid-template-columns:repeat(3,1fr);}
-  .plat-num{font-size:28px;}
+  .plat-grid{grid-template-columns:repeat(3,1fr);}
 }
 </style>
 </head>
@@ -364,144 +242,60 @@ body{
   <symbol id="i-calendar" viewBox="0 0 24 24"><path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 18H4V8h16v13z"/></symbol>
   <symbol id="i-bar" viewBox="0 0 24 24"><path d="M5 9.2h3V19H5zM10.6 5h2.8v14h-2.8zm5.6 8H19v6h-2.8z"/></symbol>
   <symbol id="i-trend" viewBox="0 0 24 24"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></symbol>
-  <symbol id="i-upload" viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/></symbol>
   <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M17.65 6.35A7.958 7.958 0 0 0 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0 1 12 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></symbol>
   <symbol id="i-print" viewBox="0 0 24 24"><path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/></symbol>
-  <symbol id="i-settings" viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></symbol>
+  <symbol id="i-wifi-off" viewBox="0 0 24 24"><path d="M24 .49L20.72 3.77C19.52 3.27 18.29 2.86 17 2.57V0l-4 4-4-4v2.57c-1.29.29-2.52.7-3.72 1.2L1.27 0 0 1.27l3.93 3.93C2.57 6.32 1.37 7.4.29 8.62L1.73 10c1.11-1.24 2.41-2.32 3.86-3.18l1.43 1.43C5.86 9.03 4.7 9.98 3.69 11.1L5.13 12.5c1.08-1.18 2.34-2.17 3.74-2.92l1.44 1.44A10.984 10.984 0 0 0 7.1 14.28l1.44 1.44c.85-1.11 1.9-2.05 3.11-2.76l1.37 1.37L12 14.5l-4 4 1.5 1.5L12 17.5l4 4 1.5-1.5-4-4 .02-.02 7.93 7.93 1.27-1.27L24 .49zM12 6c.96 0 1.9.1 2.81.26L17 8.47C15.47 7.86 13.78 7.5 12 7.5c-2.01 0-3.88.56-5.5 1.52l-1.44-1.44C6.98 6.59 9.43 6 12 6zm0 4.5c1.74 0 3.37.44 4.8 1.2l-1.45 1.45c-1.01-.42-2.12-.65-3.28-.65-.68 0-1.34.08-1.97.23L8.73 11.3A8.93 8.93 0 0 1 12 10.5zM12 19l-3-3 3-3 3 3-3 3z"/></symbol>
 </svg>
 
-<!-- PWA INSTALL BANNER -->
-<div id="pwa-banner">
-  <div class="pwa-row">
-    <div class="pwa-icon">CT</div>
-    <div>
-      <div class="pwa-title">App Install Karein</div>
-      <div class="pwa-sub">Home screen par add karein — bilkul app ki tarah!</div>
-    </div>
-  </div>
-  <div class="pwa-btns">
-    <button class="pwa-install" onclick="installPWA()">📲 Install Karein</button>
-    <button class="pwa-dismiss" onclick="dismissPWA()">Baad Mein</button>
-  </div>
+<!-- OFFLINE BANNER -->
+<div id="offline-banner">
+  <div class="offline-dot"></div>
+  <span class="offline-text">Internet connection nahi hai — last data dikh raha hai</span>
 </div>
 
 <!-- TOPBAR -->
 <div id="topbar">
   <div class="logo-wrap">
     <div class="logo-box">CT</div>
-    <div>
-      <div class="logo-text">CHAAJAO</div>
-      <div class="logo-sub">Analytics</div>
-    </div>
+    <span class="logo-name">Chaajao</span>
   </div>
   <div class="tb-right">
-    <span class="tb-badge" id="tb-badge" style="display:none"></span>
+    <span class="tb-date" id="tb-date"></span>
     <button class="icon-btn" onclick="manualRefresh()" title="Refresh">
       <svg viewBox="0 0 24 24" fill="currentColor"><use href="#i-refresh"/></svg>
     </button>
-    <button class="icon-btn" onclick="window.print()" id="print-btn" style="display:none" title="Print">
+    <button class="icon-btn" onclick="window.print()" id="print-btn" style="display:none">
       <svg viewBox="0 0 24 24" fill="currentColor"><use href="#i-print"/></svg>
     </button>
   </div>
 </div>
 
 <!-- PAGES -->
-
-<!-- PAGE: UPLOAD / CONNECT -->
-<div id="page-upload" class="page active">
-  <div class="upload-hero">
-    <div class="upload-icon-wrap">
-      <svg viewBox="0 0 24 24"><use href="#i-bar"/></svg>
-    </div>
-    <h2>Chaajao Analytics</h2>
-    <p>Social media ka poora data ek jagah.<br>Google Sheet connect karein ya Excel upload karein.</p>
+<div id="page-overview" class="page active">
+  <div id="loading-screen">
+    <div class="spinner"></div>
+    <div class="loading-title">Data load ho raha hai...</div>
+    <div class="loading-sub">Chaajao Analytics</div>
   </div>
-
-  <div class="card">
-    <div class="card-header">
-      <div class="card-icon" style="background:rgba(15,157,88,.12)">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="#0F9D58"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/></svg>
-      </div>
-      <div>
-        <div class="card-title">Google Sheet</div>
-        <div class="card-sub">Live data · Auto-refresh har 5 min</div>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="gs-row">
-        <input id="gs-url" class="gs-input" type="url" placeholder="Google Sheets URL paste karein...">
-        <button class="btn-red" onclick="connectSheet()">Connect</button>
-      </div>
-      <div id="gs-status"></div>
-      <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border2);font-size:11px;color:var(--muted);line-height:1.6;">
-        💡 Sheet ka access <em>"Anyone with link → Viewer"</em> hona chahiye
-      </div>
-    </div>
+  <div id="error-screen">
+    <div class="error-icon">📡</div>
+    <div class="error-title">Data nahi mila</div>
+    <div class="error-sub" id="error-msg">Sheet se connect nahi ho saka. Internet check karein aur dobara try karein.</div>
+    <button class="btn-retry" onclick="manualRefresh()">Dobara Try Karein</button>
   </div>
-
-  <div class="divider"><span>Ya</span></div>
-
-  <div class="drop-zone" id="drop-zone"
-    onclick="document.getElementById('file-input').click()"
-    ondragover="event.preventDefault();this.classList.add('dragover')"
-    ondragleave="this.classList.remove('dragover')"
-    ondrop="onDrop(event)">
-    <div class="upload-icon-wrap" style="width:50px;height:50px;margin:0 auto 10px;">
-      <svg viewBox="0 0 24 24"><use href="#i-upload"/></svg>
-    </div>
-    <p><strong style="color:#fff;">Excel File Upload Karein</strong><br>Social_Media_Analytics_Dashboard.xlsx</p>
-    <span>Tap karein ya file yahan drop karein</span>
-    <br>
-    <button class="btn-outline" style="pointer-events:none;">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><use href="#i-upload"/></svg>
-      Browse File
-    </button>
-  </div>
-  <input type="file" id="file-input" accept=".xlsx,.xls,.csv" onchange="onFileInput(event)">
+  <div id="overview-content" style="display:none;flex-direction:column;gap:12px;"></div>
 </div>
 
-<!-- PAGE: OVERVIEW -->
-<div id="page-overview" class="page">
-  <div class="empty-state" id="overview-empty">
-    <svg viewBox="0 0 24 24"><use href="#i-home"/></svg>
-    <h3>Data Load Karein</h3>
-    <p>Pehle Upload tab mein Google Sheet connect karein ya Excel file upload karein.</p>
-    <button class="btn-red" onclick="goPage('upload')">📤 Data Upload Karein</button>
-  </div>
-  <div id="overview-content" style="display:none;flex-direction:column;gap:14px;"></div>
-</div>
-
-<!-- PAGE: WEEKLY -->
 <div id="page-weekly" class="page">
-  <div class="empty-state" id="weekly-empty">
-    <svg viewBox="0 0 24 24"><use href="#i-calendar"/></svg>
-    <h3>Koi Data Nahi</h3>
-    <p>Pehle data load karein.</p>
-    <button class="btn-red" onclick="goPage('upload')">📤 Data Upload Karein</button>
-  </div>
-  <div id="weekly-content" style="display:none;flex-direction:column;gap:14px;"></div>
+  <div id="weekly-content" style="flex-direction:column;gap:12px;display:flex;"></div>
 </div>
 
-<!-- PAGE: MONTHLY -->
 <div id="page-monthly" class="page">
-  <div class="empty-state" id="monthly-empty">
-    <svg viewBox="0 0 24 24"><use href="#i-bar"/></svg>
-    <h3>Koi Data Nahi</h3>
-    <p>Pehle data load karein.</p>
-    <button class="btn-red" onclick="goPage('upload')">📤 Data Upload Karein</button>
-  </div>
-  <div id="monthly-content" style="display:none;flex-direction:column;gap:14px;"></div>
+  <div id="monthly-content" style="flex-direction:column;gap:12px;display:flex;"></div>
 </div>
 
-<!-- PAGE: TRENDS -->
 <div id="page-trends" class="page">
-  <div class="empty-state" id="trends-empty">
-    <svg viewBox="0 0 24 24"><use href="#i-trend"/></svg>
-    <h3>Koi Data Nahi</h3>
-    <p>Pehle data load karein.</p>
-    <button class="btn-red" onclick="goPage('upload')">📤 Data Upload Karein</button>
-  </div>
-  <div id="trends-content" style="display:none;flex-direction:column;gap:14px;"></div>
+  <div id="trends-content" style="flex-direction:column;gap:12px;display:flex;"></div>
 </div>
 
 <!-- BOTTOM NAV -->
@@ -522,134 +316,108 @@ body{
     <svg viewBox="0 0 24 24" fill="currentColor"><use href="#i-trend"/></svg>
     Trends
   </button>
-  <button class="nav-item" data-page="upload" onclick="goPage('upload')">
-    <svg viewBox="0 0 24 24" fill="currentColor"><use href="#i-upload"/></svg>
-    Upload
-  </button>
 </nav>
 
 <div id="toast"></div>
 
 <script>
-// ── SERVICE WORKER ──
-if('serviceWorker' in navigator){
-  navigator.serviceWorker.register('./sw.js').catch(()=>{});
-}
+const SHEET_ID='1MG7nZhr4L7cORXWL5FTuTPUDn0354bpqlq4RrzZNZQo';
+const SHEET_NAME='Weekly Engagment';
 
-// ── PWA ──
-let deferredPrompt=null;
-window.addEventListener('beforeinstallprompt',e=>{
-  e.preventDefault(); deferredPrompt=e;
-  setTimeout(()=>{
-    if(deferredPrompt && !localStorage.getItem('pwa-dismissed'))
-      document.getElementById('pwa-banner').style.display='block';
-  },4000);
-});
-function installPWA(){
-  document.getElementById('pwa-banner').style.display='none';
-  if(deferredPrompt){ deferredPrompt.prompt(); deferredPrompt=null; }
-}
-function dismissPWA(){
-  document.getElementById('pwa-banner').style.display='none';
-  try{localStorage.setItem('pwa-dismissed','1');}catch(e){}
-}
-
-// ── PLATFORM CONFIG ──
 const PLATS=[
-  {key:'linkedin',        label:'LinkedIn',    color:'#0A66C2', icon:'i-linkedin'},
-  {key:'youtube',         label:'YouTube',     color:'#FF0000', icon:'i-youtube'},
-  {key:'facebook_follows',label:'Facebook',    color:'#1877F2', icon:'i-facebook'},
-  {key:'instagram',       label:'Instagram',   color:'#E1306C', icon:'i-instagram'},
-  {key:'tiktok',          label:'TikTok',      color:'#69C9D0', icon:'i-tiktok'},
-  {key:'whatsapp',        label:'WhatsApp',    color:'#25D366', icon:'i-whatsapp'},
-  {key:'wa_mdcat',        label:'WA MDCAT',    color:'#059669', icon:'i-user'},
-  {key:'wa_ecat',         label:'WA ECAT',     color:'#2563EB', icon:'i-user'},
-  {key:'wa_bcat',         label:'WA BCAT',     color:'#7C3AED', icon:'i-user'},
+  {key:'linkedin',        label:'LinkedIn',     color:'#0A66C2', icon:'i-linkedin'},
+  {key:'youtube',         label:'YouTube',      color:'#FF0000', icon:'i-youtube'},
+  {key:'facebook_follows',label:'Facebook',     color:'#1877F2', icon:'i-facebook'},
+  {key:'instagram',       label:'Instagram',    color:'#E1306C', icon:'i-instagram'},
+  {key:'tiktok',          label:'TikTok',       color:'#69C9D0', icon:'i-tiktok'},
+  {key:'whatsapp',        label:'WhatsApp',     color:'#25D366', icon:'i-whatsapp'},
+  {key:'wa_mdcat',        label:'WA MDCAT',     color:'#059669', icon:'i-user'},
+  {key:'wa_ecat',         label:'WA ECAT',      color:'#2563EB', icon:'i-user'},
+  {key:'wa_bcat',         label:'WA BCAT',      color:'#7C3AED', icon:'i-user'},
 ];
 const TOT_KEYS=PLATS.map(p=>p.key);
 let D=[];
+let refreshTimer=null;
+let isOnline=navigator.onLine;
 
-// ── NAVIGATION ──
+const fds=d=>d.toLocaleDateString('en-GB',{day:'2-digit',month:'short'});
+const fd=d=>d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
+const fn=n=>(n===null||n===undefined)?'—':Number(n).toLocaleString();
+
+function pill(cur,prev){
+  if(cur===null||prev===null) return '<span class="pill neu">—</span>';
+  const d=cur-prev;
+  const cls=d>0?'up':d<0?'dn':'neu';
+  const arr=d>0?'▲':d<0?'▼':'→';
+  const pct=prev?` ${Math.abs(((d/prev)*100)).toFixed(1)}%`:'';
+  return `<span class="pill ${cls}">${arr} ${d>=0?'+':''}${Math.abs(d).toLocaleString()}${pct}</span>`;
+}
+function deltaText(cur,prev){
+  if(cur===null||prev===null) return '<span class="neu">—</span>';
+  const d=cur-prev;
+  return `<span class="${d>0?'up':d<0?'dn':'neu'}" style="font-size:13px;font-weight:600;">${d>=0?'▲ +':'▼ '}${Math.abs(d).toLocaleString()}</span>`;
+}
+
+// OFFLINE DETECTION
+function updateOnlineStatus(){
+  isOnline=navigator.onLine;
+  const banner=document.getElementById('offline-banner');
+  if(!isOnline){
+    banner.classList.add('show');
+    // push down the page if we have data
+    document.body.style.paddingTop=`calc(52px + var(--safe-top) + 38px)`;
+  } else {
+    banner.classList.remove('show');
+    document.body.style.paddingTop=`calc(52px + var(--safe-top))`;
+    if(D.length===0) fetchSheet();
+  }
+}
+window.addEventListener('online', updateOnlineStatus);
+window.addEventListener('offline', updateOnlineStatus);
+
+// NAV
 let curPage='overview';
 function goPage(p){
   document.querySelectorAll('.page').forEach(el=>el.classList.remove('active'));
   document.getElementById('page-'+p).classList.add('active');
-  document.querySelectorAll('.nav-item').forEach(el=>{
-    el.classList.toggle('active', el.dataset.page===p);
-  });
-  curPage=p;
-  window.scrollTo(0,0);
+  document.querySelectorAll('.nav-item').forEach(el=>el.classList.toggle('active',el.dataset.page===p));
+  curPage=p; window.scrollTo(0,0);
 }
 
-// ── HELPERS ──
-const fd=d=>d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
-const fds=d=>d.toLocaleDateString('en-GB',{day:'2-digit',month:'short'});
-const fn=n=>(n===null||n===undefined)?'—':Number(n).toLocaleString();
-function chgPill(cur,prev){
-  if(cur===null||prev===null) return '<span class="chg-pill neu">—</span>';
-  const d=cur-prev;
-  const cls=d>0?'up':d<0?'dn':'neu';
-  const arr=d>0?'▲':d<0?'▼':'→';
-  const pct=prev?` (${d>=0?'+':''}${((d/prev)*100).toFixed(1)}%)`:' ';
-  return `<span class="chg-pill ${cls}">${arr} ${d>=0?'+':''}${Math.abs(d).toLocaleString()}${pct}</span>`;
-}
-function chgText(cur,prev){
-  if(cur===null||prev===null) return '<span class="neu">—</span>';
-  const d=cur-prev; const cls=d>0?'up':d<0?'dn':'neu';
-  return `<span class="${cls}" style="font-size:13px;font-weight:700;">${d>=0?'▲ +':'▼ '}${Math.abs(d).toLocaleString()}</span>`;
-}
-
-// ── GOOGLE SHEETS ──
-let gsSheetId=null,gsGid='0',gsTimer=null;
-const GS_SHEET='Weekly Engagment';
-const DEFAULT_URL='https://docs.google.com/spreadsheets/d/1MG7nZhr4L7cORXWL5FTuTPUDn0354bpqlq4RrzZNZQo/';
-
-function setStatus(msg,color='var(--muted)'){
-  const el=document.getElementById('gs-status');
-  el.innerHTML=msg; el.style.color=color;
-}
-function extractId(url){ const m=url.match(/\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/); return m?m[1]:null; }
-function extractGid(url){ const m=url.match(/[#&?]gid=([0-9]+)/); return m?m[1]:'0'; }
-
-async function connectSheet(){
-  const url=document.getElementById('gs-url').value.trim();
-  if(!url){setStatus('URL paste karein!','var(--dn)');return;}
-  const id=extractId(url);
-  if(!id){setStatus('❌ Sahi Google Sheets URL chahiye','var(--dn)');return;}
-  gsSheetId=id; gsGid=extractGid(url);
-  setStatus('⏳ Connecting...');
-  await fetchSheet();
-}
-
+// FETCH
 async function fetchSheet(){
-  if(!gsSheetId) return;
-  const sp=GS_SHEET?`&sheet=${encodeURIComponent(GS_SHEET)}`:'';
-  const url=`https://docs.google.com/spreadsheets/d/${gsSheetId}/gviz/tq?tqx=out:json&gid=${gsGid}${sp}&range=A4:K500`;
+  if(!navigator.onLine){
+    if(D.length===0){
+      document.getElementById('loading-screen').style.display='none';
+      document.getElementById('error-screen').style.display='flex';
+      document.getElementById('error-msg').textContent='Internet nahi hai. Wi-Fi ya mobile data on karein.';
+    }
+    return;
+  }
+  const sp=SHEET_NAME?`&sheet=${encodeURIComponent(SHEET_NAME)}`:'';
+  const url=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=0${sp}&range=A4:K500`;
   try{
     const res=await fetch(url);
     if(!res.ok) throw new Error('HTTP '+res.status);
     const txt=await res.text();
     const m=txt.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\)/);
-    if(!m) throw new Error('Sheet public nahi hai?');
+    if(!m) throw new Error('Sheet public nahi hai');
     const json=JSON.parse(m[1]);
     if(json.status==='error') throw new Error(json.errors?.[0]?.message||'Sheet error');
     parseGviz(json);
-    if(!D.length){setStatus('⚠️ Koi rows nahi mili — sheet format check karein','orange');return;}
+    if(!D.length) throw new Error('Koi data rows nahi mili');
     renderAll();
-    const t=new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
-    setStatus(`✅ Connected · ${D.length} entries · Synced: ${t}`,'#22c55e');
-    try{localStorage.setItem('ct_gs_url',document.getElementById('gs-url').value.trim());}catch(e){}
-    if(gsTimer) clearInterval(gsTimer);
-    gsTimer=setInterval(silentRefresh,5*60*1000);
   }catch(err){
-    setStatus('❌ '+err.message,'var(--dn)');
+    document.getElementById('loading-screen').style.display='none';
+    document.getElementById('error-screen').style.display='flex';
+    document.getElementById('error-msg').textContent=err.message+'. Internet check karein ya baad mein try karein.';
   }
 }
 
 async function silentRefresh(){
-  if(!gsSheetId) return;
-  const sp=GS_SHEET?`&sheet=${encodeURIComponent(GS_SHEET)}`:'';
-  const url=`https://docs.google.com/spreadsheets/d/${gsSheetId}/gviz/tq?tqx=out:json&gid=${gsGid}${sp}&range=A4:K500`;
+  if(!navigator.onLine) return;
+  const sp=SHEET_NAME?`&sheet=${encodeURIComponent(SHEET_NAME)}`:'';
+  const url=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=0${sp}&range=A4:K500`;
   try{
     const res=await fetch(url); if(!res.ok) return;
     const txt=await res.text();
@@ -657,14 +425,13 @@ async function silentRefresh(){
     const json=JSON.parse(m[1]); if(json.status==='error') return;
     parseGviz(json); if(!D.length) return;
     renderAll();
-    const t=new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
-    setStatus(`✅ Connected · ${D.length} entries · Synced: ${t}`,'#22c55e');
   }catch(e){}
 }
 
 async function manualRefresh(){
-  if(gsSheetId){ setStatus('⏳ Refreshing...'); await fetchSheet(); }
-  else showToast('Pehle Google Sheet connect karein');
+  if(!navigator.onLine){showToast('Internet nahi hai');return;}
+  showToast('Refreshing...');
+  await fetchSheet();
 }
 
 function parseGviz(json){
@@ -704,47 +471,19 @@ function parseGviz(json){
   D.sort((a,b)=>a.date-b.date);
 }
 
-// FILE UPLOAD
-function onDrop(e){
-  e.preventDefault(); document.getElementById('drop-zone').classList.remove('dragover');
-  if(e.dataTransfer.files[0]) loadFile(e.dataTransfer.files[0]);
-}
-function onFileInput(e){ if(e.target.files[0]) loadFile(e.target.files[0]); }
-function loadFile(file){
-  const rd=new FileReader();
-  rd.onload=ev=>{
-    try{
-      const wb=XLSX.read(ev.target.result,{type:'array',cellDates:true});
-      const sn=wb.SheetNames.find(n=>/week|engag/i.test(n))||wb.SheetNames[0];
-      const raw=XLSX.utils.sheet_to_json(wb.Sheets[sn],{header:1,defval:null});
-      D=[];
-      for(const r of raw){
-        if(!r||!(r[0] instanceof Date)||r[0].getFullYear()<2020) continue;
-        const v=x=>{
-          if(x===null||x===undefined||x==='-'||x==='') return null;
-          const n=parseFloat(String(x).replace(/[^0-9.-]/g,''));
-          return isNaN(n)?null:n;
-        };
-        D.push({date:r[0],linkedin:v(r[1]),youtube:v(r[2]),facebook_likes:v(r[3]),facebook_follows:v(r[4]),instagram:v(r[5]),tiktok:v(r[6]),whatsapp:v(r[7]),wa_mdcat:v(r[8]),wa_ecat:v(r[9]),wa_bcat:v(r[10])});
-      }
-      if(!D.length){showToast('❌ Koi data nahi mila');return;}
-      renderAll(); showToast('✅ '+D.length+' entries load ho gayi');
-    }catch(err){showToast('❌ '+err.message);}
-  };
-  rd.readAsArrayBuffer(file);
-}
-
-// ── RENDER ALL ──
+// RENDER
 function renderAll(){
   const last=D[D.length-1];
-  document.getElementById('tb-badge').textContent=fds(last.date);
-  document.getElementById('tb-badge').style.display='block';
+  const dateEl=document.getElementById('tb-date');
+  dateEl.textContent=fds(last.date); dateEl.style.display='block';
   document.getElementById('print-btn').style.display='flex';
+  document.getElementById('loading-screen').style.display='none';
+  document.getElementById('error-screen').style.display='none';
   renderOverview(); renderWeekly(); renderMonthly(); renderTrends();
-  goPage('overview');
+  if(refreshTimer) clearInterval(refreshTimer);
+  refreshTimer=setInterval(silentRefresh,5*60*1000);
 }
 
-// ── OVERVIEW ──
 function renderOverview(){
   const L=D[D.length-1], P=D.length>1?D[D.length-2]:null;
   const tot=TOT_KEYS.reduce((s,k)=>s+(L[k]||0),0);
@@ -753,105 +492,87 @@ function renderOverview(){
   const tCls=tDiff===null?'neu':tDiff>0?'up':'dn';
 
   let html=`
-  <div class="section-label">Latest Snapshot · ${fd(L.date)}</div>
   <div class="total-card">
-    <div class="lbl">TOTAL REACH</div>
+    <div class="lbl">Total Followers</div>
     <div class="num">${tot.toLocaleString()}</div>
-    ${tDiff!==null?`<div class="chg ${tCls}">${tDiff>=0?'▲ +':'▼ '}${Math.abs(tDiff).toLocaleString()} vs prev entry</div>`:''}
+    ${tDiff!==null?`<div class="chg ${tCls}" style="font-size:13px;font-weight:500;">${tDiff>=0?'▲ +':'▼ '}${Math.abs(tDiff).toLocaleString()} is hafte</div>`:''}
+    <div class="date-tag">${fd(L.date)} ka data</div>
   </div>
-  <div class="section-label">Har Platform</div>
-  <div class="platform-grid">`;
+  <div class="sec-label">Platforms</div>
+  <div class="plat-grid">`;
 
   for(const p of PLATS){
     const cur=L[p.key], prv=P?P[p.key]:null;
     const d=cur!==null&&prv!==null?cur-prv:null;
     const cls=d===null?'neu':d>0?'up':d<0?'dn':'neu';
     const arr=d===null?'':d>0?'▲':d<0?'▼':'→';
-    html+=`<div class="plat-card" style="--plat-color:${p.color}">
+    html+=`<div class="plat-card" style="--pc:${p.color}">
       <div class="plat-top">
-        <div class="plat-icon-wrap">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="${p.color}"><use href="#${p.icon}"/></svg>
-          <span class="plat-name-sm">${p.label}</span>
+        <div class="plat-info">
+          <svg viewBox="0 0 24 24" fill="${p.color}"><use href="#${p.icon}"/></svg>
+          <span class="plat-name">${p.label}</span>
         </div>
-        <div class="plat-dot"></div>
       </div>
       <div class="plat-num">${cur!==null?fn(cur):'—'}</div>
-      <div class="plat-chg ${cls}">${d!==null?`${arr} ${d>=0?'+':''}${Math.abs(d).toLocaleString()}`:'No prev'}</div>
+      <div class="plat-delta ${cls}">${d!==null?`${arr} ${d>=0?'+':''}${Math.abs(d).toLocaleString()}`:'—'}</div>
     </div>`;
   }
   html+='</div>';
 
   const c=document.getElementById('overview-content');
   c.innerHTML=html; c.style.display='flex';
-  document.getElementById('overview-empty').style.display='none';
 }
 
-// ── WEEKLY ──
 function renderWeekly(){
   const len=D.length;
   const e2=len>=1?D[len-1]:null;
   const e1=len>=2?D[len-2]:null;
   const e0=len>=3?D[len-3]:null;
 
-  let html=`<div class="section-label">Aakhri 3 Hafte Ka Comparison</div>`;
+  let html=`<div class="sec-label">Aakhri 3 hafte ka moazna</div>`;
 
   for(const p of PLATS){
     const v0=e0?e0[p.key]:null, v1=e1?e1[p.key]:null, v2=e2?e2[p.key]:null;
-    html+=`
-    <div class="week-plat-card">
-      <div class="week-plat-header">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="${p.color}"><use href="#${p.icon}"/></svg>
-        <span class="week-plat-name">${p.label}</span>
-        ${chgPill(v2,v1)}
+    html+=`<div class="week-card">
+      <div class="week-head">
+        <svg viewBox="0 0 24 24" fill="${p.color}"><use href="#${p.icon}"/></svg>
+        <span class="week-head-name">${p.label}</span>
+        ${pill(v2,v1)}
       </div>
-      <div class="week-nums">
-        <div class="week-num-item">
-          <div class="week-num-lbl">${e0?fds(e0.date):'—'}</div>
-          <div class="week-num-val">${fn(v0)}</div>
+      <div class="week-cols">
+        <div class="week-col">
+          <div class="week-col-lbl">${e0?fds(e0.date):'—'}</div>
+          <div class="week-col-val">${fn(v0)}</div>
         </div>
-        <div class="week-num-item">
-          <div class="week-num-lbl">${e1?fds(e1.date):'—'}</div>
-          <div class="week-num-val">${fn(v1)}</div>
+        <div class="week-col">
+          <div class="week-col-lbl">${e1?fds(e1.date):'—'}</div>
+          <div class="week-col-val">${fn(v1)}</div>
         </div>
-        <div class="week-num-item">
-          <div class="week-num-lbl" style="color:var(--red)">THIS WEEK</div>
-          <div class="week-num-val this">${fn(v2)}</div>
+        <div class="week-col this">
+          <div class="week-col-lbl">Is Hafte</div>
+          <div class="week-col-val">${fn(v2)}</div>
         </div>
       </div>
-      <div class="week-chg-row">
-        <span class="week-chg-lbl">Hafta War Change:</span>
-        ${chgText(v2,v1)}
+      <div class="week-footer">
+        <span class="week-footer-lbl">Hafta war tabdili</span>
+        ${deltaText(v2,v1)}
       </div>
     </div>`;
   }
 
-  // Totals row
   const diff=(a,b)=>(a!==null&&b!==null)?a-b:null;
-  const wk1=e1&&e0?TOT_KEYS.reduce((s,k)=>s+(diff(e1[k],e0[k])??0),0):null;
   const wk2=e2&&e1?TOT_KEYS.reduce((s,k)=>s+(diff(e2[k],e1[k])??0),0):null;
-  const fmtW=v=>v===null?'<span class="neu">—</span>':`<span class="${v>0?'up':v<0?'dn':'neu'}" style="font-size:16px;font-weight:800;">${v>=0?'▲ +':'▼ '}${Math.abs(v).toLocaleString()}</span>`;
-  html+=`
-  <div class="week-total-card">
-    <div class="week-total-row">
-      <div>
-        <div class="week-total-lbl">🌐 Total New Followers This Week</div>
-        <div class="week-total-sub">Tamam platforms ka combined izafa</div>
-      </div>
-      ${fmtW(wk2)}
-    </div>
-    ${wk2!==null&&wk1!==null?`
-    <div style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,.06);">
-      <span style="font-size:11px;color:var(--muted);">Prev week se:</span>
-      ${chgText(wk2,wk1)}
-    </div>`:''}
+  const wk1=e1&&e0?TOT_KEYS.reduce((s,k)=>s+(diff(e1[k],e0[k])??0),0):null;
+  const fmtW=v=>v===null?'<span class="neu">—</span>':`<span class="${v>0?'up':v<0?'dn':'neu'}" style="font-size:26px;font-weight:700;letter-spacing:-.5px;">${v>=0?'+':''}${Math.abs(v).toLocaleString()}</span>`;
+  html+=`<div class="total-growth-card">
+    <div class="tg-head">Is hafte tamam platforms par naye followers</div>
+    ${fmtW(wk2)}
+    ${wk2!==null&&wk1!==null?`<div style="margin-top:6px;font-size:11px;color:var(--muted);">Pichle hafte se: ${wk2>wk1?'▲':'▼'} ${Math.abs(wk2-wk1).toLocaleString()}</div>`:''}
   </div>`;
 
-  const c=document.getElementById('weekly-content');
-  c.innerHTML=html; c.style.display='flex';
-  document.getElementById('weekly-empty').style.display='none';
+  document.getElementById('weekly-content').innerHTML=html;
 }
 
-// ── MONTHLY ──
 function renderMonthly(){
   const byM={};
   for(const d of D){
@@ -861,12 +582,12 @@ function renderMonthly(){
   const months=Object.keys(byM).sort().reverse().slice(0,6);
   const extra=Object.keys(byM).sort().reverse()[6]||null;
 
-  let html=`<div class="section-label">Mahina Ba Mahina Growth</div>`;
+  let html=`<div class="sec-label">Mahina ba mahina growth</div>`;
   for(let i=0;i<months.length;i++){
     const cur=byM[months[i]];
     const prevKey=months[i+1]||extra;
     const prev=prevKey?byM[prevKey]:null;
-    const mLabel=new Date(months[i]+'-02').toLocaleDateString('en-GB',{month:'long',year:'numeric'});
+    const mLabel=new Date(months[i]+'-02').toLocaleDateString('ur-PK',{month:'long',year:'numeric'}).replace(/،/g,'');
     const mTot=TOT_KEYS.reduce((s,k)=>s+(cur[k]||0),0);
     const mTotP=prev?TOT_KEYS.reduce((s,k)=>s+(prev[k]||0),0):null;
     const mDiff=mTotP!==null?mTot-mTotP:null;
@@ -874,46 +595,37 @@ function renderMonthly(){
 
     html+=`<div class="month-card">
       <div class="month-header">
-        <div class="month-name">${mLabel}</div>
-        <div class="month-total" style="text-align:right;">
-          <div style="font-size:12px;color:var(--text2);">${mTot.toLocaleString()}</div>
-          ${mDiff!==null?`<div class="${mCls}" style="font-size:11px;font-weight:700;">${mDiff>=0?'▲ +':'▼ '}${Math.abs(mDiff).toLocaleString()}</div>`:''}
+        <div class="month-name">${new Date(months[i]+'-02').toLocaleDateString('en-GB',{month:'long',year:'numeric'})}</div>
+        <div style="text-align:right;">
+          <div class="month-total-num">${mTot.toLocaleString()}</div>
+          ${mDiff!==null?`<div class="${mCls}" style="font-size:11px;font-weight:600;">${mDiff>=0?'▲ +':'▼ '}${Math.abs(mDiff).toLocaleString()}</div>`:''}
         </div>
       </div>
-      <div class="month-divider"></div>
-      <div class="month-platforms">`;
+      <div class="month-divider"></div>`;
 
     for(const p of PLATS){
-      const c=cur[p.key], pv=prev?prev[p.key]:null;
-      const d=c!==null&&pv!==null?c-pv:null;
+      const cv=cur[p.key], pv=prev?prev[p.key]:null;
+      const d=cv!==null&&pv!==null?cv-pv:null;
       const cls=d===null?'neu':d>0?'up':d<0?'dn':'neu';
-      html+=`<div class="month-plat-row">
-        <div class="month-plat-dot" style="background:${p.color}"></div>
-        <span class="month-plat-name">${p.label}</span>
-        <span class="month-plat-num">${c!==null?c.toLocaleString():'—'}</span>
-        <span class="month-plat-chg ${cls}">${d!==null?(d>=0?'▲ +':'▼ ')+Math.abs(d).toLocaleString():'—'}</span>
+      html+=`<div class="month-row">
+        <div class="month-dot" style="background:${p.color}"></div>
+        <span class="month-nm">${p.label}</span>
+        <span class="month-val">${cv!==null?cv.toLocaleString():'—'}</span>
+        <span class="month-chg ${cls}">${d!==null?(d>=0?'▲ +':'▼ ')+Math.abs(d).toLocaleString():'—'}</span>
       </div>`;
     }
-    html+=`</div></div>`;
+    html+='</div>';
   }
-
-  const c=document.getElementById('monthly-content');
-  c.innerHTML=html; c.style.display='flex';
-  document.getElementById('monthly-empty').style.display='none';
+  document.getElementById('monthly-content').innerHTML=html;
 }
 
-// ── TRENDS ──
 let cTrend=null,cDonut=null,cWow=null;
 function renderTrends(){
-  const c=document.getElementById('trends-content');
-  c.innerHTML=`
-    <div class="section-label">Platform Growth Graph</div>
+  document.getElementById('trends-content').innerHTML=`
+    <div class="sec-label">Platform ki growth</div>
     <div class="chart-card">
       <div class="chart-head">
-        <div>
-          <div class="chart-title">Growth Over Time</div>
-          <div class="chart-sub-text">Weekly history</div>
-        </div>
+        <div><div class="chart-title">Growth over time</div><div class="chart-sub">Har hafte ka record</div></div>
         <select class="chart-sel" id="trend-sel" onchange="updateTrend()">
           <option value="youtube">YouTube</option>
           <option value="linkedin">LinkedIn</option>
@@ -926,22 +638,20 @@ function renderTrends(){
       <div class="chart-box"><canvas id="trendChart"></canvas></div>
     </div>
     <div class="chart-card">
-      <div class="chart-head"><div><div class="chart-title">Platform Share</div><div class="chart-sub-text">Latest numbers</div></div></div>
+      <div class="chart-head"><div><div class="chart-title">Platform share</div><div class="chart-sub">Latest numbers</div></div></div>
       <div class="chart-box"><canvas id="donutChart"></canvas></div>
     </div>
     <div class="chart-card">
-      <div class="chart-head"><div><div class="chart-title">Week-over-Week Growth</div><div class="chart-sub-text">New followers per week</div></div></div>
+      <div class="chart-head"><div><div class="chart-title">Naye followers per week</div><div class="chart-sub">Week-over-week growth</div></div></div>
       <div class="chart-box"><canvas id="wowChart"></canvas></div>
     </div>`;
-  c.style.display='flex';
-  document.getElementById('trends-empty').style.display='none';
-  setTimeout(()=>{updateTrend();buildDonut();buildWow();},50);
+  setTimeout(()=>{updateTrend();buildDonut();buildWow();},60);
 }
 
 const baseOpts={
   responsive:true,maintainAspectRatio:false,
-  plugins:{legend:{display:false},tooltip:{backgroundColor:'#1a1a1a',titleColor:'#f0f0f0',bodyColor:'#a0a0a0',borderColor:'rgba(255,255,255,.1)',borderWidth:1,padding:10}},
-  scales:{x:{ticks:{color:'#555',font:{size:9},maxTicksLimit:8},grid:{color:'rgba(255,255,255,.04)'}},y:{ticks:{color:'#555',font:{size:9}},grid:{color:'rgba(255,255,255,.04)'}}}
+  plugins:{legend:{display:false},tooltip:{backgroundColor:'#1c1c1c',titleColor:'#f5f5f5',bodyColor:'#888',borderColor:'rgba(255,255,255,.08)',borderWidth:1,padding:10,cornerRadius:8}},
+  scales:{x:{ticks:{color:'#444',font:{size:9,family:'Inter'},maxTicksLimit:8},grid:{color:'rgba(255,255,255,.04)'},border:{display:false}},y:{ticks:{color:'#444',font:{size:9,family:'Inter'}},grid:{color:'rgba(255,255,255,.04)'},border:{display:false}}}
 };
 
 function updateTrend(){
@@ -949,10 +659,9 @@ function updateTrend(){
   const fd2=D.filter(d=>d[k]!==null);
   const color=PLATS.find(p=>p.key===k)?.color||'#E63946';
   if(cTrend) cTrend.destroy();
-  const ctx=document.getElementById('trendChart')?.getContext('2d');
-  if(!ctx) return;
-  const g=ctx.createLinearGradient(0,0,0,180);
-  g.addColorStop(0,color+'50'); g.addColorStop(1,color+'00');
+  const ctx=document.getElementById('trendChart')?.getContext('2d'); if(!ctx) return;
+  const g=ctx.createLinearGradient(0,0,0,170);
+  g.addColorStop(0,color+'40'); g.addColorStop(1,color+'00');
   cTrend=new Chart(ctx,{type:'line',data:{
     labels:fd2.map(d=>fds(d.date)),
     datasets:[{data:fd2.map(d=>d[k]),borderColor:color,backgroundColor:g,borderWidth:2,pointRadius:2,pointHoverRadius:5,fill:true,tension:.4}]
@@ -962,17 +671,14 @@ function buildDonut(){
   const L=D[D.length-1];
   const ks=['youtube','facebook_follows','instagram','linkedin','tiktok','whatsapp'];
   if(cDonut) cDonut.destroy();
-  const ctx=document.getElementById('donutChart')?.getContext('2d');
-  if(!ctx) return;
+  const ctx=document.getElementById('donutChart')?.getContext('2d'); if(!ctx) return;
   cDonut=new Chart(ctx,{type:'doughnut',data:{
     labels:ks.map(k=>PLATS.find(p=>p.key===k)?.label||k),
-    datasets:[{data:ks.map(k=>L[k]||0),backgroundColor:ks.map(k=>PLATS.find(p=>p.key===k)?.color||'#555'),borderWidth:2,borderColor:'#141414',hoverOffset:6}]
+    datasets:[{data:ks.map(k=>L[k]||0),backgroundColor:ks.map(k=>PLATS.find(p=>p.key===k)?.color||'#444'),borderWidth:2,borderColor:'#141414',hoverOffset:5}]
   },options:{
     responsive:true,maintainAspectRatio:false,cutout:'65%',
-    plugins:{
-      legend:{position:'right',labels:{color:'#a0a0a0',font:{size:10},padding:8,boxWidth:8}},
-      tooltip:{backgroundColor:'#1a1a1a',titleColor:'#fff',bodyColor:'#a0a0a0',borderColor:'rgba(255,255,255,.1)',borderWidth:1}
-    }
+    plugins:{legend:{position:'right',labels:{color:'#888',font:{size:10,family:'Inter'},padding:8,boxWidth:8}},
+    tooltip:{backgroundColor:'#1c1c1c',titleColor:'#fff',bodyColor:'#888',borderColor:'rgba(255,255,255,.08)',borderWidth:1,cornerRadius:8}}
   }});
 }
 function buildWow(){
@@ -980,39 +686,34 @@ function buildWow(){
   const lbls=last.slice(1).map(d=>fds(d.date));
   const mk=k=>last.slice(1).map((d,i)=>(d[k]!==null&&last[i][k]!==null)?d[k]-last[i][k]:0);
   if(cWow) cWow.destroy();
-  const ctx=document.getElementById('wowChart')?.getContext('2d');
-  if(!ctx) return;
+  const ctx=document.getElementById('wowChart')?.getContext('2d'); if(!ctx) return;
   cWow=new Chart(ctx,{type:'bar',data:{
     labels:lbls,
     datasets:[
-      {label:'YouTube',data:mk('youtube'),backgroundColor:'#FF000080',borderRadius:3},
-      {label:'Instagram',data:mk('instagram'),backgroundColor:'#E1306C80',borderRadius:3},
-      {label:'Facebook',data:mk('facebook_follows'),backgroundColor:'#1877F280',borderRadius:3},
-      {label:'TikTok',data:mk('tiktok'),backgroundColor:'#69C9D080',borderRadius:3},
+      {label:'YouTube',data:mk('youtube'),backgroundColor:'#FF000070',borderRadius:4},
+      {label:'Instagram',data:mk('instagram'),backgroundColor:'#E1306C70',borderRadius:4},
+      {label:'Facebook',data:mk('facebook_follows'),backgroundColor:'#1877F270',borderRadius:4},
+      {label:'TikTok',data:mk('tiktok'),backgroundColor:'#69C9D070',borderRadius:4},
     ]
   },options:{...baseOpts,plugins:{
-    legend:{display:true,labels:{color:'#a0a0a0',font:{size:10},boxWidth:8,padding:8}},
+    legend:{display:true,labels:{color:'#888',font:{size:10,family:'Inter'},boxWidth:8,padding:8}},
     tooltip:baseOpts.plugins.tooltip
   }}});
 }
 
-// ── TOAST ──
 function showToast(msg){
   const t=document.getElementById('toast');
-  t.textContent=msg; t.style.display='block';
-  setTimeout(()=>t.style.display='none',3000);
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2500);
 }
 
-// ── INIT ──
 window.addEventListener('load',()=>{
-  try{
-    const saved=localStorage.getItem('ct_gs_url')||DEFAULT_URL;
-    document.getElementById('gs-url').value=saved;
-    setStatus('⏳ Connecting to Chaajao data...');
-    setTimeout(connectSheet,800);
-  }catch(e){
-    document.getElementById('gs-url').value=DEFAULT_URL;
-    setTimeout(connectSheet,800);
+  updateOnlineStatus();
+  if(navigator.onLine) fetchSheet();
+  else {
+    document.getElementById('loading-screen').style.display='none';
+    document.getElementById('error-screen').style.display='flex';
+    document.getElementById('error-msg').textContent='Internet nahi hai. Wi-Fi ya mobile data on karein aur dobara try karein.';
   }
 });
 </script>
