@@ -1,0 +1,66 @@
+============================================
+   CHAAJAO ANALYTICS — MOBILE INSTALL GUIDE
+============================================
+
+ANDROID PAR INSTALL KARNA:
+──────────────────────────
+
+STEP 1: Files Upload Karein
+  • Ye poori "chaajao-pwa" folder apne server ya GitHub Pages par upload karein
+  • Ya Google Drive / Dropbox mein daal kar share karein
+
+STEP 2: Chrome Browser Mein Open Karein
+  • Android phone mein Chrome browser open karein
+  • Website ka URL open karein
+
+STEP 3: Install Karein
+  • Dashboard load hone ke baad, screen ke neeche 
+    "App Install Karein" ka banner aayega
+  • "📲 Install App" button dabayein
+  • Ya Chrome ke 3-dot menu (⋮) mein jaayein
+  • "Add to Home Screen" select karein
+
+STEP 4: Ready!
+  • Home screen par "Chaajao" icon nazar aayega
+  • Bilkul app ki tarah kholein — fullscreen chalegi!
+
+──────────────────────────
+LOCALHOST PAR TEST KARNA:
+──────────────────────────
+
+Agar server nahi hai, to local test ke liye:
+
+  1. Python install hona chahiye
+  2. Folder mein jaayein:
+     cd chaajao-pwa
+  3. Local server chalayein:
+     python3 -m http.server 8080
+  4. Phone aur PC ek hi WiFi par hon
+  5. Phone mein Chrome mein open karein:
+     http://[aapka-PC-IP]:8080
+  6. Upar wali steps follow karein
+
+──────────────────────────
+FILES KI LIST:
+──────────────────────────
+
+  ✅ index.html      — Main dashboard
+  ✅ manifest.json   — PWA config
+  ✅ sw.js           — Service Worker (offline support)
+  ✅ icon-192.png    — App icon (small)
+  ✅ icon-512.png    — App icon (large)
+
+──────────────────────────
+FEATURES:
+──────────────────────────
+
+  ✅ Mobile responsive
+  ✅ Home screen par install
+  ✅ Fullscreen mode
+  ✅ Offline caching
+  ✅ Safe area support (notch wale phones)
+  ✅ Auto Google Sheets sync (5 min)
+
+============================================
+      Chaajao Technologies — 2025
+============================================

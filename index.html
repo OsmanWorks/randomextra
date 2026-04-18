@@ -1,242 +1,1188 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Chaajao — Live</title>
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@700;800&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="robots" content="noindex, nofollow">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://cdnjs.cloudflare.com https://fonts.googleapis.com https://fonts.gstatic.com https://docs.google.com; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src https://docs.google.com; img-src 'self' data:;">
+
+  <!-- ═══ PWA META TAGS ═══ -->
+  <title>Chaajao Analytics</title>
+  <meta name="application-name" content="Chaajao Analytics">
+  <meta name="description" content="Social Media Analytics Dashboard — Chaajao Technologies">
+  <link rel="manifest" href="./manifest.json">
+
+  <!-- iOS PWA Support -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Chaajao">
+  <link rel="apple-touch-icon" href="./icon-192.png">
+
+  <!-- Android / Chrome PWA -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#B91C1C">
+  <meta name="msapplication-TileColor" content="#B91C1C">
+  <meta name="msapplication-TileImage" content="./icon-192.png">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    background: #08080f;
-    color: #fff;
-    font-family: 'Inter', sans-serif;
-    height: 100vh; width: 100vw;
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    overflow: hidden;
-  }
+:root{
+  --mag:#B91C1C; --mag2:#991B1B; --mag3:#DC2626; --mag-glow:rgba(185,28,28,.12); --mag-border:rgba(185,28,28,.28);
+  --bg:#FFFFFF; --bg2:#F7F5F6; --bg3:#F0EBEf; --bg4:#EAE2E7;
+  --dark:#231F20; --dark2:#3A3336; --dark3:#544F51;
+  --border:rgba(35,31,32,.1); --border2:rgba(35,31,32,.06);
+  --text:#231F20; --text2:#6B5F64; --muted:#A09298;
+  --green:#16A34A; --red-text:#DC2626;
+  --sidebar:252px;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);display:flex;height:100vh;overflow:hidden;}
 
-  /* subtle grid */
-  body::before {
-    content: '';
-    position: fixed; inset: 0;
-    background-image:
-      linear-gradient(rgba(120,90,255,0.05) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(120,90,255,0.05) 1px, transparent 1px);
-    background-size: 48px 48px;
-    pointer-events: none;
-  }
+/* ── SIDEBAR ── */
+#sidebar{width:var(--sidebar);background:var(--dark);display:flex;flex-direction:column;flex-shrink:0;height:100vh;}
+.sb-logo{padding:22px 20px 18px;border-bottom:1px solid rgba(255,255,255,.08);}
+.sb-logo-box{width:42px;height:42px;background:var(--mag);border-radius:11px;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:22px;color:#fff;box-shadow:0 4px 18px rgba(185,28,28,.45);margin-bottom:11px;}
+.sb-name{font-family:'Bebas Neue',sans-serif;font-size:19px;letter-spacing:2px;color:#fff;}
+.sb-sub{font-size:9.5px;color:rgba(255,255,255,.35);letter-spacing:1px;text-transform:uppercase;margin-top:3px;}
+.sb-nav{flex:1;padding:10px 0;overflow-y:auto;}
+.sb-lbl{font-size:9px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,255,255,.25);padding:14px 20px 5px;}
+.sb-item{display:flex;align-items:center;gap:10px;padding:9px 20px;cursor:pointer;font-size:12.5px;font-weight:500;color:rgba(255,255,255,.5);border-left:3px solid transparent;transition:all .15s;user-select:none;text-decoration:none;}
+.sb-item:hover{color:rgba(255,255,255,.85);background:rgba(255,255,255,.05);}
+.sb-item.active{color:#fff;border-left-color:var(--mag3);background:rgba(185,28,28,.15);}
+.sb-item .ico{width:16px;height:16px;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+.sb-item .ico svg{width:15px;height:15px;fill:currentColor;}
+.sb-foot{padding:14px 20px;border-top:1px solid rgba(255,255,255,.08);}
+.sb-foot-info{font-size:11px;color:rgba(255,255,255,.3);}
+.sb-foot-badge{display:inline-block;margin-top:6px;background:rgba(185,28,28,.2);border:1px solid rgba(185,28,28,.35);color:#FCA5A5;font-size:10px;font-weight:700;padding:3px 11px;border-radius:20px;}
 
-  .orb {
-    position: fixed; border-radius: 50%; pointer-events: none;
-    filter: blur(100px); z-index: 0;
-  }
-  .o1 { width: 500px; height: 500px; background: rgba(110,70,255,0.15); top: -200px; left: -100px; }
-  .o2 { width: 400px; height: 400px; background: rgba(0,220,150,0.08); bottom: -150px; right: -100px; }
+/* ── MAIN ── */
+#main{flex:1;display:flex;flex-direction:column;height:100vh;overflow:hidden;}
 
-  .center { position: relative; z-index: 1; text-align: center; width: 100%; padding: 0 24px; }
+/* ── TOPBAR ── */
+#topbar{height:60px;background:var(--bg);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 28px;flex-shrink:0;box-shadow:0 1px 0 var(--border2);}
+.tb-title{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1.5px;color:var(--dark);}
+.tb-sub{font-size:11px;color:var(--muted);margin-top:1px;}
+.tb-right{display:flex;align-items:center;gap:8px;}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 16px;border-radius:8px;font-size:12px;font-family:'DM Sans',sans-serif;font-weight:600;cursor:pointer;border:none;transition:all .15s;}
+.btn-ghost{background:var(--bg2);color:var(--text2);border:1px solid var(--border);}
+.btn-ghost:hover{color:var(--text);background:var(--bg3);}
+.btn-mag{background:var(--mag);color:#fff;box-shadow:0 2px 12px rgba(185,28,28,.3);}
+.btn-mag:hover{background:var(--mag2);}
+.period-badge{font-size:11px;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:7px;padding:5px 13px;font-weight:500;}
 
-  /* LIVE DOT */
-  .live-row {
-    display: flex; align-items: center; justify-content: center;
-    gap: 8px; margin-bottom: 28px;
-  }
-  .live-dot {
-    width: 9px; height: 9px; border-radius: 50%; background: #ff3b3b;
-    animation: pulse 1.4s ease-out infinite;
-  }
-  @keyframes pulse {
-    0% { box-shadow: 0 0 0 0 rgba(255,59,59,0.7); }
-    70% { box-shadow: 0 0 0 10px rgba(255,59,59,0); }
-    100% { box-shadow: 0 0 0 0 rgba(255,59,59,0); }
-  }
-  .live-label { font-size: 12px; font-weight: 500; color: #ff3b3b; letter-spacing: 0.1em; }
+/* ── SCROLL AREA ── */
+#scroll-area{flex:1;overflow-y:auto;padding:24px 28px;display:flex;flex-direction:column;gap:28px;background:var(--bg2);}
 
-  /* HEADING */
-  h1 {
-    font-family: 'Sora', sans-serif;
-    font-size: clamp(32px, 6vw, 64px);
-    font-weight: 800; line-height: 1.1;
-    letter-spacing: -1.5px; margin-bottom: 12px;
-  }
-  h1 .g {
-    background: linear-gradient(90deg, #a98aff, #00e5a0);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-  .sub {
-    font-size: clamp(14px, 2vw, 18px);
-    color: rgba(200,190,255,0.5); margin-bottom: 40px;
-  }
+/* ── UPLOAD ── */
+#upload-section{display:flex;align-items:center;justify-content:center;min-height:380px;}
+.upload-box{background:var(--bg);border:2px dashed rgba(185,28,28,.25);border-radius:16px;padding:52px 70px;text-align:center;cursor:pointer;transition:all .2s;max-width:500px;width:100%;}
+.upload-box:hover,.upload-box.dragover{border-color:var(--mag);background:var(--mag-glow);}
+.upload-box h2{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:1px;margin-bottom:8px;color:var(--dark);}
+.upload-box p{font-size:13px;color:var(--text2);line-height:1.65;margin-bottom:22px;}
+#file-input{display:none;}
 
-  /* VIDEO */
-  #video-wrap {
-    width: min(840px, 92vw); margin: 0 auto;
-    border-radius: 16px; overflow: hidden;
-    border: 1px solid rgba(120,90,255,0.2);
-    background: #0d0d20;
-    position: relative;
-  }
-  #video-inner { position: relative; padding-top: 56.25%; }
-  #yt-frame { position: absolute; inset: 0; width: 100%; height: 100%; border: none; }
+/* ── SECTIONS ── */
+.dash-sec{display:flex;flex-direction:column;gap:14px;}
+.sec-hd{display:flex;align-items:center;justify-content:space-between;}
+.sec-title{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1px;display:flex;align-items:center;gap:10px;color:var(--dark);}
+.sec-title::before{content:'';width:4px;height:18px;background:var(--mag);border-radius:2px;display:block;}
+.sec-tag{font-size:9.5px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;padding:3px 11px;border-radius:20px;background:rgba(185,28,28,.08);border:1px solid var(--mag-border);color:var(--mag);}
 
-  /* TIMER FALLBACK */
-  #timer-wrap {
-    display: none;
-    position: absolute; inset: 0;
-    background: #0d0d20;
-    align-items: center; justify-content: center;
-    flex-direction: column; gap: 16px;
-  }
-  #timer-wrap.show { display: flex; }
-  .timer-msg { font-size: 14px; color: rgba(200,190,255,0.5); }
-  .timer-digits {
-    font-family: 'Sora', sans-serif;
-    font-size: clamp(36px, 8vw, 72px);
-    font-weight: 800; letter-spacing: 2px;
-    background: linear-gradient(90deg, #a98aff, #00e5a0);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-  .timer-sub { font-size: 13px; color: rgba(200,190,255,0.4); }
+/* ── TOTAL BANNER ── */
+.total-banner{background:linear-gradient(135deg,rgba(185,28,28,.07) 0%,rgba(185,28,28,.02) 100%);border:1px solid var(--mag-border);border-radius:12px;padding:18px 24px;display:flex;align-items:center;justify-content:space-around;flex-wrap:wrap;gap:16px;}
+.tot-item{text-align:center;min-width:110px;}
+.tot-lbl{font-size:9.5px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:5px;}
+.tot-num{font-family:'Bebas Neue',sans-serif;font-size:30px;letter-spacing:.5px;color:var(--mag);}
+.tot-chg{font-size:11px;font-weight:600;margin-top:3px;}
+.up{color:var(--green);} .dn{color:var(--red-text);} .neu{color:var(--muted);}
 
-  /* brand footer */
-  .brand {
-    margin-top: 24px;
-    font-family: 'Sora', sans-serif;
-    font-size: 13px; color: rgba(200,190,255,0.25);
-    letter-spacing: 0.05em;
-  }
-  .brand span { color: rgba(0,229,160,0.4); }
+/* ── KPI GRID ── */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:11px;}
+.kpi-card{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:15px 17px;position:relative;overflow:hidden;transition:border-color .15s,box-shadow .15s;}
+.kpi-card:hover{border-color:var(--mag-border);box-shadow:0 2px 14px rgba(185,28,28,.08);}
+.kpi-dot{position:absolute;top:12px;right:12px;width:7px;height:7px;border-radius:50%;}
+.kpi-plat{font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+.kpi-plat svg{width:13px;height:13px;flex-shrink:0;}
+.kpi-val{font-family:'Bebas Neue',sans-serif;font-size:31px;letter-spacing:.5px;line-height:1;color:var(--dark);margin-bottom:5px;}
+.kpi-chg{font-size:12px;font-weight:600;}
+
+/* ── TABLE ── */
+.tbl-wrap{background:var(--bg);border:1px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:0 1px 4px rgba(35,31,32,.05);}
+.ctbl{width:100%;border-collapse:collapse;}
+.ctbl thead tr{background:var(--dark);}
+.ctbl thead th{padding:12px 15px;font-size:11px;font-weight:700;letter-spacing:.5px;color:rgba(255,255,255,.85);text-align:center;white-space:nowrap;}
+.ctbl thead th:first-child{text-align:left;}
+.ctbl tbody tr{border-bottom:1px solid var(--border2);transition:background .12s;}
+.ctbl tbody tr:last-child{border-bottom:none;}
+.ctbl tbody tr:hover{background:var(--bg2);}
+.ctbl tbody tr.grand-total{background:rgba(185,28,28,.04);border-top:2px solid var(--mag-border);}
+.ctbl td{padding:11px 15px;font-size:13px;color:var(--text);text-align:center;vertical-align:middle;}
+.ctbl td.plat-col{text-align:left;}
+.plat-cell{display:flex;align-items:center;gap:9px;}
+.plat-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+.plat-name{font-weight:600;color:var(--dark);font-size:13px;}
+.plat-icon{width:17px;height:17px;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+.plat-icon svg{width:16px;height:16px;}
+.num-cell{font-weight:600;font-size:13px;color:var(--dark);}
+.chg-col{background:rgba(185,28,28,.02);}
+.chg-val{font-size:12px;font-weight:700;}
+.chg-pct{font-size:10px;opacity:.7;margin-left:2px;}
+.m-num{font-weight:600;font-size:13px;color:var(--dark);}
+.m-diff{font-size:10.5px;font-weight:700;display:block;margin-top:2px;}
+
+/* CHARTS */
+.chart-row{display:grid;grid-template-columns:1.7fr 1fr;gap:13px;}
+.chart-card{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:19px 20px;box-shadow:0 1px 4px rgba(35,31,32,.04);}
+.chart-hd{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;}
+.chart-title{font-size:13px;font-weight:700;color:var(--dark);}
+.chart-sub{font-size:11px;color:var(--muted);margin-top:2px;}
+.chart-box{position:relative;height:215px;}
+.chart-sel{background:var(--bg2);border:1px solid var(--border);color:var(--text);font-family:'DM Sans',sans-serif;font-size:11px;font-weight:600;border-radius:7px;padding:5px 9px;cursor:pointer;outline:none;}
+
+/* ── PWA INSTALL BANNER ── */
+#pwa-install-banner{
+  display:none;position:fixed;bottom:calc(20px + var(--safe-bottom));left:50%;transform:translateX(-50%);
+  background:var(--dark);border:1px solid rgba(255,255,255,.12);border-radius:14px;
+  padding:14px 20px;font-size:13px;color:#fff;z-index:9999;
+  box-shadow:0 8px 32px rgba(0,0,0,.4);max-width:340px;width:calc(100% - 32px);
+  flex-direction:column;gap:10px;
+  animation: slideUp 0.4s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes slideUp{from{transform:translateX(-50%) translateY(100px);opacity:0}to{transform:translateX(-50%) translateY(0);opacity:1}}
+.pwa-banner-row{display:flex;align-items:center;gap:10px;}
+.pwa-banner-icon{width:40px;height:40px;background:var(--mag);border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:18px;color:#fff;flex-shrink:0;}
+.pwa-banner-title{font-weight:700;font-size:13px;color:#fff;}
+.pwa-banner-sub{font-size:11px;color:rgba(255,255,255,.55);margin-top:2px;}
+.pwa-banner-btns{display:flex;gap:8px;}
+.pwa-btn-install{flex:1;background:var(--mag);color:#fff;border:none;border-radius:8px;padding:9px 0;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:700;cursor:pointer;}
+.pwa-btn-dismiss{background:rgba(255,255,255,.1);color:rgba(255,255,255,.6);border:none;border-radius:8px;padding:9px 14px;font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;}
+
+/* ── PRINT ── */
+@media print{
+  @page{size:A4 landscape;margin:8mm 10mm;}
+  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;box-sizing:border-box!important;}
+  html,body{height:auto!important;overflow:visible!important;display:block!important;background:#fff!important;color:#111!important;font-size:9px!important;}
+  #sidebar,#topbar,#upload-section,#sec-monthly,#sec-trends,.sec-info-banner,#hamburger,#sidebar-overlay,#pwa-install-banner{display:none!important;}
+  #main{height:auto!important;overflow:visible!important;display:block!important;}
+  #scroll-area{overflow:visible!important;height:auto!important;padding:0!important;display:block!important;background:#fff!important;}
+  .print-header{display:flex!important;align-items:center!important;justify-content:space-between!important;padding-bottom:7px!important;border-bottom:2.5px solid #B91C1C!important;margin-bottom:10px!important;}
+  .ph-box{width:30px!important;height:30px!important;font-size:15px!important;}
+  .ph-name{font-size:18px!important;}
+  .ph-sub{font-size:8px!important;}
+  .ph-date{font-size:9px!important;}
+  .dash-sec{display:none!important;}
+  #sec-totals,#sec-weekly{display:block!important;page-break-inside:avoid!important;break-inside:avoid!important;}
+  #sec-totals{margin-bottom:12px!important;}
+  #sec-weekly{margin-bottom:0!important;}
+  .sec-hd{margin-bottom:6px!important;}
+  .sec-tag{display:none!important;}
+  .sec-title{font-size:11px!important;letter-spacing:.5px!important;color:#111!important;margin-bottom:4px!important;}
+  .sec-title::before{background:#B91C1C!important;width:3px!important;height:12px!important;}
+  .total-banner{background:#fef2f2!important;border:1.5px solid #fca5a5!important;border-radius:6px!important;padding:8px 14px!important;margin-bottom:8px!important;display:flex!important;flex-wrap:nowrap!important;justify-content:space-around!important;align-items:center!important;gap:6px!important;}
+  .tot-item{min-width:0!important;flex:1!important;text-align:center!important;padding:2px 4px!important;}
+  .tot-lbl{color:#666!important;font-size:7px!important;letter-spacing:.5px!important;text-transform:uppercase!important;margin-bottom:2px!important;font-weight:700!important;}
+  .tot-num{color:#B91C1C!important;font-size:17px!important;line-height:1!important;letter-spacing:0!important;}
+  .tot-chg{font-size:7.5px!important;margin-top:1px!important;font-weight:600!important;}
+  .kpi-grid{display:grid!important;grid-template-columns:repeat(3,1fr)!important;gap:5px!important;margin-bottom:10px!important;}
+  .kpi-card{background:#fafafa!important;border:1px solid #e5e5e5!important;border-radius:5px!important;padding:6px 8px!important;page-break-inside:avoid!important;}
+  .kpi-dot{display:none!important;}
+  .kpi-plat{font-size:7.5px!important;margin-bottom:3px!important;gap:3px!important;color:#555!important;}
+  .kpi-plat svg{width:9px!important;height:9px!important;}
+  .kpi-val{font-size:18px!important;margin-bottom:2px!important;color:#111!important;}
+  .kpi-chg{font-size:8px!important;}
+  .tbl-wrap{background:#fff!important;border:1px solid #ccc!important;border-radius:4px!important;overflow:visible!important;}
+  .ctbl{width:100%!important;border-collapse:collapse!important;}
+  .ctbl thead tr{background:#231F20!important;}
+  .ctbl thead th{color:#fff!important;padding:5px 8px!important;font-size:8px!important;letter-spacing:.3px!important;white-space:nowrap!important;text-align:center!important;}
+  .ctbl thead th:first-child{text-align:left!important;}
+  .ctbl td{color:#111!important;padding:5px 8px!important;font-size:8.5px!important;background:#fff!important;text-align:center!important;vertical-align:middle!important;}
+  .ctbl td.plat-col{text-align:left!important;}
+  .ctbl tbody tr{border-bottom:1px solid #f0f0f0!important;}
+  .ctbl tbody tr:hover{background:#fff!important;}
+  .ctbl tbody tr td:nth-child(4){background:#f0f7ff!important;}
+  .ctbl tbody tr.grand-total{background:#fef2f2!important;border-top:1.5px solid #fca5a5!important;}
+  .ctbl tbody tr.grand-total td{color:#111!important;font-weight:700!important;}
+  .ctbl tbody tr.grand-total td:nth-child(4){background:#e8f5e9!important;}
+  .plat-cell{gap:5px!important;}
+  .plat-icon{width:12px!important;height:12px!important;}
+  .plat-icon svg{width:11px!important;height:11px!important;}
+  .plat-name{color:#111!important;font-size:8.5px!important;font-weight:600!important;}
+  .num-cell{color:#111!important;font-size:8.5px!important;font-weight:600!important;}
+  .chg-val{font-size:8px!important;font-weight:700!important;}
+  .chg-pct{font-size:7px!important;}
+  .up,.chg-val.up,.m-diff.up,.tot-chg.up,.kpi-chg.up{color:#16a34a!important;}
+  .dn,.chg-val.dn,.m-diff.dn,.tot-chg.dn,.kpi-chg.dn{color:#dc2626!important;}
+  .neu,.chg-val.neu,.m-diff.neu,.tot-chg.neu,.kpi-chg.neu{color:#888!important;}
+}
+
+/* ── HAMBURGER ── */
+#hamburger{display:none;position:fixed;top:calc(14px + var(--safe-top));left:14px;z-index:300;width:38px;height:38px;background:var(--dark);border:none;border-radius:9px;cursor:pointer;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(0,0,0,.25);}
+#hamburger svg{width:18px;height:18px;fill:#fff;}
+#sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:199;}
+
+/* ── RESPONSIVE ── */
+@media(max-width:1100px){
+  :root{--sidebar:220px;}
+  #scroll-area{padding:18px 16px;gap:18px;}
+  .chart-row{grid-template-columns:1fr;}
+  .kpi-grid{grid-template-columns:repeat(auto-fill,minmax(135px,1fr));}
+  .sec-info-banner{padding:10px 14px!important;}
+}
+
+@media(max-width:768px){
+  #sidebar{position:fixed;left:-270px;top:0;width:252px!important;z-index:200;transition:left .28s cubic-bezier(.4,0,.2,1);box-shadow:none;}
+  #sidebar.open{left:0;box-shadow:6px 0 28px rgba(0,0,0,.4);}
+  #sidebar-overlay.open{display:block;}
+  #hamburger{display:flex;}
+  #main{width:100%;min-width:0;}
+  #topbar{padding:0 12px 0 58px;height:52px;padding-top:var(--safe-top);}
+  .tb-title{font-size:16px;letter-spacing:.5px;}
+  .tb-sub{display:none;}
+  .tb-right .period-badge,.tb-right #change-src-btn{display:none;}
+  .tb-right .btn{font-size:11px;padding:6px 10px;gap:4px;}
+  .tb-right .btn svg{width:11px;height:11px;}
+  #scroll-area{padding:12px 10px;gap:14px;}
+  .sec-info-banner{padding:9px 12px!important;gap:9px!important;}
+  .sec-title{font-size:17px;}
+  .kpi-grid{grid-template-columns:repeat(2,1fr);gap:8px;}
+  .kpi-card{padding:12px 13px;}
+  .kpi-val{font-size:26px;}
+  .kpi-chg{font-size:11px;}
+  .total-banner{padding:10px 12px;gap:8px;flex-wrap:wrap;justify-content:flex-start;}
+  .tot-item{min-width:calc(33% - 8px);flex:0 0 auto;text-align:center;}
+  .tot-num{font-size:20px;}
+  .tot-chg{font-size:10px;}
+  .tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:10px;}
+  .ctbl{min-width:600px;}
+  .ctbl thead th{padding:10px 10px;font-size:10.5px;}
+  .ctbl td{padding:9px 10px;font-size:12px;}
+  .plat-name{font-size:12px;}
+  .chart-row{grid-template-columns:1fr;}
+  .chart-box{height:185px;}
+  .chart-card{padding:14px 14px;}
+  #upload-section{min-height:auto;padding:8px;}
+  .upload-box{padding:22px 16px!important;}
+}
+
+@media(max-width:500px){
+  #topbar{padding:0 8px 0 54px;height:50px;}
+  .tb-title{font-size:14px;}
+  .tb-right .btn-ghost{display:none;}
+  .tb-right .btn-mag{padding:6px 10px;font-size:11px;}
+  #scroll-area{padding:10px 8px;gap:12px;padding-bottom:calc(10px + var(--safe-bottom));}
+  .kpi-grid{grid-template-columns:repeat(2,1fr);gap:7px;}
+  .kpi-card{padding:10px 11px;}
+  .kpi-val{font-size:23px;}
+  .kpi-plat{font-size:8.5px;gap:4px;}
+  .kpi-chg{font-size:10.5px;}
+  .total-banner{flex-direction:column;align-items:stretch;padding:0;gap:0;border-radius:10px;overflow:hidden;}
+  .tot-item{display:flex;align-items:center;padding:9px 14px;border-bottom:1px solid var(--border2);min-width:0;text-align:left;background:#fff;}
+  .tot-item:last-child{border-bottom:none;}
+  .tot-lbl{flex:1;margin-bottom:0;font-size:9px;}
+  .tot-num{font-size:18px;flex-shrink:0;margin:0 8px;}
+  .tot-chg{font-size:10px;margin-top:0;flex-shrink:0;}
+  .sec-title{font-size:16px;}
+  .sec-hd{flex-wrap:wrap;gap:6px;}
+  .sec-tag{font-size:8.5px;}
+  .chart-box{height:155px;}
+  .chart-title{font-size:12px;}
+  .chart-sub{font-size:10px;}
+  .chart-hd{flex-wrap:wrap;gap:6px;}
+  .ctbl{min-width:520px;}
+  .ctbl thead th{padding:8px 8px;font-size:9.5px;}
+  .ctbl td{padding:8px 8px;font-size:11px;}
+  .plat-name{font-size:11px;}
+  .num-cell{font-size:11px;}
+  .chg-val{font-size:10px;}
+  .upload-box{padding:18px 14px!important;border-radius:12px!important;}
+  .upload-box h2{font-size:16px!important;}
+  .upload-box p{font-size:11px!important;}
+}
+
+.this-week-col{background:rgba(37,99,235,.05)!important;color:var(--dark)!important;position:relative;}
+.this-week-col::after{content:'';position:absolute;top:0;left:0;right:0;bottom:0;border-left:2px solid rgba(37,99,235,.2);pointer-events:none;}
+#sidebar,#topbar,.sec-title,.sec-tag,.btn,.sb-item,.sb-lbl{user-select:none;-webkit-user-select:none;}
+.print-header{display:none;align-items:center;justify-content:space-between;padding-bottom:12px;border-bottom:2px solid #B91C1C;margin-bottom:16px;}
+.ph-logo{display:flex;align-items:center;gap:12px;}
+.ph-box{width:36px;height:36px;background:#B91C1C;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:18px;color:#fff;}
+.ph-name{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1.5px;color:#111;}
+.ph-sub{font-size:10px;color:#666;letter-spacing:.5px;text-transform:uppercase;}
+.ph-date{font-size:11px;color:#666;text-align:right;}
+.upload-ico-wrap{width:60px;height:60px;background:rgba(185,28,28,.08);border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;}
+.upload-ico-wrap svg{width:28px;height:28px;fill:var(--mag);}
+#toast{position:fixed;bottom:calc(18px + var(--safe-bottom));right:18px;background:var(--dark);border:1px solid rgba(255,255,255,.1);border-radius:9px;padding:10px 16px;font-size:13px;color:#fff;display:none;align-items:center;gap:8px;z-index:999;box-shadow:0 8px 28px rgba(0,0,0,.2);}
 </style>
 </head>
 <body>
-<div class="orb o1"></div>
-<div class="orb o2"></div>
 
-<div class="center">
-  <div class="live-row">
-    <div class="live-dot" id="live-dot"></div>
-    <span class="live-label" id="live-label">LIVE NOW</span>
+<!-- SVG PLATFORM ICONS -->
+<svg style="display:none" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="icon-linkedin" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></symbol>
+  <symbol id="icon-youtube" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></symbol>
+  <symbol id="icon-facebook" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></symbol>
+  <symbol id="icon-instagram" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></symbol>
+  <symbol id="icon-tiktok" viewBox="0 0 24 24"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></symbol>
+  <symbol id="icon-whatsapp" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></symbol>
+  <symbol id="icon-mdcat" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/></symbol>
+  <symbol id="icon-ecat" viewBox="0 0 24 24"><path d="M22 9V7h-2V5c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-2h2v-2h-2v-2h2v-2h-2V9h2zm-4 10H4V5h14v14zM6 13h5v4H6zm6-6h4v3h-4zM6 7h5v5H6zm6 4h4v6h-4z"/></symbol>
+  <symbol id="icon-bcat" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></symbol>
+  <symbol id="icon-chart" viewBox="0 0 24 24"><path d="M3.5 18.49l6-6.01 4 4L22 6.92l-1.41-1.41-7.09 7.97-4-4L2 16.99z"/></symbol>
+  <symbol id="icon-calendar" viewBox="0 0 24 24"><path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 18H4V8h16v13z"/></symbol>
+  <symbol id="icon-analysis" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14l-5-5 1.41-1.41L12 14.17l7.59-7.59L21 8l-9 9z"/></symbol>
+  <symbol id="icon-trends" viewBox="0 0 24 24"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></symbol>
+  <symbol id="icon-upload" viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/></symbol>
+  <symbol id="icon-print" viewBox="0 0 24 24"><path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/></symbol>
+</svg>
+
+<!-- PWA INSTALL BANNER -->
+<div id="pwa-install-banner">
+  <div class="pwa-banner-row">
+    <div class="pwa-banner-icon">CT</div>
+    <div>
+      <div class="pwa-banner-title">App Install Karein</div>
+      <div class="pwa-banner-sub">Chaajao Analytics — Home screen par add karein</div>
+    </div>
   </div>
+  <div class="pwa-banner-btns">
+    <button class="pwa-btn-install" onclick="installPWA()">📲 Install App</button>
+    <button class="pwa-btn-dismiss" onclick="dismissInstall()">Baad Mein</button>
+  </div>
+</div>
 
-  <h1>Chaajao App<br><span class="g">New Version Reveal</span></h1>
-  <p class="sub" id="sub-text">MDCAT 2026 · Live Session</p>
+<!-- SIDEBAR -->
+<button id="hamburger" onclick="toggleSidebar()" aria-label="Menu"><svg viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg></button>
+<div id="sidebar-overlay" onclick="toggleSidebar()"></div>
+<div id="sidebar">
+  <div class="sb-logo">
+    <div class="sb-logo-box">CT</div>
+    <div class="sb-name">CHAAJAO</div>
+    <div class="sb-sub">Technologies</div>
+  </div>
+  <div class="sb-nav">
+    <div class="sb-lbl">Reports</div>
+    <a class="sb-item active" onclick="navTo(this,'totals')">
+      <span class="ico"><svg viewBox="0 0 24 24"><use href="#icon-chart"/></svg></span> Total Overview</a>
+    <a class="sb-item" onclick="navTo(this,'weekly')">
+      <span class="ico"><svg viewBox="0 0 24 24"><use href="#icon-calendar"/></svg></span> Weekly Comparison</a>
+    <a class="sb-item" onclick="navTo(this,'monthly')">
+      <span class="ico"><svg viewBox="0 0 24 24"><use href="#icon-analysis"/></svg></span> Monthly Analysis</a>
+    <div class="sb-lbl">Insights</div>
+    <a class="sb-item" onclick="navTo(this,'trends')">
+      <span class="ico"><svg viewBox="0 0 24 24"><use href="#icon-trends"/></svg></span> Growth Trends</a>
+    <div class="sb-lbl">Actions</div>
+    <a class="sb-item" onclick="document.getElementById('file-input').click()">
+      <span class="ico"><svg viewBox="0 0 24 24"><use href="#icon-upload"/></svg></span> Upload New File</a>
+    <a class="sb-item" onclick="manualRefresh()">
+      <span class="ico"><svg viewBox="0 0 24 24"><path d="M17.65 6.35A7.958 7.958 0 0 0 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0 1 12 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z" fill="currentColor"/></svg></span> Refresh Data</a>
+    <a class="sb-item" onclick="window.print()">
+      <span class="ico"><svg viewBox="0 0 24 24"><use href="#icon-print"/></svg></span> Print / Save PDF</a>
+  </div>
+  <div class="sb-foot">
+    <div class="sb-foot-info" id="sb-info">No data loaded</div>
+    <div class="sb-foot-badge" id="sb-date">Upload file to start</div>
+  </div>
+</div>
 
-  <div id="video-wrap">
-    <div id="video-inner">
-      <iframe id="yt-frame"
-        src="https://www.youtube.com/embed/5QfmfJySn44?si=7zC5yfnsqCVWw04o&autoplay=1"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        allowfullscreen>
-      </iframe>
-      <div id="timer-wrap">
-        <p class="timer-msg" id="timer-msg">Session shuru hone mein</p>
-        <div class="timer-digits" id="countdown">--:--:--</div>
-        <p class="timer-sub">Aaj · Friday 17 April · 7:15 PM</p>
-      </div>
+<!-- MAIN -->
+<div id="main">
+  <div id="topbar">
+    <div>
+      <div class="tb-title">Social Media Analytics</div>
+      <div class="tb-sub" id="tb-sub">Chaajao Technologies — Upload your Excel file to begin</div>
+    </div>
+    <div class="tb-right">
+      <span class="period-badge" id="period-badge" style="display:none"></span>
+      <button class="btn btn-ghost" onclick="document.getElementById('file-input').click()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><use href="#icon-upload"/></svg> Upload Excel</button>
+      <button class="btn btn-ghost" id="change-src-btn" style="display:none" onclick="changeSource()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M17.65 6.35A7.958 7.958 0 0 0 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0 1 12 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg> Change Source</button>
+      <button class="btn btn-mag" onclick="window.print()" id="print-btn" style="display:none">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><use href="#icon-print"/></svg> Print</button>
     </div>
   </div>
 
-  <p class="brand">chaajao<span>.com</span></p>
+  <div id="scroll-area">
+    <div class="print-header" id="print-header">
+      <div class="ph-logo">
+        <div class="ph-box">CT</div>
+        <div>
+          <div class="ph-name">CHAAJAO TECHNOLOGIES</div>
+          <div class="ph-sub">Social Media Analytics Report</div>
+        </div>
+      </div>
+      <div class="ph-date" id="ph-date"></div>
+    </div>
+
+    <!-- UPLOAD SECTION -->
+    <div id="upload-section">
+      <div style="width:100%;max-width:590px;display:flex;flex-direction:column;gap:14px;">
+        <div style="background:linear-gradient(135deg,rgba(185,28,28,.07),rgba(185,28,28,.02));border:1px solid var(--mag-border);border-radius:12px;padding:16px 20px;display:flex;align-items:flex-start;gap:12px;">
+          <div style="width:34px;height:34px;background:var(--mag);border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;box-shadow:0 3px 12px rgba(185,28,28,.3);">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="#fff"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+          </div>
+          <div>
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:1px;color:var(--dark);margin-bottom:4px;">Yeh Dashboard Kya Hai?</div>
+            <div style="font-size:12px;color:var(--text2);line-height:1.75;">
+              <strong>Chaajao Technologies</strong> ka Social Media Analytics tracker hai.<br>
+              <strong>LinkedIn, YouTube, Facebook, Instagram, TikTok, WhatsApp</strong> — sab platforms ka weekly aur monthly growth yahan milta hai.<br>
+              Data <strong>automatically load</strong> hota hai — page open karo, dashboard tayyar!
+            </div>
+          </div>
+        </div>
+
+        <div class="upload-box" style="padding:24px 28px;cursor:default;text-align:left;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div style="width:36px;height:36px;background:rgba(15,157,88,.1);border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <svg viewBox="0 0 24 24" style="width:19px;height:19px;fill:#0F9D58"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/></svg>
+              </div>
+              <div>
+                <div style="font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:.5px;color:var(--dark);">Google Sheet — Live Data</div>
+                <div style="font-size:10.5px;color:var(--muted);">Default link already set · Auto-refreshes every 5 min</div>
+              </div>
+            </div>
+            <button class="btn btn-ghost" style="font-size:11px;padding:5px 12px;" onclick="resetToDefault()">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M17.65 6.35A7.958 7.958 0 0 0 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0 1 12 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+              Default URL
+            </button>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <input id="gs-url" type="text" placeholder="https://docs.google.com/spreadsheets/d/..."
+              style="flex:1;padding:9px 13px;border-radius:8px;border:1px solid var(--border);background:var(--bg2);color:var(--text);font-family:'DM Sans',sans-serif;font-size:12px;outline:none;transition:border .15s;"
+              onkeydown="if(event.key==='Enter') connectSheet()"
+              onfocus="this.style.borderColor='var(--mag)'" onblur="this.style.borderColor='var(--border)'">
+            <button class="btn btn-mag" onclick="connectSheet()">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
+              Connect
+            </button>
+          </div>
+          <div id="gs-status" style="margin-top:9px;font-size:11.5px;color:var(--muted);min-height:16px;"></div>
+          <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border2);font-size:11px;color:var(--muted);line-height:1.65;">
+            💡 <strong>URL change karna ho?</strong> Naya Google Sheets link paste karein aur Connect dabayein. Sheet ka access <em>"Anyone with link can view"</em> zaroor hona chahiye.
+          </div>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="flex:1;height:1px;background:var(--border);"></div>
+          <span style="font-size:10px;color:var(--muted);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;">Ya Excel Upload Karein</span>
+          <div style="flex:1;height:1px;background:var(--border);"></div>
+        </div>
+
+        <div class="upload-box" id="drop-zone" style="padding:20px 28px;"
+          onclick="document.getElementById('file-input').click()"
+          ondragover="event.preventDefault();this.classList.add('dragover')"
+          ondragleave="this.classList.remove('dragover')"
+          ondrop="onDrop(event)">
+          <div class="upload-ico-wrap" style="margin-bottom:12px;">
+            <svg viewBox="0 0 24 24"><use href="#icon-upload"/></svg>
+          </div>
+          <h2 style="font-size:17px;margin-bottom:5px;">Excel File Upload</h2>
+          <p style="font-size:11.5px;color:var(--text2);margin-bottom:14px;line-height:1.6;">
+            <strong>Social_Media_Analytics_Dashboard.xlsx</strong> yahan drop karein.<br>
+            <span style="font-size:11px;color:var(--muted);">Weekly Engagement sheet ka data automatically parse hoga.</span>
+          </p>
+          <button class="btn btn-ghost" style="pointer-events:none;margin:0 auto;font-size:12px;">Browse File</button>
+        </div>
+        <input type="file" id="file-input" accept=".xlsx,.xls,.csv" onchange="onFileInput(event)">
+      </div>
+    </div>
+
+    <!-- SEC 1 -->
+    <div id="sec-totals" class="dash-sec" style="display:none">
+      <div class="sec-info-banner" style="background:linear-gradient(135deg,rgba(185,28,28,.05),transparent);border-left:4px solid #B91C1C;border-radius:0 10px 10px 0;padding:12px 16px;margin-bottom:2px;display:flex;align-items:center;gap:14px;">
+        <div style="width:36px;height:36px;background:#B91C1C18;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="#B91C1C"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+        </div>
+        <div>
+          <div style="font-size:13px;font-weight:700;color:var(--dark);margin-bottom:2px;">Total Follower Count</div>
+          <div style="font-size:11.5px;color:var(--text2);line-height:1.5;">Aaj tak kitne log Chaajao ko follow kar rahe hain — har platform ka latest number</div>
+        </div>
+      </div>
+      <div class="sec-hd">
+        <div class="sec-title">Total Overview</div>
+        <span class="sec-tag" id="snapshot-tag">Latest Snapshot</span>
+      </div>
+      <div class="total-banner" id="total-banner"></div>
+      <div class="kpi-grid" id="kpi-grid"></div>
+    </div>
+
+    <!-- SEC 2 -->
+    <div id="sec-weekly" class="dash-sec" style="display:none">
+      <div class="sec-info-banner" style="background:linear-gradient(135deg,rgba(185,28,28,.05),transparent);border-left:4px solid #0A66C2;border-radius:0 10px 10px 0;padding:12px 16px;margin-bottom:2px;display:flex;align-items:center;gap:14px;">
+        <div style="width:36px;height:36px;background:#0A66C218;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="#0A66C2"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>
+        </div>
+        <div>
+          <div style="font-size:13px;font-weight:700;color:var(--dark);margin-bottom:2px;">Is Hafte Kya Badla?</div>
+          <div style="font-size:11.5px;color:var(--text2);line-height:1.5;">Aakhri 3 updates ka comparison — green matlab izafa, red matlab kami</div>
+        </div>
+      </div>
+      <div class="sec-hd">
+        <div class="sec-title">Weekly Breakdown</div>
+        <span class="sec-tag">Latest 3 Entries</span>
+      </div>
+      <div class="tbl-wrap">
+        <table class="ctbl">
+          <thead><tr id="w-head"></tr></thead>
+          <tbody id="w-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- SEC 3 -->
+    <div id="sec-monthly" class="dash-sec" style="display:none">
+      <div class="sec-info-banner" style="background:linear-gradient(135deg,rgba(185,28,28,.05),transparent);border-left:4px solid #059669;border-radius:0 10px 10px 0;padding:12px 16px;margin-bottom:2px;display:flex;align-items:center;gap:14px;">
+        <div style="width:36px;height:36px;background:#05966918;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="#059669"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14l-5-5 1.41-1.41L12 14.17l7.59-7.59L21 8l-9 9z"/></svg>
+        </div>
+        <div>
+          <div style="font-size:13px;font-weight:700;color:var(--dark);margin-bottom:2px;">Mahina Ba Mahina Growth</div>
+          <div style="font-size:11.5px;color:var(--text2);line-height:1.5;">Har mahine kitna growth hua — numbers ke saath upar/neeche ka arrow clearly dikhata hai</div>
+        </div>
+      </div>
+      <div class="sec-hd">
+        <div class="sec-title">Monthly Analysis</div>
+        <span class="sec-tag">Last 6 Months</span>
+      </div>
+      <div class="tbl-wrap">
+        <table class="ctbl">
+          <thead>
+            <tr>
+              <th>Month</th><th>LinkedIn</th><th>YouTube</th><th>FB Follows</th>
+              <th>Instagram</th><th>TikTok</th><th>WhatsApp</th>
+              <th>WA MDCAT</th><th>WA ECAT</th><th>WA BCAT</th><th>Net Change</th>
+            </tr>
+          </thead>
+          <tbody id="m-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- SEC 4 -->
+    <div id="sec-trends" class="dash-sec" style="display:none">
+      <div class="sec-info-banner" style="background:linear-gradient(135deg,rgba(185,28,28,.05),transparent);border-left:4px solid #7C3AED;border-radius:0 10px 10px 0;padding:12px 16px;margin-bottom:2px;display:flex;align-items:center;gap:14px;">
+        <div style="width:36px;height:36px;background:#7C3AED18;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="#7C3AED"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg>
+        </div>
+        <div>
+          <div style="font-size:13px;font-weight:700;color:var(--dark);margin-bottom:2px;">Growth Ka Graph</div>
+          <div style="font-size:11.5px;color:var(--text2);line-height:1.5;">Dropdown se koi bhi platform chunein — uska poora history graphically dekhein</div>
+        </div>
+      </div>
+      <div class="sec-hd">
+        <div class="sec-title">Growth Trends</div>
+        <span class="sec-tag">All Time</span>
+      </div>
+      <div class="chart-row">
+        <div class="chart-card">
+          <div class="chart-hd">
+            <div><div class="chart-title">Platform Growth Over Time</div><div class="chart-sub">Weekly history</div></div>
+            <select class="chart-sel" id="trend-sel" onchange="updateTrend()">
+              <option value="youtube">YouTube</option>
+              <option value="linkedin">LinkedIn</option>
+              <option value="facebook_follows">FB Follows</option>
+              <option value="instagram">Instagram</option>
+              <option value="tiktok">TikTok</option>
+              <option value="whatsapp">WhatsApp</option>
+            </select>
+          </div>
+          <div class="chart-box"><canvas id="trendChart"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-hd"><div><div class="chart-title">Platform Distribution</div><div class="chart-sub">Latest numbers</div></div></div>
+          <div class="chart-box"><canvas id="donutChart"></canvas></div>
+        </div>
+      </div>
+      <div class="chart-card" style="margin-top:0">
+        <div class="chart-hd"><div><div class="chart-title">Week-over-Week Net Growth</div><div class="chart-sub">New followers per week — last 10 weeks</div></div></div>
+        <div class="chart-box"><canvas id="wowChart"></canvas></div>
+      </div>
+    </div>
+  </div>
 </div>
 
+<div id="toast"><span id="toast-msg"></span></div>
+
 <script>
-  // Target: today 7:15 PM Pakistan Standard Time (UTC+5)
-  function getTarget() {
-    const now = new Date();
-    const pk = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Karachi' }));
-    const target = new Date(pk);
-    target.setHours(19, 15, 0, 0);
-    // convert back to UTC offset
-    const diff = now - pk;
-    return new Date(target.getTime() + diff);
-  }
-
-  const target = getTarget();
-  const dot = document.getElementById('live-dot');
-  const label = document.getElementById('live-label');
-  const subText = document.getElementById('sub-text');
-  const timerWrap = document.getElementById('timer-wrap');
-  const timerMsg = document.getElementById('timer-msg');
-  const countdown = document.getElementById('countdown');
-  const ytFrame = document.getElementById('yt-frame');
-
-  function pad(n) { return String(n).padStart(2, '0'); }
-
-  function showTimer(before) {
-    timerWrap.classList.add('show');
-    ytFrame.style.opacity = '0';
-    dot.style.background = before ? '#f5c842' : '#ff3b3b';
-    label.style.color = before ? '#f5c842' : '#ff3b3b';
-    label.textContent = before ? 'COMING SOON' : 'STREAM ISSUE — REJOINING';
-    subText.textContent = before ? 'Aaj 7:15 PM Pakistan Time' : 'Thodi dair mein wapas aajayega';
-    timerMsg.textContent = before ? 'Session shuru hone mein' : 'Estimated resume in';
-  }
-
-  function hideTimer() {
-    timerWrap.classList.remove('show');
-    ytFrame.style.opacity = '1';
-    dot.style.background = '#ff3b3b';
-    label.style.color = '#ff3b3b';
-    label.textContent = 'LIVE NOW';
-    subText.textContent = 'MDCAT 2026 · Live Session';
-  }
-
-  let streamOk = true;
-  let streamCheckFail = 0;
-
-  function tick() {
-    const now = new Date();
-    const diff = target - now;
-
-    if (diff > 0) {
-      // Before session
-      showTimer(true);
-      const h = Math.floor(diff / 3600000);
-      const m = Math.floor((diff % 3600000) / 60000);
-      const s = Math.floor((diff % 60000) / 1000);
-      countdown.textContent = `${pad(h)}:${pad(m)}:${pad(s)}`;
-    } else {
-      // Session time — show stream, but watch for errors
-      if (streamOk) {
-        hideTimer();
-        countdown.textContent = '00:00:00';
-      } else {
-        // stream issue — show live countdown (time since session start)
-        showTimer(false);
-        const gone = Math.abs(diff);
-        const h = Math.floor(gone / 3600000);
-        const m = Math.floor((gone % 3600000) / 60000);
-        const s = Math.floor((gone % 60000) / 1000);
-        countdown.textContent = `${pad(h)}:${pad(m)}:${pad(s)}`;
-      }
-    }
-  }
-
-  // Detect YouTube frame errors (CSP/network)
-  ytFrame.addEventListener('error', () => {
-    streamOk = false;
+// ── PWA SERVICE WORKER REGISTRATION ──────────────────
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js')
+      .then(reg => console.log('SW registered:', reg.scope))
+      .catch(err => console.warn('SW failed:', err));
   });
+}
 
-  // Fallback: if iframe stays blank (no load event in 12s after session time)
+// ── PWA INSTALL PROMPT ────────────────────────────────
+let deferredPrompt = null;
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  // Show install banner after 3 seconds
   setTimeout(() => {
-    const now = new Date();
-    if (now >= target) {
-      try {
-        const doc = ytFrame.contentDocument;
-        if (!doc || doc.body?.innerHTML === '') {
-          streamOk = false;
-        }
-      } catch(e) {
-        // cross-origin = likely loaded fine, leave it
-      }
+    const banner = document.getElementById('pwa-install-banner');
+    if (deferredPrompt && !localStorage.getItem('pwa-dismissed')) {
+      banner.style.display = 'flex';
     }
-  }, 12000);
+  }, 3000);
+});
 
-  tick();
-  setInterval(tick, 1000);
+function installPWA() {
+  document.getElementById('pwa-install-banner').style.display = 'none';
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(choice => {
+      if (choice.outcome === 'accepted') showToast('✅ App install ho rahi hai!');
+      deferredPrompt = null;
+    });
+  }
+}
+
+function dismissInstall() {
+  document.getElementById('pwa-install-banner').style.display = 'none';
+  try { localStorage.setItem('pwa-dismissed', '1'); } catch(e) {}
+}
+
+window.addEventListener('appinstalled', () => {
+  showToast('🎉 Chaajao Analytics install ho gayi!');
+  document.getElementById('pwa-install-banner').style.display = 'none';
+});
+
+// ── PLATFORM CONFIG ────────────────────────────────────
+const PLATS = [
+  { key:'linkedin',         label:'LinkedIn',         iconId:'icon-linkedin',   color:'#0A66C2' },
+  { key:'youtube',          label:'YouTube',          iconId:'icon-youtube',    color:'#FF0000' },
+  { key:'facebook_follows', label:'FB Follows',       iconId:'icon-facebook',   color:'#1877F2' },
+  { key:'instagram',        label:'Instagram',        iconId:'icon-instagram',  color:'#E1306C' },
+  { key:'tiktok',           label:'TikTok',           iconId:'icon-tiktok',     color:'#161823' },
+  { key:'whatsapp',         label:'WhatsApp',         iconId:'icon-whatsapp',   color:'#25D366' },
+  { key:'wa_mdcat',         label:'WA MDCAT',         iconId:'icon-mdcat',      color:'#059669' },
+  { key:'wa_ecat',          label:'WA ECAT',          iconId:'icon-ecat',       color:'#2563EB' },
+  { key:'wa_bcat',          label:'WA BCAT',          iconId:'icon-bcat',       color:'#7C3AED' },
+];
+
+const TOTAL_KEYS = ['linkedin','youtube','facebook_follows','instagram','tiktok','whatsapp','wa_mdcat','wa_ecat','wa_bcat'];
+let D = [];
+
+const platIcon = (iconId, size=16, fill='currentColor') =>
+  `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="${fill}"><use href="#${iconId}"/></svg>`;
+
+function onDrop(e){
+  e.preventDefault();
+  document.getElementById('drop-zone').classList.remove('dragover');
+  if(e.dataTransfer.files[0]) loadFile(e.dataTransfer.files[0]);
+}
+function onFileInput(e){ if(e.target.files[0]) loadFile(e.target.files[0]); }
+
+function loadFile(file){
+  const rd = new FileReader();
+  rd.onload = ev => {
+    try{
+      const wb = XLSX.read(ev.target.result, { type:'array', cellDates:true });
+      const sn = wb.SheetNames.find(n => /week|engag/i.test(n)) || wb.SheetNames[0];
+      const raw = XLSX.utils.sheet_to_json(wb.Sheets[sn], { header:1, defval:null });
+      parseRows(raw);
+      if(!D.length){ showToast('No data found. Check your Excel sheet.'); return; }
+      renderAll();
+      showToast('Loaded ' + D.length + ' entries — ' + file.name);
+    } catch(err){ showToast('Error: ' + err.message); }
+  };
+  rd.readAsArrayBuffer(file);
+}
+
+let gsRefreshTimer = null;
+let gsSheetId = null;
+let gsGid = '0';
+let gsSheetName = 'Weekly Engagment';
+
+function extractSheetId(url){
+  const m = url.match(/\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/);
+  return m ? m[1] : null;
+}
+function extractGid(url){
+  const m = url.match(/[#&?]gid=([0-9]+)/);
+  return m ? m[1] : '0';
+}
+function setGsStatus(msg, color='var(--muted)'){
+  const el = document.getElementById('gs-status');
+  el.innerHTML = msg;
+  el.style.color = color;
+}
+
+async function connectSheet(){
+  const url = document.getElementById('gs-url').value.trim();
+  if(!url){ setGsStatus('Please paste a Google Sheets URL.', 'var(--red-text)'); return; }
+  const id = extractSheetId(url);
+  if(!id){ setGsStatus('Invalid URL — make sure it\'s a Google Sheets link.', 'var(--red-text)'); return; }
+  gsSheetId = id;
+  gsGid = extractGid(url);
+  setGsStatus('⏳ Connecting to Google Sheet...', 'var(--muted)');
+  await fetchGoogleSheet();
+}
+
+async function fetchGoogleSheet(){
+  if(!gsSheetId) return;
+  const sheetParam = gsSheetName ? `&sheet=${encodeURIComponent(gsSheetName)}` : '';
+  const jsonUrl = `https://docs.google.com/spreadsheets/d/${gsSheetId}/gviz/tq?tqx=out:json&gid=${gsGid}${sheetParam}&range=A4:K500`;
+  try{
+    const res = await fetch(jsonUrl);
+    if(!res.ok) throw new Error('Could not reach Google Sheets (HTTP ' + res.status + ')');
+    const text = await res.text();
+    const jsonStr = text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\)/);
+    if(!jsonStr) throw new Error('Unexpected response. Is the sheet public?');
+    const json = JSON.parse(jsonStr[1]);
+    if(json.status === 'error') throw new Error(json.errors?.[0]?.message || 'Google Sheets error');
+    parseGvizResponse(json);
+    if(!D.length){
+      const firstRow = json.table?.rows?.[0]?.c;
+      const sample = firstRow ? JSON.stringify(firstRow.slice(0,3)) : 'empty';
+      setGsStatus(`⚠️ No valid rows found. First row data: ${sample}`, 'orange');
+      return;
+    }
+    renderAll();
+    const now = new Date().toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
+    setGsStatus(`✅ Connected — ${D.length} entries loaded. Last synced: ${now}. Auto-refreshes every 5 min.`, '#0F9D58');
+    try{ localStorage.setItem('ct_gs_url', document.getElementById('gs-url').value.trim()); }catch(e){}
+    if(gsRefreshTimer) clearInterval(gsRefreshTimer);
+    gsRefreshTimer = setInterval(silentRefresh, 5 * 60 * 1000);
+  } catch(err){
+    setGsStatus('❌ ' + err.message, 'var(--red-text)');
+  }
+}
+
+async function silentRefresh(){
+  if(!gsSheetId) return;
+  const sheetParam = gsSheetName ? `&sheet=${encodeURIComponent(gsSheetName)}` : '';
+  const jsonUrl = `https://docs.google.com/spreadsheets/d/${gsSheetId}/gviz/tq?tqx=out:json&gid=${gsGid}${sheetParam}&range=A4:K500`;
+  try{
+    const res = await fetch(jsonUrl);
+    if(!res.ok) return;
+    const text = await res.text();
+    const jsonStr = text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\)/);
+    if(!jsonStr) return;
+    const json = JSON.parse(jsonStr[1]);
+    if(json.status === 'error') return;
+    parseGvizResponse(json);
+    if(!D.length) return;
+    renderAll();
+    const now = new Date().toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
+    setGsStatus(`✅ Connected — ${D.length} entries. Last synced: ${now}. Auto-refreshes every 5 min.`, '#0F9D58');
+  } catch(e){}
+}
+
+function parseGvizResponse(json){
+  const rows = json.table?.rows || [];
+  D = [];
+  for(const row of rows){
+    const c = row.c || [];
+    if(!c || !c[0]) continue;
+    const raw0 = c[0];
+    if(!raw0 || raw0.v === null || raw0.v === undefined) continue;
+    let dt = null;
+    const tryStr = s => {
+      if(!s) return null;
+      s = String(s).trim();
+      if(/date|week|month|platform|linkedin|youtube/i.test(s)) return null;
+      let m = s.match(/^Date\((\d{4}),(\d{1,2}),(\d{1,2})\)$/);
+      if(m) return new Date(+m[1], +m[2], +m[3]);
+      m = s.match(/^(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{4})$/);
+      if(m){ const d=new Date(+m[3],+m[2]-1,+m[1]); if(!isNaN(d))return d; }
+      m = s.match(/^(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})$/);
+      if(m){ const d=new Date(+m[1],+m[2]-1,+m[3]); if(!isNaN(d))return d; }
+      m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+      if(m){ const d=new Date(+m[3],+m[1]-1,+m[2]); if(!isNaN(d))return d; }
+      const d2 = new Date(s);
+      if(!isNaN(d2.getTime()) && d2.getFullYear()>=2020) return d2;
+      return null;
+    };
+    dt = tryStr(raw0.v) || tryStr(raw0.f);
+    if(!dt && typeof raw0.v === 'number'){
+      const d = new Date(Math.round((raw0.v - 25569) * 86400 * 1000));
+      if(!isNaN(d.getTime()) && d.getFullYear() >= 2020) dt = d;
+    }
+    if(!dt || dt.getFullYear() < 2020) continue;
+    const v = cell => {
+      if(!cell || cell.v === null || cell.v === undefined) return null;
+      if(typeof cell.v === 'number') return cell.v;
+      const s = String(cell.v).trim();
+      if(s === '-' || s === '' || s.toLowerCase() === 'n/a') return null;
+      const n = parseFloat(s.replace(/[^0-9.-]/g,''));
+      return isNaN(n) ? null : n;
+    };
+    D.push({
+      date:dt, linkedin:v(c[1]), youtube:v(c[2]),
+      facebook_likes:v(c[3]), facebook_follows:v(c[4]),
+      instagram:v(c[5]), tiktok:v(c[6]), whatsapp:v(c[7]),
+      wa_mdcat:v(c[8]), wa_ecat:v(c[9]), wa_bcat:v(c[10]),
+    });
+  }
+  D.sort((a,b) => a.date - b.date);
+}
+
+const DEFAULT_GS_URL = 'https://docs.google.com/spreadsheets/d/1MG7nZhr4L7cORXWL5FTuTPUDn0354bpqlq4RrzZNZQo/';
+
+function resetToDefault(){
+  document.getElementById('gs-url').value = DEFAULT_GS_URL;
+  try{ localStorage.removeItem('ct_gs_url'); }catch(e){}
+  setGsStatus('✅ Default URL restore ho gaya — Connect dabayein.', '#0F9D58');
+}
+
+window.addEventListener('load', ()=>{
+  try{
+    const saved = localStorage.getItem('ct_gs_url');
+    const urlToUse = saved || DEFAULT_GS_URL;
+    document.getElementById('gs-url').value = urlToUse;
+    setGsStatus('⏳ Connecting to Chaajao Social Analytics...', 'var(--muted)');
+    setTimeout(connectSheet, 600);
+  }catch(e){
+    document.getElementById('gs-url').value = DEFAULT_GS_URL;
+    setTimeout(connectSheet, 600);
+  }
+});
+
+function parseRows(raw){
+  D = [];
+  for(let r of raw){
+    if(!r || !(r[0] instanceof Date) || r[0].getFullYear() < 2020) continue;
+    const v = x => {
+      if(x === null || x === undefined || x === '-' || x === '') return null;
+      const n = parseFloat(String(x).replace(/[^0-9.-]/g, ''));
+      return isNaN(n) ? null : n;
+    };
+    D.push({
+      date:r[0], linkedin:v(r[1]), youtube:v(r[2]),
+      facebook_likes:v(r[3]), facebook_follows:v(r[4]),
+      instagram:v(r[5]), tiktok:v(r[6]), whatsapp:v(r[7]),
+      wa_mdcat:v(r[8]), wa_ecat:v(r[9]), wa_bcat:v(r[10]),
+    });
+  }
+}
+
+const fd  = d => d.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' });
+const fds = d => d.toLocaleDateString('en-GB', { day:'2-digit', month:'short' });
+const fn  = n => (n === null || n === undefined) ? '—' : Number(n).toLocaleString();
+
+function chgBadge(cur, prev, showPct=false){
+  if(cur === null || prev === null) return '<span class="chg-val neu">—</span>';
+  const d = cur - prev;
+  const cls = d > 0 ? 'up' : d < 0 ? 'dn' : 'neu';
+  const arr = d > 0 ? '▲' : d < 0 ? '▼' : '→';
+  const pct = showPct && prev ? ` <span class="chg-pct">(${d>=0?'+':''}${((d/prev)*100).toFixed(1)}%)</span>` : '';
+  return `<span class="chg-val ${cls}">${arr} ${d>=0?'+':''}${Math.abs(d).toLocaleString()}${pct}</span>`;
+}
+
+const platColor = key => PLATS.find(p=>p.key===key)?.color || '#888';
+
+function renderAll(){
+  document.getElementById('upload-section').style.display = 'none';
+  document.getElementById('print-btn').style.display = 'flex';
+  document.getElementById('change-src-btn').style.display = 'flex';
+  const last = D[D.length-1];
+  const pb = document.getElementById('period-badge');
+  pb.textContent = fd(D[0].date) + ' – ' + fd(last.date);
+  pb.style.display = 'block';
+  document.getElementById('tb-sub').textContent = 'Chaajao Technologies — ' + D.length + ' entries loaded';
+  document.getElementById('sb-info').textContent = D.length + ' entries loaded';
+  document.getElementById('sb-date').textContent = 'Latest: ' + fds(last.date);
+  document.getElementById('ph-date').innerHTML =
+    'Report Date: <strong>' + fd(last.date) + '</strong><br>Data Range: ' + fd(D[0].date) + ' – ' + fd(last.date);
+  document.getElementById('snapshot-tag').textContent = fd(last.date);
+  ['sec-totals','sec-weekly','sec-monthly','sec-trends'].forEach(id =>
+    document.getElementById(id).style.display = 'flex'
+  );
+  renderTotals(); renderWeekly(); renderMonthly(); renderCharts();
+}
+
+function renderTotals(){
+  const L = D[D.length-1];
+  const P = D.length > 1 ? D[D.length-2] : null;
+  const total  = TOTAL_KEYS.reduce((s,k)=>s+(L[k]||0),0);
+  const totalP = P ? TOTAL_KEYS.reduce((s,k)=>s+(P[k]||0),0) : null;
+  const tD     = totalP !== null ? total - totalP : null;
+  const bannerPlats = [
+    {key:'youtube',lbl:'YOUTUBE'},{key:'facebook_follows',lbl:'FACEBOOK'},
+    {key:'instagram',lbl:'INSTAGRAM'},{key:'tiktok',lbl:'TIKTOK'},
+    {key:'linkedin',lbl:'LINKEDIN'},{key:'whatsapp',lbl:'WHATSAPP'},
+  ];
+  document.getElementById('total-banner').innerHTML =
+    `<div class="tot-item">
+       <div class="tot-lbl">TOTAL REACH</div>
+       <div class="tot-num">${total.toLocaleString()}</div>
+       ${tD!==null?`<div class="tot-chg ${tD>=0?'up':'dn'}">${tD>=0?'▲ +':'▼ '}${Math.abs(tD).toLocaleString()} vs prev entry</div>`:''}
+     </div>` +
+    bannerPlats.map(bp=>{
+      const c=L[bp.key], p=P?P[bp.key]:null;
+      const d=c!==null&&p!==null?c-p:null;
+      return `<div class="tot-item">
+        <div class="tot-lbl">${bp.lbl}</div>
+        <div class="tot-num">${fn(c)}</div>
+        ${d!==null?`<div class="tot-chg ${d>0?'up':d<0?'dn':'neu'}">${d>=0?'▲ +':'▼ '}${Math.abs(d).toLocaleString()}</div>`:''}
+      </div>`;
+    }).join('');
+  document.getElementById('kpi-grid').innerHTML = PLATS.map(p=>{
+    const cur=L[p.key], prv=P?P[p.key]:null;
+    const d=cur!==null&&prv!==null?cur-prv:null;
+    const cls=d===null?'neu':d>0?'up':d<0?'dn':'neu';
+    const pct=d!==null&&prv?((d/prv)*100).toFixed(1)+'%':null;
+    return `<div class="kpi-card">
+      <div class="kpi-dot" style="background:${p.color}"></div>
+      <div class="kpi-plat" style="color:${p.color}">
+        ${platIcon(p.iconId, 13, p.color)}
+        <span style="color:var(--muted)">${p.label}</span>
+      </div>
+      <div class="kpi-val">${cur!==null?fn(cur):'—'}</div>
+      <div class="kpi-chg ${cls}">
+        ${d===null?'<span class="neu">No prev data</span>'
+          :`<span>${d>=0?'▲ +':'▼ '}${Math.abs(d).toLocaleString()}</span>
+           ${pct?`<span style="font-size:10px;opacity:.65;margin-left:3px">(${d>=0?'+':''}${pct})</span>`:''}`}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderWeekly(){
+  const len=D.length;
+  const e2=len>=1?D[len-1]:null;
+  const e1=len>=2?D[len-2]:null;
+  const e0=len>=3?D[len-3]:null;
+  const cols=[e0,e1,e2];
+  const colLabels=['2 Weeks Ago','Last Week','This Week'];
+  document.getElementById('w-head').innerHTML =
+    '<th>Platform</th>' +
+    cols.map((c,i)=>c
+      ? i===2
+        ? `<th style="background:rgba(255,255,255,.18);position:relative;">
+             <div style="display:flex;align-items:center;justify-content:center;gap:5px;">
+               <svg width="10" height="10" viewBox="0 0 24 24" fill="#4ade80"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.31-8.86c-1.77-.45-2.34-.94-2.34-1.67 0-.84.79-1.43 2.1-1.43 1.38 0 1.9.66 1.94 1.64h1.71c-.05-1.34-.87-2.57-2.49-2.97V5H10.9v1.69c-1.5.32-2.72 1.3-2.72 2.81 0 1.79 1.48 2.68 3.66 3.19 1.95.46 2.34 1.14 2.34 1.85 0 .53-.39 1.37-2.1 1.37-1.6 0-2.23-.72-2.32-1.64H8.04c.1 1.7 1.37 2.66 2.86 2.97V19h2.34v-1.67c1.52-.29 2.72-1.16 2.73-2.77-.01-2.2-1.9-2.96-3.66-3.42z"/></svg>
+               THIS WEEK
+             </div>
+             <div style="font-weight:400;font-size:10px;opacity:.85;margin-top:2px">${fds(c.date)}</div>
+           </th>`
+        : `<th style="opacity:.8">${colLabels[i]}<br><span style="font-weight:400;font-size:10px;opacity:.7">${fds(c.date)}</span></th>`
+      :`<th style="opacity:.35">${colLabels[i]}</th>`
+    ).join('') +
+    '<th>Weekly Change</th>';
+  const rows = [
+    {key:'linkedin',label:'LinkedIn',iconId:'icon-linkedin',color:'#0A66C2'},
+    {key:'youtube',label:'YouTube',iconId:'icon-youtube',color:'#FF0000'},
+    {key:'facebook_follows',label:'Facebook Follows',iconId:'icon-facebook',color:'#1877F2'},
+    {key:'instagram',label:'Instagram',iconId:'icon-instagram',color:'#E1306C'},
+    {key:'tiktok',label:'TikTok',iconId:'icon-tiktok',color:'#161823'},
+    {key:'whatsapp',label:'WhatsApp Channel',iconId:'icon-whatsapp',color:'#25D366'},
+    {key:'wa_mdcat',label:'WA Channel (MDCAT)',iconId:'icon-mdcat',color:'#059669'},
+    {key:'wa_ecat',label:'WA Channel (ECAT)',iconId:'icon-ecat',color:'#2563EB'},
+    {key:'wa_bcat',label:'WA Channel (BCAT)',iconId:'icon-bcat',color:'#7C3AED'},
+  ];
+  let tbody='';
+  for(const r of rows){
+    const v0=e0?e0[r.key]:null, v1=e1?e1[r.key]:null, v2=e2?e2[r.key]:null;
+    tbody+=`<tr>
+      <td class="plat-col"><div class="plat-cell"><div class="plat-icon">${platIcon(r.iconId,16,r.color)}</div><span class="plat-name">${r.label}</span></div></td>
+      <td class="num-cell" style="color:var(--text2)">${v0!==null?fn(v0):'—'}</td>
+      <td class="num-cell" style="color:var(--text2)">${v1!==null?fn(v1):'—'}</td>
+      <td class="num-cell this-week-col"><strong>${v2!==null?fn(v2):'—'}</strong></td>
+      <td class="chg-col">${chgBadge(v2,v1,true)}</td>
+    </tr>`;
+  }
+  const diff=(a,b)=>(a!==null&&b!==null)?a-b:null;
+  const wkDiff1=e1&&e0?TOTAL_KEYS.reduce((s,k)=>s+(diff(e1[k],e0[k])??0),0):null;
+  const wkDiff2=e2&&e1?TOTAL_KEYS.reduce((s,k)=>s+(diff(e2[k],e1[k])??0),0):null;
+  const fmtDiff=v=>{
+    if(v===null) return '<span style="color:var(--muted)">—</span>';
+    const cls=v>0?'up':v<0?'dn':'neu';
+    return `<span class="chg-val ${cls}" style="font-size:14px;">${v>=0?'▲ +':'▼ '}${Math.abs(v).toLocaleString()}</span>`;
+  };
+  tbody+=`<tr class="grand-total">
+    <td class="plat-col"><div class="plat-cell"><div class="plat-icon">${platIcon('icon-chart',16,'var(--mag)')}</div><span class="plat-name">New Followers This Week</span></div></td>
+    <td class="num-cell">${fmtDiff(wkDiff1)}</td>
+    <td class="num-cell">${fmtDiff(wkDiff1)}</td>
+    <td class="num-cell" style="background:rgba(22,163,74,.04)"><strong>${fmtDiff(wkDiff2)}</strong></td>
+    <td class="chg-col">
+      ${wkDiff2!==null&&wkDiff1!==null
+        ?`<span class="chg-val ${(wkDiff2-wkDiff1)>=0?'up':'dn'}">${(wkDiff2-wkDiff1)>=0?'▲':'▼'} ${Math.abs(wkDiff2-wkDiff1).toLocaleString()} vs prev week</span>`
+        :'<span class="chg-val neu">—</span>'}
+    </td>
+  </tr>`;
+  document.getElementById('w-body').innerHTML=tbody;
+}
+
+function renderMonthly(){
+  const byM={};
+  for(const d of D){
+    const key=`${d.date.getFullYear()}-${String(d.date.getMonth()+1).padStart(2,'0')}`;
+    byM[key]=d;
+  }
+  const months=Object.keys(byM).sort().reverse();
+  const show=months.slice(0,6);
+  const extra=months[6]||null;
+  const mkeys=['linkedin','youtube','facebook_follows','instagram','tiktok','whatsapp','wa_mdcat','wa_ecat','wa_bcat'];
+  let tbody='';
+  for(let i=0;i<show.length;i++){
+    const mkey=show[i], cur=byM[mkey];
+    const prevKey=show[i+1]||extra, prev=prevKey?byM[prevKey]:null;
+    const cell=k=>{
+      const c=cur[k],p=prev?prev[k]:null;
+      const d=c!==null&&p!==null?c-p:null;
+      const cls=d===null?'neu':d>0?'up':d<0?'dn':'neu';
+      const diffHtml=d!==null?`<span class="m-diff ${cls}">${d>=0?'▲ +':'▼ '}${Math.abs(d).toLocaleString()}</span>`:'';
+      return `<td><span class="m-num">${c!==null?c.toLocaleString():'—'}</span>${diffHtml}</td>`;
+    };
+    const total=mkeys.reduce((s,k)=>s+(cur[k]||0),0);
+    const totalP=prev?mkeys.reduce((s,k)=>s+(prev[k]||0),0):null;
+    const tc=totalP!==null?total-totalP:null;
+    const tcCls=tc===null?'neu':tc>0?'up':tc<0?'dn':'neu';
+    const mLabel=new Date(mkey+'-02').toLocaleDateString('en-GB',{month:'long',year:'numeric'});
+    tbody+=`<tr>
+      <td class="plat-col"><span class="plat-name">${mLabel}</span></td>
+      ${cell('linkedin')}${cell('youtube')}${cell('facebook_follows')}${cell('instagram')}
+      ${cell('tiktok')}${cell('whatsapp')}${cell('wa_mdcat')}${cell('wa_ecat')}${cell('wa_bcat')}
+      <td><span class="chg-val ${tcCls}">${tc!==null?(tc>=0?'▲ +':'▼ ')+Math.abs(tc).toLocaleString():'—'}</span></td>
+    </tr>`;
+  }
+  document.getElementById('m-body').innerHTML=tbody;
+}
+
+let cTrend=null, cDonut=null, cWow=null;
+const baseOpts={
+  responsive:true, maintainAspectRatio:false,
+  plugins:{
+    legend:{display:false},
+    tooltip:{backgroundColor:'#231F20',titleColor:'#fff',bodyColor:'#A09298',borderColor:'rgba(185,28,28,.2)',borderWidth:1}
+  },
+  scales:{
+    x:{ticks:{color:'#A09298',font:{size:10},maxTicksLimit:12},grid:{color:'rgba(35,31,32,.06)'}},
+    y:{ticks:{color:'#A09298',font:{size:10}},grid:{color:'rgba(35,31,32,.06)'}}
+  }
+};
+
+function renderCharts(){ updateTrend(); buildDonut(); buildWow(); }
+
+function updateTrend(){
+  const k=document.getElementById('trend-sel').value;
+  const fd2=D.filter(d=>d[k]!==null);
+  const color=platColor(k);
+  if(cTrend) cTrend.destroy();
+  const ctx=document.getElementById('trendChart').getContext('2d');
+  const g=ctx.createLinearGradient(0,0,0,215);
+  g.addColorStop(0,color+'40'); g.addColorStop(1,color+'00');
+  cTrend=new Chart(ctx,{type:'line',data:{
+    labels:fd2.map(d=>fds(d.date)),
+    datasets:[{data:fd2.map(d=>d[k]),borderColor:color,backgroundColor:g,borderWidth:2.5,pointRadius:2,pointHoverRadius:5,fill:true,tension:.4}]
+  },options:baseOpts});
+}
+
+function buildDonut(){
+  const L=D[D.length-1];
+  const ks=['youtube','facebook_follows','instagram','linkedin','tiktok','whatsapp'];
+  if(cDonut) cDonut.destroy();
+  const ctx=document.getElementById('donutChart').getContext('2d');
+  cDonut=new Chart(ctx,{type:'doughnut',data:{
+    labels:ks.map(k=>PLATS.find(p=>p.key===k)?.label||k),
+    datasets:[{data:ks.map(k=>L[k]||0),backgroundColor:ks.map(k=>platColor(k)),borderWidth:2,borderColor:'#fff',hoverOffset:8}]
+  },options:{
+    responsive:true,maintainAspectRatio:false,cutout:'64%',
+    plugins:{
+      legend:{position:'right',labels:{color:'#544F51',font:{size:10},padding:9,boxWidth:9}},
+      tooltip:{backgroundColor:'#231F20',titleColor:'#fff',bodyColor:'#A09298',borderColor:'rgba(185,28,28,.2)',borderWidth:1,callbacks:{label:c=>' '+c.label+': '+c.raw.toLocaleString()}}
+    }
+  }});
+}
+
+function buildWow(){
+  const last=D.slice(-11);
+  const lbls=last.slice(1).map(d=>fds(d.date));
+  const mk=k=>last.slice(1).map((d,i)=>(d[k]!==null&&last[i][k]!==null)?d[k]-last[i][k]:0);
+  if(cWow) cWow.destroy();
+  const ctx=document.getElementById('wowChart').getContext('2d');
+  cWow=new Chart(ctx,{type:'bar',data:{
+    labels:lbls,
+    datasets:[
+      {label:'YouTube',data:mk('youtube'),backgroundColor:'#FF000080',borderRadius:4},
+      {label:'Instagram',data:mk('instagram'),backgroundColor:'#E1306C80',borderRadius:4},
+      {label:'TikTok',data:mk('tiktok'),backgroundColor:'#16182380',borderRadius:4},
+      {label:'Facebook',data:mk('facebook_follows'),backgroundColor:'#1877F280',borderRadius:4},
+    ]
+  },options:{...baseOpts,plugins:{
+    legend:{display:true,labels:{color:'#544F51',font:{size:11},boxWidth:10,padding:11}},
+    tooltip:baseOpts.plugins.tooltip
+  }}});
+}
+
+function changeSource(){
+  if(gsRefreshTimer){ clearInterval(gsRefreshTimer); gsRefreshTimer=null; }
+  gsSheetId=null; gsGid='0'; D=[];
+  ['sec-totals','sec-weekly','sec-monthly','sec-trends'].forEach(id=>
+    document.getElementById(id).style.display='none'
+  );
+  document.getElementById('upload-section').style.display='flex';
+  document.getElementById('print-btn').style.display='none';
+  document.getElementById('change-src-btn').style.display='none';
+  document.getElementById('period-badge').style.display='none';
+  document.getElementById('gs-status').innerHTML='';
+  document.getElementById('tb-sub').textContent='Chaajao Technologies — Upload your Excel file to begin';
+}
+
+function navTo(el, sec){
+  const target=document.getElementById('sec-'+sec);
+  const area=document.getElementById('scroll-area');
+  if(target && area){
+    const top=target.getBoundingClientRect().top - area.getBoundingClientRect().top + area.scrollTop - 16;
+    area.scrollTo({top, behavior:'smooth'});
+  }
+  document.querySelectorAll('.sb-item').forEach(i=>i.classList.remove('active'));
+  el.classList.add('active');
+}
+
+async function manualRefresh(){
+  if(gsSheetId){
+    setGsStatus('⏳ Refreshing...', 'var(--muted)');
+    await fetchGoogleSheet();
+  } else {
+    showToast('No Google Sheet connected. Paste a URL first.');
+  }
+}
+
+function toggleSidebar(){
+  const sb = document.getElementById('sidebar');
+  const ov = document.getElementById('sidebar-overlay');
+  const open = sb.classList.toggle('open');
+  ov.classList.toggle('open', open);
+  document.body.style.overflow = open ? 'hidden' : '';
+}
+
+document.querySelectorAll('.sb-item').forEach(el=>{
+  el.addEventListener('click', ()=>{
+    if(window.innerWidth<=768) toggleSidebar();
+  });
+});
+
+// Security
+document.addEventListener('contextmenu', e => {
+  if(!['INPUT','TEXTAREA','SELECT'].includes(e.target.tagName)) e.preventDefault();
+});
+document.addEventListener('keydown', e => {
+  const key = e.key.toLowerCase();
+  if(e.key==='F12'){ e.preventDefault(); return; }
+  if(e.ctrlKey && e.shiftKey && ['i','j','c'].includes(key)){ e.preventDefault(); return; }
+  if(e.ctrlKey && ['s','u'].includes(key)){ e.preventDefault(); return; }
+  if(e.metaKey && ['s','u'].includes(key)){ e.preventDefault(); return; }
+});
+
+function showToast(msg){
+  const t=document.getElementById('toast');
+  document.getElementById('toast-msg').textContent=msg;
+  t.style.display='flex';
+  setTimeout(()=>t.style.display='none', 3500);
+}
 </script>
 </body>
 </html>
