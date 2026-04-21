@@ -6,24 +6,26 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Chaajao">
-<meta name="theme-color" content="#0d0d0d">
+<meta name="theme-color" content="#0d0806">
+<link rel="manifest" href="./manifest.json">
 <title>Chaajao Analytics</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
-  --red:#E63946;--red2:#c1121f;--red-dim:rgba(230,57,70,.1);--red-glow:rgba(230,57,70,.2);
-  --bg:#0d0d0d;--bg2:#141414;--bg3:#1c1c1c;--bg4:#222;
-  --border:rgba(255,255,255,.08);--border2:rgba(255,255,255,.04);
-  --text:#f5f5f5;--text2:#888;--muted:#444;
-  --green:#22c55e;
+  --red:#8B0000;--red2:#6b0000;--red3:#A80000;--red4:#C41A0A;
+  --red-dim:rgba(139,0,0,.12);--red-glow:rgba(139,0,0,.22);
+  --bg:#0d0806;--bg2:#130a08;--bg3:#1a0f0c;--bg4:#221511;
+  --border:rgba(255,255,255,.07);--border2:rgba(255,255,255,.04);
+  --text:#f5ede8;--text2:#9a7b72;--muted:#4a3330;
+  --green:#22c55e;--danger:#FF6B6B;
   --safe-top:env(safe-area-inset-top,0px);
   --safe-bottom:env(safe-area-inset-bottom,0px);
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 body{
-  font-family:'Inter',sans-serif;
+  font-family:'DM Sans',sans-serif;
   background:var(--bg);color:var(--text);
   min-height:100vh;overflow-x:hidden;
   padding-bottom:calc(64px + var(--safe-bottom));
@@ -36,19 +38,22 @@ body{
   position:fixed;top:0;left:0;right:0;z-index:100;
   height:calc(52px + var(--safe-top));
   padding-top:var(--safe-top);
-  background:rgba(13,13,13,.95);
-  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  background:rgba(13,8,6,.96);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
   border-bottom:1px solid var(--border);
   display:flex;align-items:center;justify-content:space-between;
   padding-left:16px;padding-right:16px;
 }
 .logo-wrap{display:flex;align-items:center;gap:9px;}
 .logo-box{
-  width:30px;height:30px;background:var(--red);border-radius:8px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:12px;font-weight:700;color:#fff;letter-spacing:.3px;flex-shrink:0;
+  width:30px;height:30px;
+  background:linear-gradient(135deg,var(--red3),var(--red2));
+  border-radius:8px;display:flex;align-items:center;justify-content:center;
+  font-family:'Syne',sans-serif;font-size:11px;font-weight:800;
+  color:#fff;letter-spacing:.3px;flex-shrink:0;
+  box-shadow:0 2px 12px rgba(139,0,0,.5);
 }
-.logo-name{font-size:14px;font-weight:600;color:#fff;letter-spacing:.2px;}
+.logo-name{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:#fff;letter-spacing:.3px;}
 .tb-right{display:flex;align-items:center;gap:6px;}
 .tb-date{font-size:11px;color:var(--text2);background:var(--bg3);border:1px solid var(--border);border-radius:20px;padding:3px 9px;display:none;}
 .icon-btn{
@@ -61,24 +66,22 @@ body{
 
 /* OFFLINE BANNER */
 #offline-banner{
-  display:none;position:fixed;
-  top:calc(52px + var(--safe-top));
+  position:fixed;top:calc(52px + var(--safe-top));
   left:0;right:0;z-index:99;
-  background:#7C3504;
-  padding:10px 16px;
+  background:#4a1a00;padding:10px 16px;
   display:none;align-items:center;gap:10px;
 }
 #offline-banner.show{display:flex;}
-.offline-dot{width:7px;height:7px;border-radius:50%;background:#EF9F27;flex-shrink:0;}
-.offline-text{font-size:12px;font-weight:500;color:#FAC775;flex:1;}
+.offline-dot{width:7px;height:7px;border-radius:50%;background:#F97316;flex-shrink:0;}
+.offline-text{font-size:12px;font-weight:500;color:#FED7AA;flex:1;}
 
 /* BOTTOM NAV */
 #bottom-nav{
   position:fixed;bottom:0;left:0;right:0;z-index:100;
   height:calc(58px + var(--safe-bottom));
   padding-bottom:var(--safe-bottom);
-  background:rgba(13,13,13,.97);
-  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  background:rgba(13,8,6,.97);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
   border-top:1px solid var(--border);
   display:flex;align-items:stretch;
 }
@@ -88,8 +91,8 @@ body{
   font-size:9px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;
   color:var(--muted);border:none;background:none;transition:color .15s;
 }
-.nav-item svg{width:18px;height:18px;transition:color .15s;}
-.nav-item.active{color:var(--red);}
+.nav-item svg{width:18px;height:18px;}
+.nav-item.active{color:var(--red4);}
 .nav-item:active{opacity:.5;}
 
 /* PAGES */
@@ -103,7 +106,7 @@ body{
 }
 .spinner{
   width:32px;height:32px;border:2px solid var(--border);
-  border-top-color:var(--red);border-radius:50%;
+  border-top-color:var(--red4);border-radius:50%;
   animation:spin .7s linear infinite;
 }
 @keyframes spin{to{transform:rotate(360deg)}}
@@ -119,21 +122,24 @@ body{
 .error-title{font-size:16px;font-weight:600;color:var(--text);}
 .error-sub{font-size:13px;color:var(--text2);line-height:1.6;max-width:280px;}
 .btn-retry{
-  background:var(--red);color:#fff;border:none;border-radius:9px;
+  background:linear-gradient(135deg,var(--red3),var(--red2));
+  color:#fff;border:none;border-radius:9px;
   padding:10px 24px;font-size:13px;font-weight:600;cursor:pointer;margin-top:8px;
+  box-shadow:0 2px 14px rgba(139,0,0,.4);
 }
 
-/* SECTION */
+/* SECTION LABEL */
 .sec-label{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);padding:0 1px;}
 
 /* TOTAL CARD */
 .total-card{
-  background:var(--bg2);border:1px solid var(--border);
+  background:linear-gradient(135deg,rgba(139,0,0,.18),rgba(139,0,0,.06));
+  border:1px solid rgba(139,0,0,.25);
   border-radius:16px;padding:20px;
 }
 .total-card .lbl{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text2);margin-bottom:8px;}
-.total-card .num{font-size:36px;font-weight:700;color:#fff;letter-spacing:-1px;line-height:1;}
-.total-card .chg{font-size:12px;margin-top:8px;}
+.total-card .num{font-family:'Syne',sans-serif;font-size:36px;font-weight:800;color:#fff;letter-spacing:-1px;line-height:1;}
+.total-card .chg{font-size:12px;margin-top:8px;font-weight:500;}
 .total-card .date-tag{font-size:11px;color:var(--muted);margin-top:4px;}
 
 /* PLATFORM GRID */
@@ -142,47 +148,45 @@ body{
   background:var(--bg2);border:1px solid var(--border);
   border-radius:12px;padding:14px 12px;position:relative;overflow:hidden;
 }
-.plat-card::after{
-  content:'';position:absolute;top:0;left:0;right:0;height:2px;
-  background:var(--pc);
-}
-.plat-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
-.plat-info{display:flex;align-items:center;gap:6px;}
-.plat-info svg{width:13px;height:13px;}
+.plat-card::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--pc);}
+.plat-card::before{content:'';position:absolute;top:0;right:0;width:50px;height:50px;background:radial-gradient(circle at top right,var(--pc-glow,rgba(139,0,0,.1)),transparent 70%);}
+.plat-top{display:flex;align-items:center;gap:6px;margin-bottom:10px;}
+.plat-top svg{width:13px;height:13px;flex-shrink:0;}
 .plat-name{font-size:11px;font-weight:500;color:var(--text2);}
-.plat-num{font-size:22px;font-weight:700;color:#fff;letter-spacing:-.5px;margin-bottom:4px;}
+.plat-num{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#fff;letter-spacing:-.5px;margin-bottom:4px;}
 .plat-delta{font-size:11px;font-weight:500;}
 .up{color:var(--green);}
-.dn{color:var(--red);}
+.dn{color:var(--danger);}
 .neu{color:var(--muted);}
 
 /* WEEKLY */
 .week-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:14px;}
 .week-head{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
-.week-head svg{width:14px;height:14px;}
+.week-head svg{width:14px;height:14px;flex-shrink:0;}
 .week-head-name{font-size:13px;font-weight:600;color:#fff;flex:1;}
 .week-cols{display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;}
 .week-col{text-align:center;padding:8px 4px;border-radius:8px;}
-.week-col.this{background:var(--red-dim);border:1px solid rgba(230,57,70,.15);}
+.week-col.this{background:var(--red-dim);border:1px solid rgba(139,0,0,.2);}
 .week-col-lbl{font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);margin-bottom:5px;}
-.week-col.this .week-col-lbl{color:var(--red);}
-.week-col-val{font-size:16px;font-weight:700;color:#fff;}
-.week-col.this .week-col-val{font-size:18px;color:var(--red);}
+.week-col.this .week-col-lbl{color:var(--red4);}
+.week-col-val{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:#fff;}
+.week-col.this .week-col-val{font-size:18px;color:var(--red4);}
 .week-footer{margin-top:10px;padding-top:10px;border-top:1px solid var(--border2);display:flex;align-items:center;justify-content:space-between;}
 .week-footer-lbl{font-size:11px;color:var(--muted);}
-
-.total-growth-card{
-  background:var(--bg2);border:1px solid rgba(230,57,70,.2);
-  border-radius:12px;padding:16px;
-}
+.total-growth-card{background:var(--bg2);border:1px solid rgba(139,0,0,.2);border-radius:12px;padding:16px;}
 .tg-head{font-size:12px;font-weight:600;color:var(--text2);margin-bottom:6px;}
-.tg-num{font-size:28px;font-weight:700;letter-spacing:-.5px;}
+.tg-num{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;letter-spacing:-.5px;}
+
+/* PILL */
+.pill{font-size:10px;font-weight:600;padding:2px 7px;border-radius:20px;display:inline-flex;align-items:center;gap:2px;}
+.pill.up{background:rgba(34,197,94,.1);color:var(--green);}
+.pill.dn{background:rgba(139,0,0,.12);color:var(--danger);}
+.pill.neu{background:var(--bg3);color:var(--muted);}
 
 /* MONTHLY */
 .month-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px;}
 .month-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
-.month-name{font-size:15px;font-weight:600;color:#fff;}
-.month-total-num{font-size:13px;color:var(--text2);}
+.month-name{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:#fff;}
 .month-row{display:flex;align-items:center;gap:8px;padding:5px 0;}
 .month-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
 .month-nm{font-size:12px;color:var(--text2);flex:1;}
@@ -193,23 +197,20 @@ body{
 /* CHART */
 .chart-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px;}
 .chart-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;}
-.chart-title{font-size:13px;font-weight:600;color:#fff;}
+.chart-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:#fff;}
 .chart-sub{font-size:11px;color:var(--muted);margin-top:2px;}
-.chart-sel{
-  background:var(--bg3);border:1px solid var(--border);color:var(--text);
-  font-family:'Inter',sans-serif;font-size:11px;border-radius:7px;
-  padding:5px 8px;cursor:pointer;outline:none;
-}
+.chart-sel{background:var(--bg3);border:1px solid var(--border);color:var(--text);font-family:'DM Sans',sans-serif;font-size:11px;border-radius:7px;padding:5px 8px;cursor:pointer;outline:none;}
 .chart-box{position:relative;height:170px;}
 
-/* PILL */
-.pill{
-  font-size:10px;font-weight:600;padding:2px 7px;border-radius:20px;
-  display:inline-flex;align-items:center;gap:2px;
+/* CREDIT FOOTER */
+.credit-footer{
+  text-align:center;padding:12px 0 4px;
+  font-size:11px;color:var(--muted);
 }
-.pill.up{background:rgba(34,197,94,.1);color:var(--green);}
-.pill.dn{background:rgba(230,57,70,.1);color:var(--red);}
-.pill.neu{background:var(--bg3);color:var(--muted);}
+.credit-footer a{
+  color:var(--red4);text-decoration:none;font-weight:600;
+}
+.credit-footer a:active{opacity:.7;}
 
 /* TOAST */
 #toast{
@@ -244,13 +245,12 @@ body{
   <symbol id="i-trend" viewBox="0 0 24 24"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></symbol>
   <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M17.65 6.35A7.958 7.958 0 0 0 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0 1 12 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></symbol>
   <symbol id="i-print" viewBox="0 0 24 24"><path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/></symbol>
-  <symbol id="i-wifi-off" viewBox="0 0 24 24"><path d="M24 .49L20.72 3.77C19.52 3.27 18.29 2.86 17 2.57V0l-4 4-4-4v2.57c-1.29.29-2.52.7-3.72 1.2L1.27 0 0 1.27l3.93 3.93C2.57 6.32 1.37 7.4.29 8.62L1.73 10c1.11-1.24 2.41-2.32 3.86-3.18l1.43 1.43C5.86 9.03 4.7 9.98 3.69 11.1L5.13 12.5c1.08-1.18 2.34-2.17 3.74-2.92l1.44 1.44A10.984 10.984 0 0 0 7.1 14.28l1.44 1.44c.85-1.11 1.9-2.05 3.11-2.76l1.37 1.37L12 14.5l-4 4 1.5 1.5L12 17.5l4 4 1.5-1.5-4-4 .02-.02 7.93 7.93 1.27-1.27L24 .49zM12 6c.96 0 1.9.1 2.81.26L17 8.47C15.47 7.86 13.78 7.5 12 7.5c-2.01 0-3.88.56-5.5 1.52l-1.44-1.44C6.98 6.59 9.43 6 12 6zm0 4.5c1.74 0 3.37.44 4.8 1.2l-1.45 1.45c-1.01-.42-2.12-.65-3.28-.65-.68 0-1.34.08-1.97.23L8.73 11.3A8.93 8.93 0 0 1 12 10.5zM12 19l-3-3 3-3 3 3-3 3z"/></symbol>
 </svg>
 
 <!-- OFFLINE BANNER -->
 <div id="offline-banner">
   <div class="offline-dot"></div>
-  <span class="offline-text">Internet connection nahi hai — last data dikh raha hai</span>
+  <span class="offline-text">Internet nahi — last saved data dikh raha hai</span>
 </div>
 
 <!-- TOPBAR -->
@@ -280,7 +280,7 @@ body{
   <div id="error-screen">
     <div class="error-icon">📡</div>
     <div class="error-title">Data nahi mila</div>
-    <div class="error-sub" id="error-msg">Sheet se connect nahi ho saka. Internet check karein aur dobara try karein.</div>
+    <div class="error-sub" id="error-msg">Sheet se connect nahi ho saka.</div>
     <button class="btn-retry" onclick="manualRefresh()">Dobara Try Karein</button>
   </div>
   <div id="overview-content" style="display:none;flex-direction:column;gap:12px;"></div>
@@ -325,294 +325,209 @@ const SHEET_ID='1MG7nZhr4L7cORXWL5FTuTPUDn0354bpqlq4RrzZNZQo';
 const SHEET_NAME='Weekly Engagment';
 
 const PLATS=[
-  {key:'linkedin',        label:'LinkedIn',     color:'#0A66C2', icon:'i-linkedin'},
-  {key:'youtube',         label:'YouTube',      color:'#FF0000', icon:'i-youtube'},
-  {key:'facebook_follows',label:'Facebook',     color:'#1877F2', icon:'i-facebook'},
-  {key:'instagram',       label:'Instagram',    color:'#E1306C', icon:'i-instagram'},
-  {key:'tiktok',          label:'TikTok',       color:'#69C9D0', icon:'i-tiktok'},
-  {key:'whatsapp',        label:'WhatsApp',     color:'#25D366', icon:'i-whatsapp'},
-  {key:'wa_mdcat',        label:'WA MDCAT',     color:'#059669', icon:'i-user'},
-  {key:'wa_ecat',         label:'WA ECAT',      color:'#2563EB', icon:'i-user'},
-  {key:'wa_bcat',         label:'WA BCAT',      color:'#7C3AED', icon:'i-user'},
+  {key:'linkedin',         label:'LinkedIn',  color:'#0A66C2', icon:'i-linkedin'},
+  {key:'youtube',          label:'YouTube',   color:'#FF4444', icon:'i-youtube'},
+  {key:'facebook_follows', label:'Facebook',  color:'#1877F2', icon:'i-facebook'},
+  {key:'instagram',        label:'Instagram', color:'#E1306C', icon:'i-instagram'},
+  {key:'tiktok',           label:'TikTok',    color:'#F87171', icon:'i-tiktok'},
+  {key:'whatsapp',         label:'WhatsApp',  color:'#22C55E', icon:'i-whatsapp'},
+  {key:'wa_mdcat',         label:'WA MDCAT',  color:'#059669', icon:'i-user'},
+  {key:'wa_ecat',          label:'WA ECAT',   color:'#3B82F6', icon:'i-user'},
+  {key:'wa_bcat',          label:'WA BCAT',   color:'#A78BFA', icon:'i-user'},
 ];
 const TOT_KEYS=PLATS.map(p=>p.key);
-let D=[];
-let refreshTimer=null;
-let isOnline=navigator.onLine;
+let D=[], refreshTimer=null;
 
 const fds=d=>d.toLocaleDateString('en-GB',{day:'2-digit',month:'short'});
 const fd=d=>d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
 const fn=n=>(n===null||n===undefined)?'—':Number(n).toLocaleString();
 
 function pill(cur,prev){
-  if(cur===null||prev===null) return '<span class="pill neu">—</span>';
-  const d=cur-prev;
-  const cls=d>0?'up':d<0?'dn':'neu';
-  const arr=d>0?'▲':d<0?'▼':'→';
+  if(cur===null||prev===null)return '<span class="pill neu">—</span>';
+  const d=cur-prev,cls=d>0?'up':d<0?'dn':'neu',arr=d>0?'▲':d<0?'▼':'→';
   const pct=prev?` ${Math.abs(((d/prev)*100)).toFixed(1)}%`:'';
   return `<span class="pill ${cls}">${arr} ${d>=0?'+':''}${Math.abs(d).toLocaleString()}${pct}</span>`;
 }
 function deltaText(cur,prev){
-  if(cur===null||prev===null) return '<span class="neu">—</span>';
+  if(cur===null||prev===null)return '<span class="neu">—</span>';
   const d=cur-prev;
   return `<span class="${d>0?'up':d<0?'dn':'neu'}" style="font-size:13px;font-weight:600;">${d>=0?'▲ +':'▼ '}${Math.abs(d).toLocaleString()}</span>`;
 }
 
-// OFFLINE DETECTION
 function updateOnlineStatus(){
-  isOnline=navigator.onLine;
+  const online=navigator.onLine;
   const banner=document.getElementById('offline-banner');
-  if(!isOnline){
-    banner.classList.add('show');
-    // push down the page if we have data
-    document.body.style.paddingTop=`calc(52px + var(--safe-top) + 38px)`;
-  } else {
-    banner.classList.remove('show');
-    document.body.style.paddingTop=`calc(52px + var(--safe-top))`;
-    if(D.length===0) fetchSheet();
-  }
+  if(!online){banner.classList.add('show');document.body.style.paddingTop=`calc(52px + var(--safe-top) + 38px)`;}
+  else{banner.classList.remove('show');document.body.style.paddingTop=`calc(52px + var(--safe-top))`;if(D.length===0)fetchSheet();}
 }
-window.addEventListener('online', updateOnlineStatus);
-window.addEventListener('offline', updateOnlineStatus);
+window.addEventListener('online',updateOnlineStatus);
+window.addEventListener('offline',updateOnlineStatus);
 
-// NAV
 let curPage='overview';
 function goPage(p){
   document.querySelectorAll('.page').forEach(el=>el.classList.remove('active'));
   document.getElementById('page-'+p).classList.add('active');
   document.querySelectorAll('.nav-item').forEach(el=>el.classList.toggle('active',el.dataset.page===p));
-  curPage=p; window.scrollTo(0,0);
+  curPage=p;window.scrollTo(0,0);
 }
 
-// FETCH
 async function fetchSheet(){
   if(!navigator.onLine){
-    if(D.length===0){
-      document.getElementById('loading-screen').style.display='none';
-      document.getElementById('error-screen').style.display='flex';
-      document.getElementById('error-msg').textContent='Internet nahi hai. Wi-Fi ya mobile data on karein.';
-    }
+    if(D.length===0){document.getElementById('loading-screen').style.display='none';document.getElementById('error-screen').style.display='flex';document.getElementById('error-msg').textContent='Internet nahi hai.';}
     return;
   }
   const sp=SHEET_NAME?`&sheet=${encodeURIComponent(SHEET_NAME)}`:'';
   const url=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=0${sp}&range=A4:K500`;
   try{
-    const res=await fetch(url);
-    if(!res.ok) throw new Error('HTTP '+res.status);
+    const res=await fetch(url);if(!res.ok)throw new Error('HTTP '+res.status);
     const txt=await res.text();
-    const m=txt.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\)/);
-    if(!m) throw new Error('Sheet public nahi hai');
-    const json=JSON.parse(m[1]);
-    if(json.status==='error') throw new Error(json.errors?.[0]?.message||'Sheet error');
-    parseGviz(json);
-    if(!D.length) throw new Error('Koi data rows nahi mili');
+    const m=txt.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\)/);if(!m)throw new Error('Sheet public nahi hai');
+    const json=JSON.parse(m[1]);if(json.status==='error')throw new Error(json.errors?.[0]?.message||'Error');
+    parseGviz(json);if(!D.length)throw new Error('Data rows nahi mili');
     renderAll();
   }catch(err){
     document.getElementById('loading-screen').style.display='none';
     document.getElementById('error-screen').style.display='flex';
-    document.getElementById('error-msg').textContent=err.message+'. Internet check karein ya baad mein try karein.';
+    document.getElementById('error-msg').textContent=err.message;
   }
 }
 
 async function silentRefresh(){
-  if(!navigator.onLine) return;
+  if(!navigator.onLine)return;
   const sp=SHEET_NAME?`&sheet=${encodeURIComponent(SHEET_NAME)}`:'';
   const url=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=0${sp}&range=A4:K500`;
   try{
-    const res=await fetch(url); if(!res.ok) return;
+    const res=await fetch(url);if(!res.ok)return;
     const txt=await res.text();
-    const m=txt.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\)/); if(!m) return;
-    const json=JSON.parse(m[1]); if(json.status==='error') return;
-    parseGviz(json); if(!D.length) return;
+    const m=txt.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\)/);if(!m)return;
+    const json=JSON.parse(m[1]);if(json.status==='error')return;
+    parseGviz(json);if(!D.length)return;
     renderAll();
   }catch(e){}
 }
 
 async function manualRefresh(){
   if(!navigator.onLine){showToast('Internet nahi hai');return;}
-  showToast('Refreshing...');
-  await fetchSheet();
+  showToast('Refreshing...');await fetchSheet();
 }
 
 function parseGviz(json){
   D=[];
   for(const row of json.table?.rows||[]){
-    const c=row.c||[]; if(!c[0]) continue;
-    const r0=c[0]; if(!r0||r0.v===null||r0.v===undefined) continue;
+    const c=row.c||[];if(!c[0])continue;
+    const r0=c[0];if(!r0||r0.v===null||r0.v===undefined)continue;
     let dt=null;
     const tryStr=s=>{
-      if(!s) return null; s=String(s).trim();
-      if(/date|week|linkedin|youtube|platform/i.test(s)) return null;
-      let m=s.match(/^Date\((\d{4}),(\d{1,2}),(\d{1,2})\)$/);
-      if(m) return new Date(+m[1],+m[2],+m[3]);
-      m=s.match(/^(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{4})$/);
-      if(m){const d=new Date(+m[3],+m[2]-1,+m[1]);if(!isNaN(d))return d;}
-      m=s.match(/^(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})$/);
-      if(m){const d=new Date(+m[1],+m[2]-1,+m[3]);if(!isNaN(d))return d;}
-      const d2=new Date(s); if(!isNaN(d2.getTime())&&d2.getFullYear()>=2020) return d2;
+      if(!s)return null;s=String(s).trim();
+      if(/date|week|linkedin|youtube|platform/i.test(s))return null;
+      let m=s.match(/^Date\((\d{4}),(\d{1,2}),(\d{1,2})\)$/);if(m)return new Date(+m[1],+m[2],+m[3]);
+      m=s.match(/^(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{4})$/);if(m){const d=new Date(+m[3],+m[2]-1,+m[1]);if(!isNaN(d))return d;}
+      m=s.match(/^(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})$/);if(m){const d=new Date(+m[1],+m[2]-1,+m[3]);if(!isNaN(d))return d;}
+      const d2=new Date(s);if(!isNaN(d2.getTime())&&d2.getFullYear()>=2020)return d2;
       return null;
     };
     dt=tryStr(r0.v)||tryStr(r0.f);
-    if(!dt&&typeof r0.v==='number'){
-      const d=new Date(Math.round((r0.v-25569)*86400*1000));
-      if(!isNaN(d.getTime())&&d.getFullYear()>=2020) dt=d;
-    }
-    if(!dt||dt.getFullYear()<2020) continue;
-    const v=cell=>{
-      if(!cell||cell.v===null||cell.v===undefined) return null;
-      if(typeof cell.v==='number') return cell.v;
-      const s=String(cell.v).trim();
-      if(s==='-'||s===''||s.toLowerCase()==='n/a') return null;
-      const n=parseFloat(s.replace(/[^0-9.-]/g,''));
-      return isNaN(n)?null:n;
-    };
+    if(!dt&&typeof r0.v==='number'){const d=new Date(Math.round((r0.v-25569)*86400*1000));if(!isNaN(d.getTime())&&d.getFullYear()>=2020)dt=d;}
+    if(!dt||dt.getFullYear()<2020)continue;
+    const v=cell=>{if(!cell||cell.v===null||cell.v===undefined)return null;if(typeof cell.v==='number')return cell.v;const s=String(cell.v).trim();if(s==='-'||s===''||s.toLowerCase()==='n/a')return null;const n=parseFloat(s.replace(/[^0-9.-]/g,''));return isNaN(n)?null:n;};
     D.push({date:dt,linkedin:v(c[1]),youtube:v(c[2]),facebook_likes:v(c[3]),facebook_follows:v(c[4]),instagram:v(c[5]),tiktok:v(c[6]),whatsapp:v(c[7]),wa_mdcat:v(c[8]),wa_ecat:v(c[9]),wa_bcat:v(c[10])});
   }
   D.sort((a,b)=>a.date-b.date);
 }
 
-// RENDER
 function renderAll(){
   const last=D[D.length-1];
   const dateEl=document.getElementById('tb-date');
-  dateEl.textContent=fds(last.date); dateEl.style.display='block';
+  dateEl.textContent=fds(last.date);dateEl.style.display='block';
   document.getElementById('print-btn').style.display='flex';
   document.getElementById('loading-screen').style.display='none';
   document.getElementById('error-screen').style.display='none';
-  renderOverview(); renderWeekly(); renderMonthly(); renderTrends();
-  if(refreshTimer) clearInterval(refreshTimer);
+  renderOverview();renderWeekly();renderMonthly();renderTrends();
+  if(refreshTimer)clearInterval(refreshTimer);
   refreshTimer=setInterval(silentRefresh,5*60*1000);
 }
 
 function renderOverview(){
-  const L=D[D.length-1], P=D.length>1?D[D.length-2]:null;
+  const L=D[D.length-1],P=D.length>1?D[D.length-2]:null;
   const tot=TOT_KEYS.reduce((s,k)=>s+(L[k]||0),0);
   const totP=P?TOT_KEYS.reduce((s,k)=>s+(P[k]||0),0):null;
   const tDiff=totP!==null?tot-totP:null;
   const tCls=tDiff===null?'neu':tDiff>0?'up':'dn';
-
   let html=`
   <div class="total-card">
     <div class="lbl">Total Followers</div>
     <div class="num">${tot.toLocaleString()}</div>
-    ${tDiff!==null?`<div class="chg ${tCls}" style="font-size:13px;font-weight:500;">${tDiff>=0?'▲ +':'▼ '}${Math.abs(tDiff).toLocaleString()} is hafte</div>`:''}
+    ${tDiff!==null?`<div class="chg ${tCls}">${tDiff>=0?'▲ +':'▼ '}${Math.abs(tDiff).toLocaleString()} is hafte</div>`:''}
     <div class="date-tag">${fd(L.date)} ka data</div>
   </div>
   <div class="sec-label">Platforms</div>
   <div class="plat-grid">`;
-
   for(const p of PLATS){
-    const cur=L[p.key], prv=P?P[p.key]:null;
-    const d=cur!==null&&prv!==null?cur-prv:null;
+    const cur=L[p.key],prv=P?P[p.key]:null,d=cur!==null&&prv!==null?cur-prv:null;
     const cls=d===null?'neu':d>0?'up':d<0?'dn':'neu';
     const arr=d===null?'':d>0?'▲':d<0?'▼':'→';
-    html+=`<div class="plat-card" style="--pc:${p.color}">
-      <div class="plat-top">
-        <div class="plat-info">
-          <svg viewBox="0 0 24 24" fill="${p.color}"><use href="#${p.icon}"/></svg>
-          <span class="plat-name">${p.label}</span>
-        </div>
-      </div>
+    html+=`<div class="plat-card" style="--pc:${p.color};">
+      <div class="plat-top"><svg viewBox="0 0 24 24" fill="${p.color}"><use href="#${p.icon}"/></svg><span class="plat-name">${p.label}</span></div>
       <div class="plat-num">${cur!==null?fn(cur):'—'}</div>
       <div class="plat-delta ${cls}">${d!==null?`${arr} ${d>=0?'+':''}${Math.abs(d).toLocaleString()}`:'—'}</div>
     </div>`;
   }
-  html+='</div>';
-
+  html+=`</div>
+  <div class="credit-footer">
+    Developed by <a href="https://www.linkedin.com/in/usmankhan07/" target="_blank" rel="noopener">Usman Khan</a>
+  </div>`;
   const c=document.getElementById('overview-content');
-  c.innerHTML=html; c.style.display='flex';
+  c.innerHTML=html;c.style.display='flex';
 }
 
 function renderWeekly(){
-  const len=D.length;
-  const e2=len>=1?D[len-1]:null;
-  const e1=len>=2?D[len-2]:null;
-  const e0=len>=3?D[len-3]:null;
-
-  let html=`<div class="sec-label">Aakhri 3 hafte ka moazna</div>`;
-
+  const len=D.length,e2=len>=1?D[len-1]:null,e1=len>=2?D[len-2]:null,e0=len>=3?D[len-3]:null;
+  let html=`<div class="sec-label">Aakhri 3 hafte</div>`;
   for(const p of PLATS){
-    const v0=e0?e0[p.key]:null, v1=e1?e1[p.key]:null, v2=e2?e2[p.key]:null;
+    const v0=e0?e0[p.key]:null,v1=e1?e1[p.key]:null,v2=e2?e2[p.key]:null;
     html+=`<div class="week-card">
-      <div class="week-head">
-        <svg viewBox="0 0 24 24" fill="${p.color}"><use href="#${p.icon}"/></svg>
-        <span class="week-head-name">${p.label}</span>
-        ${pill(v2,v1)}
-      </div>
+      <div class="week-head"><svg viewBox="0 0 24 24" fill="${p.color}"><use href="#${p.icon}"/></svg><span class="week-head-name">${p.label}</span>${pill(v2,v1)}</div>
       <div class="week-cols">
-        <div class="week-col">
-          <div class="week-col-lbl">${e0?fds(e0.date):'—'}</div>
-          <div class="week-col-val">${fn(v0)}</div>
-        </div>
-        <div class="week-col">
-          <div class="week-col-lbl">${e1?fds(e1.date):'—'}</div>
-          <div class="week-col-val">${fn(v1)}</div>
-        </div>
-        <div class="week-col this">
-          <div class="week-col-lbl">Is Hafte</div>
-          <div class="week-col-val">${fn(v2)}</div>
-        </div>
+        <div class="week-col"><div class="week-col-lbl">${e0?fds(e0.date):'—'}</div><div class="week-col-val">${fn(v0)}</div></div>
+        <div class="week-col"><div class="week-col-lbl">${e1?fds(e1.date):'—'}</div><div class="week-col-val">${fn(v1)}</div></div>
+        <div class="week-col this"><div class="week-col-lbl">Is Hafte</div><div class="week-col-val">${fn(v2)}</div></div>
       </div>
-      <div class="week-footer">
-        <span class="week-footer-lbl">Hafta war tabdili</span>
-        ${deltaText(v2,v1)}
-      </div>
+      <div class="week-footer"><span class="week-footer-lbl">Tabdili</span>${deltaText(v2,v1)}</div>
     </div>`;
   }
-
   const diff=(a,b)=>(a!==null&&b!==null)?a-b:null;
   const wk2=e2&&e1?TOT_KEYS.reduce((s,k)=>s+(diff(e2[k],e1[k])??0),0):null;
   const wk1=e1&&e0?TOT_KEYS.reduce((s,k)=>s+(diff(e1[k],e0[k])??0),0):null;
-  const fmtW=v=>v===null?'<span class="neu">—</span>':`<span class="${v>0?'up':v<0?'dn':'neu'}" style="font-size:26px;font-weight:700;letter-spacing:-.5px;">${v>=0?'+':''}${Math.abs(v).toLocaleString()}</span>`;
+  const fmtW=v=>v===null?'<span class="neu">—</span>':`<span class="${v>0?'up':v<0?'dn':'neu'}" style="font-family:'Syne',sans-serif;font-size:26px;font-weight:800;letter-spacing:-.5px;">${v>=0?'+':''}${Math.abs(v).toLocaleString()}</span>`;
   html+=`<div class="total-growth-card">
-    <div class="tg-head">Is hafte tamam platforms par naye followers</div>
+    <div class="tg-head">Is hafte naye followers (tamam platforms)</div>
     ${fmtW(wk2)}
     ${wk2!==null&&wk1!==null?`<div style="margin-top:6px;font-size:11px;color:var(--muted);">Pichle hafte se: ${wk2>wk1?'▲':'▼'} ${Math.abs(wk2-wk1).toLocaleString()}</div>`:''}
   </div>`;
-
   document.getElementById('weekly-content').innerHTML=html;
 }
 
 function renderMonthly(){
   const byM={};
-  for(const d of D){
-    const k=`${d.date.getFullYear()}-${String(d.date.getMonth()+1).padStart(2,'0')}`;
-    byM[k]=d;
-  }
+  for(const d of D){const k=`${d.date.getFullYear()}-${String(d.date.getMonth()+1).padStart(2,'0')}`;byM[k]=d;}
   const months=Object.keys(byM).sort().reverse().slice(0,6);
   const extra=Object.keys(byM).sort().reverse()[6]||null;
-
   let html=`<div class="sec-label">Mahina ba mahina growth</div>`;
   for(let i=0;i<months.length;i++){
-    const cur=byM[months[i]];
-    const prevKey=months[i+1]||extra;
-    const prev=prevKey?byM[prevKey]:null;
-    const mLabel=new Date(months[i]+'-02').toLocaleDateString('ur-PK',{month:'long',year:'numeric'}).replace(/،/g,'');
+    const cur=byM[months[i]],prevKey=months[i+1]||extra,prev=prevKey?byM[prevKey]:null;
     const mTot=TOT_KEYS.reduce((s,k)=>s+(cur[k]||0),0);
     const mTotP=prev?TOT_KEYS.reduce((s,k)=>s+(prev[k]||0),0):null;
     const mDiff=mTotP!==null?mTot-mTotP:null;
     const mCls=mDiff===null?'neu':mDiff>0?'up':'dn';
-
     html+=`<div class="month-card">
       <div class="month-header">
         <div class="month-name">${new Date(months[i]+'-02').toLocaleDateString('en-GB',{month:'long',year:'numeric'})}</div>
-        <div style="text-align:right;">
-          <div class="month-total-num">${mTot.toLocaleString()}</div>
-          ${mDiff!==null?`<div class="${mCls}" style="font-size:11px;font-weight:600;">${mDiff>=0?'▲ +':'▼ '}${Math.abs(mDiff).toLocaleString()}</div>`:''}
-        </div>
-      </div>
-      <div class="month-divider"></div>`;
-
+        <div style="text-align:right;"><div style="font-size:13px;color:var(--text2);">${mTot.toLocaleString()}</div>${mDiff!==null?`<div class="${mCls}" style="font-size:11px;font-weight:600;">${mDiff>=0?'▲ +':'▼ '}${Math.abs(mDiff).toLocaleString()}</div>`:''}</div>
+      </div><div class="month-divider"></div>`;
     for(const p of PLATS){
-      const cv=cur[p.key], pv=prev?prev[p.key]:null;
-      const d=cv!==null&&pv!==null?cv-pv:null;
+      const cv=cur[p.key],pv=prev?prev[p.key]:null,d=cv!==null&&pv!==null?cv-pv:null;
       const cls=d===null?'neu':d>0?'up':d<0?'dn':'neu';
-      html+=`<div class="month-row">
-        <div class="month-dot" style="background:${p.color}"></div>
-        <span class="month-nm">${p.label}</span>
-        <span class="month-val">${cv!==null?cv.toLocaleString():'—'}</span>
-        <span class="month-chg ${cls}">${d!==null?(d>=0?'▲ +':'▼ ')+Math.abs(d).toLocaleString():'—'}</span>
-      </div>`;
+      html+=`<div class="month-row"><div class="month-dot" style="background:${p.color}"></div><span class="month-nm">${p.label}</span><span class="month-val">${cv!==null?cv.toLocaleString():'—'}</span><span class="month-chg ${cls}">${d!==null?(d>=0?'▲ +':'▼ ')+Math.abs(d).toLocaleString():'—'}</span></div>`;
     }
     html+='</div>';
   }
@@ -627,12 +542,9 @@ function renderTrends(){
       <div class="chart-head">
         <div><div class="chart-title">Growth over time</div><div class="chart-sub">Har hafte ka record</div></div>
         <select class="chart-sel" id="trend-sel" onchange="updateTrend()">
-          <option value="youtube">YouTube</option>
-          <option value="linkedin">LinkedIn</option>
-          <option value="facebook_follows">Facebook</option>
-          <option value="instagram">Instagram</option>
-          <option value="tiktok">TikTok</option>
-          <option value="whatsapp">WhatsApp</option>
+          <option value="youtube">YouTube</option><option value="linkedin">LinkedIn</option>
+          <option value="facebook_follows">Facebook</option><option value="instagram">Instagram</option>
+          <option value="tiktok">TikTok</option><option value="whatsapp">WhatsApp</option>
         </select>
       </div>
       <div class="chart-box"><canvas id="trendChart"></canvas></div>
@@ -642,7 +554,7 @@ function renderTrends(){
       <div class="chart-box"><canvas id="donutChart"></canvas></div>
     </div>
     <div class="chart-card">
-      <div class="chart-head"><div><div class="chart-title">Naye followers per week</div><div class="chart-sub">Week-over-week growth</div></div></div>
+      <div class="chart-head"><div><div class="chart-title">Naye followers per week</div><div class="chart-sub">Week-over-week</div></div></div>
       <div class="chart-box"><canvas id="wowChart"></canvas></div>
     </div>`;
   setTimeout(()=>{updateTrend();buildDonut();buildWow();},60);
@@ -650,71 +562,51 @@ function renderTrends(){
 
 const baseOpts={
   responsive:true,maintainAspectRatio:false,
-  plugins:{legend:{display:false},tooltip:{backgroundColor:'#1c1c1c',titleColor:'#f5f5f5',bodyColor:'#888',borderColor:'rgba(255,255,255,.08)',borderWidth:1,padding:10,cornerRadius:8}},
-  scales:{x:{ticks:{color:'#444',font:{size:9,family:'Inter'},maxTicksLimit:8},grid:{color:'rgba(255,255,255,.04)'},border:{display:false}},y:{ticks:{color:'#444',font:{size:9,family:'Inter'}},grid:{color:'rgba(255,255,255,.04)'},border:{display:false}}}
+  plugins:{legend:{display:false},tooltip:{backgroundColor:'#1a0f0c',titleColor:'#f5ede8',bodyColor:'#9a7b72',borderColor:'rgba(139,0,0,.2)',borderWidth:1,padding:10,cornerRadius:8}},
+  scales:{x:{ticks:{color:'#4a3330',font:{size:9},maxTicksLimit:8},grid:{color:'rgba(255,255,255,.03)'},border:{display:false}},y:{ticks:{color:'#4a3330',font:{size:9}},grid:{color:'rgba(255,255,255,.03)'},border:{display:false}}}
 };
 
 function updateTrend(){
   const k=document.getElementById('trend-sel')?.value||'youtube';
   const fd2=D.filter(d=>d[k]!==null);
-  const color=PLATS.find(p=>p.key===k)?.color||'#E63946';
-  if(cTrend) cTrend.destroy();
-  const ctx=document.getElementById('trendChart')?.getContext('2d'); if(!ctx) return;
-  const g=ctx.createLinearGradient(0,0,0,170);
-  g.addColorStop(0,color+'40'); g.addColorStop(1,color+'00');
-  cTrend=new Chart(ctx,{type:'line',data:{
-    labels:fd2.map(d=>fds(d.date)),
-    datasets:[{data:fd2.map(d=>d[k]),borderColor:color,backgroundColor:g,borderWidth:2,pointRadius:2,pointHoverRadius:5,fill:true,tension:.4}]
-  },options:baseOpts});
+  const color=PLATS.find(p=>p.key===k)?.color||'#A80000';
+  if(cTrend)cTrend.destroy();
+  const ctx=document.getElementById('trendChart')?.getContext('2d');if(!ctx)return;
+  const g=ctx.createLinearGradient(0,0,0,170);g.addColorStop(0,color+'45');g.addColorStop(1,color+'00');
+  cTrend=new Chart(ctx,{type:'line',data:{labels:fd2.map(d=>fds(d.date)),datasets:[{data:fd2.map(d=>d[k]),borderColor:color,backgroundColor:g,borderWidth:2,pointRadius:2,pointHoverRadius:5,fill:true,tension:.4}]},options:baseOpts});
 }
 function buildDonut(){
-  const L=D[D.length-1];
-  const ks=['youtube','facebook_follows','instagram','linkedin','tiktok','whatsapp'];
-  if(cDonut) cDonut.destroy();
-  const ctx=document.getElementById('donutChart')?.getContext('2d'); if(!ctx) return;
-  cDonut=new Chart(ctx,{type:'doughnut',data:{
-    labels:ks.map(k=>PLATS.find(p=>p.key===k)?.label||k),
-    datasets:[{data:ks.map(k=>L[k]||0),backgroundColor:ks.map(k=>PLATS.find(p=>p.key===k)?.color||'#444'),borderWidth:2,borderColor:'#141414',hoverOffset:5}]
-  },options:{
-    responsive:true,maintainAspectRatio:false,cutout:'65%',
-    plugins:{legend:{position:'right',labels:{color:'#888',font:{size:10,family:'Inter'},padding:8,boxWidth:8}},
-    tooltip:{backgroundColor:'#1c1c1c',titleColor:'#fff',bodyColor:'#888',borderColor:'rgba(255,255,255,.08)',borderWidth:1,cornerRadius:8}}
-  }});
+  const L=D[D.length-1],ks=['youtube','facebook_follows','instagram','linkedin','tiktok','whatsapp'];
+  if(cDonut)cDonut.destroy();
+  const ctx=document.getElementById('donutChart')?.getContext('2d');if(!ctx)return;
+  cDonut=new Chart(ctx,{type:'doughnut',data:{labels:ks.map(k=>PLATS.find(p=>p.key===k)?.label||k),datasets:[{data:ks.map(k=>L[k]||0),backgroundColor:ks.map(k=>PLATS.find(p=>p.key===k)?.color||'#444'),borderWidth:2,borderColor:'#130a08',hoverOffset:5}]},options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{legend:{position:'right',labels:{color:'#9a7b72',font:{size:10},padding:8,boxWidth:8}},tooltip:{backgroundColor:'#1a0f0c',titleColor:'#fff',bodyColor:'#9a7b72',borderColor:'rgba(139,0,0,.2)',borderWidth:1,cornerRadius:8}}}});
 }
 function buildWow(){
-  const last=D.slice(-11);
-  const lbls=last.slice(1).map(d=>fds(d.date));
+  const last=D.slice(-11),lbls=last.slice(1).map(d=>fds(d.date));
   const mk=k=>last.slice(1).map((d,i)=>(d[k]!==null&&last[i][k]!==null)?d[k]-last[i][k]:0);
-  if(cWow) cWow.destroy();
-  const ctx=document.getElementById('wowChart')?.getContext('2d'); if(!ctx) return;
-  cWow=new Chart(ctx,{type:'bar',data:{
-    labels:lbls,
-    datasets:[
-      {label:'YouTube',data:mk('youtube'),backgroundColor:'#FF000070',borderRadius:4},
-      {label:'Instagram',data:mk('instagram'),backgroundColor:'#E1306C70',borderRadius:4},
-      {label:'Facebook',data:mk('facebook_follows'),backgroundColor:'#1877F270',borderRadius:4},
-      {label:'TikTok',data:mk('tiktok'),backgroundColor:'#69C9D070',borderRadius:4},
-    ]
-  },options:{...baseOpts,plugins:{
-    legend:{display:true,labels:{color:'#888',font:{size:10,family:'Inter'},boxWidth:8,padding:8}},
-    tooltip:baseOpts.plugins.tooltip
-  }}});
+  if(cWow)cWow.destroy();
+  const ctx=document.getElementById('wowChart')?.getContext('2d');if(!ctx)return;
+  cWow=new Chart(ctx,{type:'bar',data:{labels:lbls,datasets:[
+    {label:'YouTube',data:mk('youtube'),backgroundColor:'#FF444470',borderRadius:4},
+    {label:'Instagram',data:mk('instagram'),backgroundColor:'#E1306C70',borderRadius:4},
+    {label:'Facebook',data:mk('facebook_follows'),backgroundColor:'#1877F270',borderRadius:4},
+    {label:'TikTok',data:mk('tiktok'),backgroundColor:'#F8717170',borderRadius:4},
+  ]},options:{...baseOpts,plugins:{legend:{display:true,labels:{color:'#9a7b72',font:{size:10},boxWidth:8,padding:8}},tooltip:baseOpts.plugins.tooltip}}});
 }
 
-function showToast(msg){
-  const t=document.getElementById('toast');
-  t.textContent=msg; t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),2500);
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+
+// SERVICE WORKER REGISTRATION
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('./sw.js').catch(()=>{});
+  });
 }
 
 window.addEventListener('load',()=>{
   updateOnlineStatus();
-  if(navigator.onLine) fetchSheet();
-  else {
-    document.getElementById('loading-screen').style.display='none';
-    document.getElementById('error-screen').style.display='flex';
-    document.getElementById('error-msg').textContent='Internet nahi hai. Wi-Fi ya mobile data on karein aur dobara try karein.';
-  }
+  if(navigator.onLine)fetchSheet();
+  else{document.getElementById('loading-screen').style.display='none';document.getElementById('error-screen').style.display='flex';document.getElementById('error-msg').textContent='Internet nahi hai. Wi-Fi ya mobile data on karein.';}
 });
 </script>
 </body>
