@@ -5,8 +5,8 @@
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#FFFFFF",
-  "theme_color": "#800000",
+  "background_color": "#0d0d0d",
+  "theme_color": "#e53030",
   "orientation": "any",
   "lang": "en",
   "icons": [
@@ -15,5 +15,32 @@
     { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
     { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
   ],
-  "categories": ["business", "productivity"]
+  "categories": ["business", "productivity"],
+  "splash_screens": [
+    {
+      "src": "splash.png",
+      "sizes": "640x1136",
+      "type": "image/png"
+    },
+    {
+      "src": "splash.png",
+      "sizes": "750x1334",
+      "type": "image/png"
+    },
+    {
+      "src": "splash.png",
+      "sizes": "1242x2208",
+      "type": "image/png"
+    }
+  ],
+  "prefer_related_applications": false,
+  "shortcuts": [
+    {
+      "name": "Analytics Dashboard",
+      "short_name": "Dashboard",
+      "description": "Open the main analytics dashboard",
+      "url": "./index.html",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
+    }
+  ]
 }
