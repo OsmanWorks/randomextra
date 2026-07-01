@@ -1,6 +1,6 @@
 // Chaajao Technologies — Service Worker
 // Offline support + caching for PWA
-const CACHE_NAME = 'chaajao-analytics-v2';
+const CACHE_NAME = 'chaajao-analytics-v3';
 const ASSETS = [
   './',
   './index.html',
@@ -9,7 +9,6 @@ const ASSETS = [
   'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js',
   'https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@400;500;600&display=swap'
 ];
-
 // Install: cache all assets
 self.addEventListener('install', e => {
   e.waitUntil(
@@ -21,7 +20,6 @@ self.addEventListener('install', e => {
   );
   self.skipWaiting();
 });
-
 // Activate: clear old caches
 self.addEventListener('activate', e => {
   e.waitUntil(
@@ -31,7 +29,6 @@ self.addEventListener('activate', e => {
   );
   self.clients.claim();
 });
-
 // Fetch: network first, fallback to cache
 self.addEventListener('fetch', e => {
   // Don't cache Google Sheets API calls — always need fresh data
