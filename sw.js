@@ -1,6 +1,6 @@
 // Chaajao Technologies — Service Worker
 // Offline support + caching for PWA
-const CACHE_NAME = 'chaajao-analytics-v3';
+const CACHE_NAME = 'chaajao-analytics-v4';
 const ASSETS = [
   './',
   './index.html',
