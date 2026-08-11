@@ -192,13 +192,23 @@ main { margin-left: var(--sidebar-w); padding-top: var(--topbar-h); min-height: 
 .hero-meta { display: flex; align-items: center; justify-content: space-between; margin-top: 14px; }
 .hero-delta { font-size: 13px; font-weight: 600; }
 .hero-date { font-size: 11.5px; opacity: .8; }
-.stats-row { display: grid; grid-template-columns: 1fr; gap: 14px; margin-top: 14px; }
-.stat-card {
-  background: var(--bg2); border: 1px solid var(--border); border-radius: 16px; padding: 16px 18px;
+.links-panel {
+  background: var(--bg2); border: 1px solid var(--border); border-radius: 20px;
+  padding: 18px 20px; margin-top: 14px;
 }
-.stat-label { font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text3); margin-bottom: 6px; }
-.stat-value { font-family: 'Bebas Neue', sans-serif; font-size: 26px; color: var(--text); }
-.stat-sub { font-size: 12px; color: var(--text2); margin-top: 2px; }
+.links-panel-title { font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text3); margin-bottom: 12px; }
+.links-groups { display: flex; flex-wrap: wrap; gap: 22px; }
+.links-group { flex: 1; min-width: 160px; }
+.links-group-icons { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 8px; }
+.links-group-label { font-size: 10.5px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--brand2); font-weight: 700; text-align: center; }
+.link-icon {
+  width: 38px; height: 38px; border-radius: 11px; display: flex; align-items: center; justify-content: center;
+  text-decoration: none; color: #fff; transition: transform .15s, box-shadow .15s;
+  background: var(--pc, var(--brand));
+}
+.link-icon:hover { transform: translateY(-2px); box-shadow: 0 6px 14px rgba(0,0,0,0.18); }
+.link-icon svg { width: 17px; height: 17px; fill: #fff; }
+.link-icon.plain svg { width: 18px; height: 18px; fill: none; stroke: #fff; stroke-width: 2; }
 
 .plat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 14px; align-content: start; }
 .plat-card {
@@ -360,17 +370,9 @@ svg.defs { position: absolute; width: 0; height: 0; overflow: hidden; }
               <div class="hero-date" id="hero-date"></div>
             </div>
           </div>
-          <div class="stats-row">
-            <div class="stat-card">
-              <div class="stat-label">Platforms</div>
-              <div class="stat-value" id="stat-platforms">0</div>
-              <div class="stat-sub">active channels</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-label">Top Platform</div>
-              <div class="stat-value" id="stat-top-name">-</div>
-              <div class="stat-sub" id="stat-top-sub"></div>
-            </div>
+          <div class="links-panel">
+            <div class="links-panel-title">Platforms</div>
+            <div class="links-groups" id="links-groups"></div>
           </div>
         </div>
         <div class="plat-grid" id="plat-grid" style="margin-top:16px;"></div>
@@ -465,17 +467,17 @@ const ICON_B64 = 'iVBORw0KGgoAAAANSUhEUgAABEQAAARECAIAAADz51N0AAAQAElEQVR4Aey9CY
 
 /* ═══ PLATFORM CONFIG ═══ */
 const PLATS = [
-  { key: 'linkedin',        label: 'LinkedIn',            color: '#0A66C2', icon: 'i-linkedin', url: 'https://www.linkedin.com/company/chaajao' },
-  { key: 'youtube',         label: 'YouTube',              color: '#FF4444', icon: 'i-youtube',  url: 'https://www.youtube.com/@chaajao' },
-  { key: 'facebook_follows',label: 'Facebook',             color: '#1877F2', icon: 'i-facebook', url: 'https://www.facebook.com/chaajao' },
-  { key: 'instagram',       label: 'Instagram',            color: '#E1306C', icon: 'i-instagram',url: 'https://www.instagram.com/chaajao' },
-  { key: 'tiktok',          label: 'TikTok',                color: '#F4A261', icon: 'i-tiktok',   url: 'https://www.tiktok.com/@chaajao' },
-  { key: 'whatsapp',        label: 'WhatsApp',             color: '#25D366', icon: 'i-whatsapp', url: 'https://whatsapp.com/channel/chaajao' },
-  { key: 'wa_mdcat',        label: 'WA MDCAT',              color: '#059669', icon: 'i-user',     url: '#' },
-  { key: 'wa_ecat',         label: 'WA ECAT',                color: '#3B82F6', icon: 'i-user',     url: '#' },
-  { key: 'wa_bcat',         label: 'WA BCAT',                color: '#A78BFA', icon: 'i-user',     url: '#' },
-  { key: 'wa_sat',          label: 'WA SAT',                 color: '#F59E0B', icon: 'i-user',     url: 'https://whatsapp.com/channel/0029Vb8VFRNLdQeiZJeWlk3m' },
-  { key: 'wa_sat_cb',       label: 'SAT College Board',      color: '#EF4444', icon: 'i-user',     url: '#' },
+  { key: 'linkedin',        label: 'LinkedIn',           color: '#0A66C2', icon: 'i-linkedin', group: 'social', url: 'https://www.linkedin.com/company/chaajao' },
+  { key: 'youtube',         label: 'YouTube',            color: '#FF4444', icon: 'i-youtube',  group: 'social', url: 'https://www.youtube.com/@chaajao' },
+  { key: 'facebook_follows',label: 'Facebook',           color: '#1877F2', icon: 'i-facebook', group: 'social', url: 'https://www.facebook.com/chaajao' },
+  { key: 'instagram',       label: 'Instagram',          color: '#E1306C', icon: 'i-instagram',group: 'social', url: 'https://www.instagram.com/chaajao__edu/' },
+  { key: 'tiktok',          label: 'TikTok',              color: '#F4A261', icon: 'i-tiktok',   group: 'social', url: 'https://www.tiktok.com/@chaajao_edu' },
+  { key: 'whatsapp',        label: 'WhatsApp Channel',   color: '#25D366', icon: 'i-whatsapp', group: 'whatsapp', url: 'https://whatsapp.com/channel/0029VaLqFDgFy72BmpzRqb45' },
+  { key: 'wa_mdcat',        label: 'WA MDCAT',            color: '#059669', icon: 'i-user',     group: 'whatsapp', url: 'https://whatsapp.com/channel/0029VbB7OEF72WTuSLtPfh0f' },
+  { key: 'wa_ecat',         label: 'WA ECAT',              color: '#3B82F6', icon: 'i-user',     group: 'whatsapp', url: 'https://whatsapp.com/channel/0029VbBED3HHltY2EwNPfU2J' },
+  { key: 'wa_bcat',         label: 'WA BCAT',              color: '#A78BFA', icon: 'i-user',     group: 'whatsapp', url: 'https://whatsapp.com/channel/0029VbCH5caL7UVZ6UIHvA3J' },
+  { key: 'wa_sat',          label: 'WA SAT',               color: '#F59E0B', icon: 'i-user',     group: 'whatsapp', url: 'https://whatsapp.com/channel/0029Vb8VFRNLdQeiZJeWlk3m' },
+  { key: 'wa_sat_cb',       label: 'SAT College Board',    color: '#EF4444', icon: 'i-user',     group: 'whatsapp', url: '#' },
 ];
 const TOT_KEYS = PLATS.map(p => p.key);
 
@@ -516,9 +518,12 @@ async function loadData() {
   document.getElementById('error-screen').classList.remove('show');
   document.getElementById('loading-screen').classList.add('show');
   const sp = SHEET_NAME ? `&sheet=${encodeURIComponent(SHEET_NAME)}` : '';
-  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=0${sp}&range=A4:M500`;
+  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json${sp}&range=A4:M300`;
   try {
-    const res = await fetch(url);
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15000);
+    const res = await fetch(url, { signal: controller.signal });
+    clearTimeout(timeoutId);
     if (!res.ok) throw new Error('HTTP ' + res.status);
     const text = await res.text();
     D = parseGviz(text);
@@ -542,7 +547,7 @@ async function loadData() {
     }
     document.getElementById('loading-screen').classList.remove('show');
     document.getElementById('error-screen').classList.add('show');
-    document.getElementById('err-msg').textContent = err.message || 'Failed to fetch';
+    document.getElementById('err-msg').textContent = (err.name === 'AbortError') ? 'Connection bohat slow hai — dobara try karein' : (err.message || 'Failed to fetch');
   }
 }
 
@@ -577,11 +582,7 @@ function renderReport() {
   document.getElementById('hero-delta').innerHTML = `▲ +${fmtNum(delta)} is hafte`;
   document.getElementById('hero-date').textContent = fmtDate(latest.date);
 
-  document.getElementById('stat-platforms').textContent = PLATS.length;
-  let topPlat = PLATS[0], topVal = -1;
-  PLATS.forEach(p => { if ((latest[p.key] || 0) > topVal) { topVal = latest[p.key] || 0; topPlat = p; } });
-  document.getElementById('stat-top-name').textContent = topPlat.label;
-  document.getElementById('stat-top-sub').textContent = fmtNum(topVal) + ' followers';
+  renderLinksPanel();
 
   const grid = document.getElementById('plat-grid');
   grid.innerHTML = PLATS.map(p => {
@@ -590,17 +591,39 @@ function renderReport() {
     const diff = now - before;
     const pillClass = diff > 0 ? 'up' : diff < 0 ? 'dn' : 'neu';
     const arrow = diff > 0 ? '▲' : diff < 0 ? '▼' : '—';
-    return `<a class="plat-card" style="--pc:${p.color}" href="${p.url}" target="_blank" rel="noopener">
+    return `<div class="plat-card" style="--pc:${p.color}">
       <div class="plat-icon"><svg><use href="#${p.icon}"/></svg></div>
       <div class="plat-name">${p.label}</div>
       <div class="plat-num">${fmtNum(now)}</div>
       <div class="pill ${pillClass}">${arrow} ${diff >= 0 ? '+' : ''}${fmtNum(diff)}</div>
-    </a>`;
+    </div>`;
   }).join('');
 
   renderWeekly();
   renderMonthly();
   renderTrends();
+}
+
+/* ═══ RENDER: PLATFORM QUICK-LINK ICONS (categorized) ═══ */
+function renderLinksPanel() {
+  const groups = [
+    { key: 'social', label: 'Social Platforms' },
+    { key: 'whatsapp', label: 'WhatsApp Channels' },
+  ];
+  const wrap = document.getElementById('links-groups');
+  wrap.innerHTML = groups.map(g => {
+    const items = PLATS.filter(p => p.group === g.key);
+    const icons = items.map(p => {
+      const plain = p.icon === 'i-user' ? ' plain' : '';
+      return `<a class="link-icon${plain}" style="--pc:${p.color}" href="${p.url}" target="_blank" rel="noopener" title="${p.label}">
+        <svg><use href="#${p.icon}"/></svg>
+      </a>`;
+    }).join('');
+    return `<div class="links-group">
+      <div class="links-group-icons">${icons}</div>
+      <div class="links-group-label">${g.label}</div>
+    </div>`;
+  }).join('');
 }
 
 /* ═══ RENDER: WEEKLY ═══ */
