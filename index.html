@@ -513,41 +513,70 @@ function parseGviz(text) {
   return out;
 }
 
+function readCache() {
+  try {
+    const cached = localStorage.getItem(CACHE_KEY);
+    if (!cached) return null;
+    const parsed = JSON.parse(cached);
+    return parsed.D.map(r => ({ ...r, date: new Date(r.date) }));
+  } catch (e) { return null; }
+}
+
 async function loadData() {
-  document.getElementById('report-content').style.display = 'none';
-  document.getElementById('error-screen').classList.remove('show');
-  document.getElementById('loading-screen').classList.add('show');
+  const cachedD = readCache();
+  const hasCache = !!(cachedD && cachedD.length);
+
+  // Stale-while-revalidate: if we already have cached data, show it immediately
+  // (no spinner) and refresh silently in the background.
+  if (hasCache) {
+    D = cachedD;
+    document.getElementById('loading-screen').classList.remove('show');
+    document.getElementById('error-screen').classList.remove('show');
+    document.getElementById('report-content').style.display = 'block';
+    renderReport();
+  } else {
+    document.getElementById('report-content').style.display = 'none';
+    document.getElementById('error-screen').classList.remove('show');
+    document.getElementById('loading-screen').classList.add('show');
+  }
+
   const sp = SHEET_NAME ? `&sheet=${encodeURIComponent(SHEET_NAME)}` : '';
-  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json${sp}&range=A4:M300`;
+  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json${sp}&range=A4:M150`;
+
+  // Slow-connection hint while the first-ever load is in progress.
+  let hintTimer = null;
+  if (!hasCache) {
+    hintTimer = setTimeout(() => {
+      const el = document.querySelector('#loading-screen .load-text');
+      if (el) el.textContent = 'Thoda intezar karein, connection slow lag raha hai...';
+    }, 5000);
+  }
+
   try {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 15000);
+    const timeoutId = setTimeout(() => controller.abort(), 20000);
     const res = await fetch(url, { signal: controller.signal });
     clearTimeout(timeoutId);
     if (!res.ok) throw new Error('HTTP ' + res.status);
     const text = await res.text();
-    D = parseGviz(text);
-    if (!D.length) throw new Error('No rows');
+    const fresh = parseGviz(text);
+    if (!fresh.length) throw new Error('No rows');
+    D = fresh;
     localStorage.setItem(CACHE_KEY, JSON.stringify({ D, t: Date.now() }));
     document.getElementById('loading-screen').classList.remove('show');
+    document.getElementById('error-screen').classList.remove('show');
     document.getElementById('report-content').style.display = 'block';
     renderReport();
   } catch (err) {
-    const cached = localStorage.getItem(CACHE_KEY);
-    if (cached) {
-      try {
-        const parsed = JSON.parse(cached);
-        D = parsed.D.map(r => ({ ...r, date: new Date(r.date) }));
-        document.getElementById('loading-screen').classList.remove('show');
-        document.getElementById('report-content').style.display = 'block';
-        renderReport();
-        showToast('Offline — purana data dikha rahe hain');
-        return;
-      } catch (e) {}
+    if (hasCache) {
+      // Already showing cached data — fail silently, no need to alarm the user.
+      return;
     }
     document.getElementById('loading-screen').classList.remove('show');
     document.getElementById('error-screen').classList.add('show');
     document.getElementById('err-msg').textContent = (err.name === 'AbortError') ? 'Connection bohat slow hai — dobara try karein' : (err.message || 'Failed to fetch');
+  } finally {
+    if (hintTimer) clearTimeout(hintTimer);
   }
 }
 
