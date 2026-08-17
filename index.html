@@ -461,6 +461,12 @@ main { margin-left: var(--sidebar-w); padding-top: var(--topbar-h); min-height: 
 #toast.show { opacity: 1; }
 
 svg.defs { position: absolute; width: 0; height: 0; overflow: hidden; }
+
+@media (max-width: 1100px) {
+  .simple-overview { grid-template-columns: 1fr 1fr; }
+  .simple-overview .hero-card { grid-column: 1 / -1; }
+  .simple-chart-grid { grid-template-columns: 1fr; }
+}
 </style>
 </head>
 
@@ -584,7 +590,7 @@ svg.defs { position: absolute; width: 0; height: 0; overflow: hidden; }
         </div>
 
         <div class="page-footer">Developed by <a href="#">Usman Khan</a></div>
-      </div>      </div>
+      </div>
     </div>
 
     <div class="page" id="page-video">
@@ -984,9 +990,3 @@ function initApp() {
 </script>
 </body>
 </html>
-
-@media (max-width: 1100px) {
-  .simple-overview { grid-template-columns: 1fr 1fr; }
-  .simple-overview .hero-card { grid-column: 1 / -1; }
-  .simple-chart-grid { grid-template-columns: 1fr; }
-}
