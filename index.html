@@ -12,7 +12,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
 <style>
 :root {
   --brand:        #F67280;
@@ -266,6 +265,170 @@ main { margin-left: var(--sidebar-w); padding-top: var(--topbar-h); min-height: 
 .month-row-name { display: flex; align-items: center; gap: 8px; color: var(--text2); }
 .month-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--dotc, var(--brand)); }
 
+
+/* ═══ SIMPLE / EASY DASHBOARD ═══ */
+.simple-overview {
+  display: grid;
+  grid-template-columns: minmax(300px, 1.25fr) 1fr 1fr;
+  gap: 14px;
+  align-items: stretch;
+}
+.overview-stat {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.overview-stat-label {
+  color: var(--text3);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1.3px;
+  font-weight: 700;
+}
+.overview-stat-value {
+  margin-top: 8px;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 34px;
+  color: var(--text);
+}
+.overview-stat-value.small {
+  font-size: 25px;
+}
+.overview-stat-sub {
+  margin-top: 3px;
+  color: var(--text2);
+  font-size: 12px;
+}
+.overview-stat-value.negative { color: var(--red); }
+
+.simple-links {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 15px 18px;
+  margin-top: 14px;
+}
+.simple-links-title {
+  color: var(--text3);
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 1.4px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+.simple-links .links-groups { gap: 18px; }
+.simple-links .links-group { min-width: 130px; }
+.simple-links .links-group-icons { justify-content: flex-start; }
+
+.analytics-note {
+  background: var(--brand-dim);
+  border: 1px solid rgba(246,114,128,.16);
+  border-radius: 12px;
+  padding: 12px 14px;
+  color: var(--text2);
+  font-size: 12px;
+  line-height: 1.55;
+  margin-bottom: 14px;
+}
+.analytics-note strong { color: var(--text); }
+
+.simple-chart-grid {
+  display: grid;
+  grid-template-columns: 1.25fr 1fr;
+  gap: 16px;
+}
+.simple-chart-card { min-width: 0; }
+.chart-subtitle {
+  font-size: 11px;
+  color: var(--text3);
+  margin-top: -7px;
+  margin-bottom: 8px;
+}
+.svg-chart-wrap, .bar-chart-wrap { width: 100%; min-height: 260px; }
+.growth-svg { width: 100%; height: 260px; display: block; overflow: visible; }
+.chart-grid-line { stroke: rgba(108,91,123,.10); stroke-width: 1; }
+.chart-axis { fill: var(--text3); font-family: 'Outfit', sans-serif; font-size: 10px; }
+.chart-area { fill: rgba(246,114,128,.10); }
+.chart-line { fill: none; stroke: var(--brand); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.chart-dot { fill: #fff; stroke: var(--brand); stroke-width: 2.5; }
+.chart-foot {
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid var(--border);
+  padding-top: 9px;
+  color: var(--text3);
+  font-size: 11px;
+}
+.chart-foot strong { color: var(--text); }
+
+.bar-chart-wrap {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 12px;
+  padding: 8px 2px 2px;
+}
+.bar-row {
+  display: grid;
+  grid-template-columns: 112px 1fr 58px;
+  align-items: center;
+  gap: 9px;
+}
+.bar-name {
+  color: var(--text2);
+  font-size: 11px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.bar-track {
+  height: 10px;
+  background: var(--bg3);
+  border-radius: 20px;
+  overflow: hidden;
+}
+.bar-fill {
+  height: 100%;
+  border-radius: 20px;
+  background: var(--bar, var(--brand));
+}
+.bar-value {
+  text-align: right;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 17px;
+  color: var(--text);
+}
+.simple-tip {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  margin-top: 16px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px 16px;
+  color: var(--text2);
+  font-size: 12px;
+  line-height: 1.55;
+}
+.simple-tip p { margin-top: 2px; }
+.tip-icon {
+  flex: 0 0 auto;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--green);
+  background: rgba(24,122,58,.10);
+  font-weight: 800;
+}
+
 /* ═══ TRENDS ═══ */
 .trend-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
 .chart-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 16px; padding: 18px 20px; }
@@ -360,53 +523,68 @@ svg.defs { position: absolute; width: 0; height: 0; overflow: hidden; }
       </div>
 
       <div id="report-content" style="display:none;">
-        <div class="sec-label">Total Community</div>
-        <div class="report-top">
+        <div class="sec-label">Overview</div>
+
+        <div class="simple-overview">
           <div class="hero-card">
             <div class="hero-label">Total Community</div>
             <div class="hero-num" id="hero-total">0</div>
             <div class="hero-meta">
-              <div class="hero-delta" id="hero-delta">▲ +0 is hafte</div>
+              <div class="hero-delta" id="hero-delta">▲ +0 this week</div>
               <div class="hero-date" id="hero-date"></div>
             </div>
           </div>
-          <div class="links-panel">
-            <div class="links-panel-title">Platforms</div>
-            <div class="links-groups" id="links-groups"></div>
+
+          <div class="overview-stat">
+            <div class="overview-stat-label">This Week</div>
+            <div class="overview-stat-value" id="growth-val">+0</div>
+            <div class="overview-stat-sub" id="growth-sub">No previous week available</div>
+          </div>
+
+          <div class="overview-stat">
+            <div class="overview-stat-label">Latest Update</div>
+            <div class="overview-stat-value small" id="overview-date">—</div>
+            <div class="overview-stat-sub">Data from Google Sheet</div>
           </div>
         </div>
-        <div class="plat-grid" id="plat-grid" style="margin-top:16px;"></div>
 
-        <div class="sec-label">Aakhri 3 Hafte</div>
-        <div class="week-grid" id="week-grid"></div>
-        <div class="growth-box" style="margin-top:16px;">
+        <div class="simple-links">
+          <div class="simple-links-title">Quick Links</div>
+          <div class="links-groups" id="links-groups"></div>
+        </div>
+
+        <div class="sec-label">Current Numbers</div>
+        <div class="plat-grid" id="plat-grid"></div>
+
+        <div class="sec-label">Analytics</div>
+        <div class="analytics-note">
+          <strong>Seedhi baat:</strong> neeche sirf 2 cheezen hain — community ka trend aur abhi kis platform par kitne followers hain.
+        </div>
+
+        <div class="simple-chart-grid">
+          <div class="chart-card simple-chart-card">
+            <div class="chart-title">Community Growth</div>
+            <div class="chart-subtitle">Har update par total followers/subscribers</div>
+            <div class="svg-chart-wrap" id="growth-chart"></div>
+          </div>
+
+          <div class="chart-card simple-chart-card">
+            <div class="chart-title">Platform Comparison</div>
+            <div class="chart-subtitle">Latest update ke numbers</div>
+            <div class="bar-chart-wrap" id="platform-chart"></div>
+          </div>
+        </div>
+
+        <div class="simple-tip">
+          <span class="tip-icon">✓</span>
           <div>
-            <div class="growth-label">Is hafte naye followers</div>
-            <div class="growth-val" id="growth-val">+0</div>
-            <div class="growth-sub" id="growth-sub">Pichle hafte: +0</div>
-          </div>
-          <div class="growth-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><path d="M13 2L3 14h7l-1 8 11-14h-7l1-6z"/></svg>
-          </div>
-        </div>
-
-        <div class="sec-label">Mahina Ba Mahina</div>
-        <div class="month-grid" id="month-grid"></div>
-
-        <div class="sec-label">Growth Trends</div>
-        <div class="trend-grid">
-          <div class="chart-card">
-            <div class="chart-title">Total Community Growth</div>
-            <div class="chart-box"><canvas id="chart-total"></canvas></div>
-          </div>
-          <div class="chart-card">
-            <div class="chart-title">Platform Ka Hissa (Latest)</div>
-            <div class="chart-box"><canvas id="chart-donut"></canvas></div>
+            <strong>Dashboard ko simple rakha gaya hai</strong>
+            <p>Current numbers cards mein hain aur detailed analytics neeche charts mein. Kisi monthly accordion ya complicated table ki zaroorat nahi.</p>
           </div>
         </div>
 
         <div class="page-footer">Developed by <a href="#">Usman Khan</a></div>
-      </div>
+      </div>      </div>
     </div>
 
     <div class="page" id="page-video">
@@ -622,9 +800,7 @@ function renderReport() {
     </div>`;
   }).join('');
 
-  renderWeekly();
-  renderMonthly();
-  renderTrends();
+  renderAnalytics();
 }
 
 /* ═══ RENDER: PLATFORM QUICK-LINK ICONS (categorized) ═══ */
@@ -649,120 +825,126 @@ function renderLinksPanel() {
   }).join('');
 }
 
-/* ═══ RENDER: WEEKLY ═══ */
-function renderWeekly() {
-  const n = D.length;
-  const last3 = D.slice(Math.max(0, n - 3));
-  const wrap = document.getElementById('week-grid');
-  wrap.innerHTML = PLATS.map(p => {
-    const cols = last3.map((row, i) => {
-      const isCurrent = i === last3.length - 1;
-      return `<div class="week-col ${isCurrent ? 'current' : ''}">
-        <div class="week-col-date">${isCurrent ? 'Is Hafte' : fmtDate(row.date).split(' ').slice(0,2).join(' ').toUpperCase()}</div>
-        <div class="week-col-val">${fmtNum(row[p.key] || 0)}</div>
-      </div>`;
-    }).join('');
-    const now = last3[last3.length - 1][p.key] || 0;
-    const before = last3.length > 1 ? (last3[last3.length - 2][p.key] || 0) : now;
-    const diff = now - before;
-    const pct = before ? ((diff / before) * 100).toFixed(1) : '0.0';
-    return `<div class="week-card">
-      <div class="week-card-head">
-        <div class="week-card-title"><svg width="16" height="16"><use href="#${p.icon}" fill="${p.color}"/></svg>${p.label}</div>
-        <div class="pill ${diff >= 0 ? 'up' : 'dn'}">${diff >= 0 ? '▲ +' : '▼ '}${fmtNum(diff)} ${pct}%</div>
-      </div>
-      <div class="week-cols">${cols}</div>
-      <div class="week-card-foot"><span>Tabdili</span><span class="pill ${diff >= 0 ? 'up' : 'dn'}">${diff >= 0 ? '▲ +' : '▼ '}${fmtNum(diff)}</span></div>
-    </div>`;
-  }).join('');
+/* ═══ SIMPLE ANALYTICS ═══ */
 
-  const latest = D[D.length - 1], prev = D.length > 1 ? D[D.length - 2] : latest, prev2 = D.length > 2 ? D[D.length - 3] : prev;
-  const growNow = totalOf(latest) - totalOf(prev);
-  const growPrev = totalOf(prev) - totalOf(prev2);
-  document.getElementById('growth-val').textContent = '+' + fmtNum(growNow);
-  document.getElementById('growth-sub').textContent = 'Pichle hafte: +' + fmtNum(growPrev);
+function renderAnalytics() {
+  if (!D.length) return;
+
+  const latest = D[D.length - 1];
+  const prev = D.length > 1 ? D[D.length - 2] : latest;
+
+  const totalNow = totalOf(latest);
+  const totalPrev = totalOf(prev);
+  const growth = totalNow - totalPrev;
+
+  const growthVal = document.getElementById('growth-val');
+  const growthSub = document.getElementById('growth-sub');
+  const overviewDate = document.getElementById('overview-date');
+
+  growthVal.textContent = (growth >= 0 ? '+' : '') + fmtNum(growth);
+  growthVal.classList.toggle('negative', growth < 0);
+  growthSub.textContent = D.length > 1
+    ? `Previous update: ${fmtNum(totalPrev)}`
+    : 'No previous update available';
+  overviewDate.textContent = fmtDate(latest.date);
+
+  renderGrowthChart();
+  renderPlatformChart();
 }
 
-/* ═══ RENDER: MONTHLY ═══ */
-function renderMonthly() {
-  const byMonth = {};
-  D.forEach(row => {
-    const key = row.date.getFullYear() + '-' + row.date.getMonth();
-    if (!byMonth[key] || row.date > byMonth[key].date) byMonth[key] = row;
-  });
-  const monthRows = Object.values(byMonth).sort((a, b) => b.date - a.date).slice(0, 6);
-  const wrap = document.getElementById('month-grid');
-  wrap.innerHTML = monthRows.map((row, idx) => {
-    const monthName = row.date.toLocaleDateString('en-GB', { month: 'long', year: 'numeric' });
-    const total = totalOf(row);
-    // find previous month's row for delta
-    const rowIdx = D.indexOf(row);
-    let prevMonthTotal = null;
-    for (let j = rowIdx - 1; j >= 0; j--) {
-      if (D[j].date.getMonth() !== row.date.getMonth() || D[j].date.getFullYear() !== row.date.getFullYear()) {
-        prevMonthTotal = totalOf(D[j]); break;
-      }
-    }
-    const delta = prevMonthTotal != null ? total - prevMonthTotal : 0;
-    const rows = PLATS.map(p => {
-      const now = row[p.key] || 0;
-      let prevVal = 0;
-      for (let j = rowIdx - 1; j >= 0; j--) {
-        if (D[j].date.getMonth() !== row.date.getMonth() || D[j].date.getFullYear() !== row.date.getFullYear()) { prevVal = D[j][p.key] || 0; break; }
-      }
-      const d = now - prevVal;
-      return `<div class="month-row">
-        <div class="month-row-name"><span class="month-dot" style="--dotc:${p.color}"></span>${p.label}</div>
-        <div style="display:flex;align-items:center;gap:10px;">
-          <b>${fmtNum(now)}</b>
-          <span class="pill ${d >= 0 ? 'up' : 'dn'}">${d >= 0 ? '▲' : '▼'} +${fmtNum(d)}</span>
-        </div>
-      </div>`;
-    }).join('');
-    return `<div class="month-accordion ${idx === 0 ? 'open' : ''}">
-      <div class="month-accordion-header" onclick="this.parentElement.classList.toggle('open')">
-        <div>
-          <div class="month-title">${monthName}</div>
-          <div class="month-total">${fmtNum(total)} total</div>
-        </div>
-        <div class="pill ${delta >= 0 ? 'up' : 'dn'}">${delta >= 0 ? '▲' : '▼'} +${fmtNum(delta)}</div>
-      </div>
-      <div class="month-accordion-body">${rows}</div>
-    </div>`;
-  }).join('');
+function niceMax(n) {
+  if (!n || n <= 0) return 10;
+  const power = Math.pow(10, Math.floor(Math.log10(n)));
+  const scaled = n / power;
+  let step = 1;
+  if (scaled <= 2) step = 2;
+  else if (scaled <= 5) step = 5;
+  else step = 10;
+  return step * power * Math.ceil(scaled / step);
 }
 
-/* ═══ RENDER: TRENDS ═══ */
-let chartTotal = null, chartDonut = null;
-function renderTrends() {
-  const labels = D.map(r => r.date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' }));
-  const totals = D.map(r => totalOf(r));
+function renderGrowthChart() {
+  const wrap = document.getElementById('growth-chart');
+  if (!wrap || !D.length) return;
 
-  const ctx1 = document.getElementById('chart-total');
-  if (chartTotal) chartTotal.destroy();
-  if (window.Chart) {
-    chartTotal = new Chart(ctx1, {
-      type: 'line',
-      data: { labels, datasets: [{ data: totals, borderColor: '#F67280', backgroundColor: 'rgba(246,114,128,0.12)', fill: true, tension: 0.35, pointRadius: 0 }] },
-      options: {
-        responsive: true, maintainAspectRatio: false,
-        plugins: { legend: { display: false }, tooltip: { titleColor: '#2A2438', bodyColor: '#6B5B73' } },
-        scales: { x: { ticks: { color: '#9C8CA0', maxTicksLimit: 6 }, grid: { display: false } }, y: { ticks: { color: '#9C8CA0' }, grid: { color: 'rgba(108,91,123,0.08)' } } }
-      }
-    });
+  const rows = D.slice(-12);
+  const values = rows.map(totalOf);
+  const max = niceMax(Math.max(...values));
+  const min = Math.min(...values);
+  const range = Math.max(max - Math.min(0, min), 1);
 
-    const latest = D[D.length - 1];
-    const ctx2 = document.getElementById('chart-donut');
-    if (chartDonut) chartDonut.destroy();
-    chartDonut = new Chart(ctx2, {
-      type: 'doughnut',
-      data: { labels: PLATS.map(p => p.label), datasets: [{ data: PLATS.map(p => latest[p.key] || 0), backgroundColor: PLATS.map(p => p.color), borderColor: '#FDFBFC', borderWidth: 2 }] },
-      options: {
-        responsive: true, maintainAspectRatio: false, cutout: '62%',
-        plugins: { legend: { position: 'right', labels: { color: '#6B5B73', boxWidth: 10, font: { size: 10 } } } }
-      }
-    });
+  const W = 760, H = 280;
+  const padL = 58, padR = 20, padT = 18, padB = 42;
+  const innerW = W - padL - padR;
+  const innerH = H - padT - padB;
+
+  const x = i => padL + (rows.length === 1 ? innerW / 2 : (i / (rows.length - 1)) * innerW);
+  const y = v => padT + innerH - ((v - 0) / max) * innerH;
+
+  const points = values.map((v, i) => `${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(' ');
+  const areaPoints = `${padL},${padT + innerH} ${points} ${x(rows.length - 1).toFixed(1)},${padT + innerH}`;
+
+  const gridCount = 4;
+  let grid = '';
+  for (let i = 0; i <= gridCount; i++) {
+    const v = (max / gridCount) * i;
+    const yy = y(v);
+    grid += `<line x1="${padL}" y1="${yy}" x2="${W-padR}" y2="${yy}" class="chart-grid-line"/>`;
+    grid += `<text x="${padL-10}" y="${yy+4}" text-anchor="end" class="chart-axis">${fmtNum(v)}</text>`;
   }
+
+  let labels = '';
+  rows.forEach((r, i) => {
+    const show = rows.length <= 7 || i === 0 || i === rows.length - 1 || i % 2 === 0;
+    if (show) {
+      labels += `<text x="${x(i)}" y="${H-14}" text-anchor="middle" class="chart-axis">${fmtDate(r.date).split(' ').slice(0,2).join(' ')}</text>`;
+    }
+  });
+
+  let dots = '';
+  values.forEach((v, i) => {
+    dots += `<circle cx="${x(i)}" cy="${y(v)}" r="${i === values.length-1 ? 5 : 3.5}" class="chart-dot">
+      <title>${fmtDate(rows[i].date)} — ${fmtNum(v)}</title>
+    </circle>`;
+  });
+
+  wrap.innerHTML = `
+    <svg class="growth-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="Community growth trend">
+      <polygon points="${areaPoints}" class="chart-area"></polygon>
+      ${grid}
+      <polyline points="${points}" class="chart-line"></polyline>
+      ${dots}
+      ${labels}
+    </svg>
+    <div class="chart-foot">
+      <span>Oldest: ${fmtNum(values[0])}</span>
+      <strong>Latest: ${fmtNum(values[values.length-1])}</strong>
+    </div>`;
+}
+
+function renderPlatformChart() {
+  const wrap = document.getElementById('platform-chart');
+  if (!wrap || !D.length) return;
+
+  const latest = D[D.length - 1];
+  const items = PLATS
+    .map(p => ({ ...p, value: Number(latest[p.key] || 0) }))
+    .filter(p => p.value > 0)
+    .sort((a, b) => b.value - a.value);
+
+  const max = Math.max(...items.map(x => x.value), 1);
+
+  wrap.innerHTML = items.map(p => {
+    const width = Math.max(3, (p.value / max) * 100);
+    return `
+      <div class="bar-row">
+        <div class="bar-name">${p.label}</div>
+        <div class="bar-track">
+          <div class="bar-fill" style="width:${width}%;--bar:${p.color}"></div>
+        </div>
+        <div class="bar-value">${fmtNum(p.value)}</div>
+      </div>`;
+  }).join('');
 }
 
 /* ═══ NAVIGATION ═══ */
@@ -802,3 +984,9 @@ function initApp() {
 </script>
 </body>
 </html>
+
+@media (max-width: 1100px) {
+  .simple-overview { grid-template-columns: 1fr 1fr; }
+  .simple-overview .hero-card { grid-column: 1 / -1; }
+  .simple-chart-grid { grid-template-columns: 1fr; }
+}
