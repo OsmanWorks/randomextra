@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Chaajao Analytics</title>
+<meta name="description" content="Chaajao Technologies ka social media analytics dashboard">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#F67280" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#14111A" media="(prefers-color-scheme: dark)">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Chaajao">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Content par jayein</a>
+
+<svg class="sprite" aria-hidden="true" focusable="false" width="0" height="0">
+<symbol id="i-linkedin" viewBox="0 0 448 512"><path d="M100.28 448H7.4V148.9h92.88zm-46.44-341C24.09 107 0 82.85 0 53.19a53.19 53.19 0 0 1 106.38 0c0 29.66-24.1 53.81-53.54 53.81zM447.9 448h-92.68V302.4c0-34.7-.7-79.3-48.29-79.3-48.29 0-55.69 37.7-55.69 76.7V448h-92.78V148.9h89.08v40.8h1.3c12.4-23.5 42.7-48.3 87.9-48.3 94 0 111.28 61.9 111.28 142.3V448z"/></symbol>
+<symbol id="i-youtube" viewBox="0 0 576 512"><path d="M549.7 124.1c-6.3-23.7-24.8-42.3-48.3-48.6C458.8 64 288 64 288 64S117.2 64 74.6 75.5c-23.5 6.3-42 24.9-48.3 48.6C15 167.1 15 256 15 256s0 88.9 11.3 131.9c6.3 23.7 24.8 41.5 48.3 47.8C117.2 448 288 448 288 448s170.8 0 213.4-11.3c23.5-6.3 42-24.1 48.3-47.8C561 344.9 561 256 561 256s0-88.9-11.3-131.9zM232 335.6V176.4L361 256l-129 79.6z"/></symbol>
+<symbol id="i-facebook" viewBox="0 0 320 512"><path d="M279.14 288l14.22-92.66h-88.91v-60.13c0-25.35 12.42-50.06 52.24-50.06h40.42V6.26S260.43 0 225.36 0c-73.22 0-121.08 44.38-121.08 124.72v70.62H22.89V288h81.39v224h100.17V288z"/></symbol>
+<symbol id="i-instagram" viewBox="0 0 448 512"><path d="M224 141a115 115 0 1 0 115 115 114.9 114.9 0 0 0-115-115zm0 190a75 75 0 1 1 75-75 75.13 75.13 0 0 1-75 75zm146.4-194.7a26.9 26.9 0 1 1-26.9-26.9 26.8 26.8 0 0 1 26.9 26.9zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9s-58-34.4-93.9-36.2C279.8 32 168.2 32 131.7 33.5c-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9C0 199.8 0 311.4 1.6 347.9c1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c36.5 1.7 148.1 1.7 184.6 0 35.9-1.7 67.7-9.9 93.9-36.2s34.4-58 36.2-93.9c1.7-36.5 1.7-148 0-184.5zM398.8 388a83.3 83.3 0 0 1-47 47c-32.5 12.9-109.6 9.9-145.5 9.9s-113 3-145.5-9.9a83.3 83.3 0 0 1-47-47c-12.9-32.5-9.9-109.6-9.9-145.5s-3-113 9.9-145.5a83.3 83.3 0 0 1 47-47c32.5-12.9 109.6-9.9 145.5-9.9s113-3 145.5 9.9a83.3 83.3 0 0 1 47 47c12.9 32.5 9.9 109.6 9.9 145.5s3 113-9.9 145.5z"/></symbol>
+<symbol id="i-tiktok" viewBox="0 0 448 512"><path d="M448 209.9a210.1 210.1 0 0 1-122.8-39.3V349.4A162.6 162.6 0 1 1 185 188.3v89.9a74.6 74.6 0 1 0 52.2 71.2V0h88a121.2 121.2 0 0 0 1.9 22.2 122.2 122.2 0 0 0 53.9 80.2 121.4 121.4 0 0 0 67 20.1z"/></symbol>
+<symbol id="i-whatsapp" viewBox="0 0 448 512"><path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.9 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/></symbol>
+  <symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-trend" viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8M15 7h6v6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-video" viewBox="0 0 24 24"><rect x="3" y="5" width="13" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 10l5-3v10l-5-3" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M21 4v6h-6M3 20v-6h6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 10a8 8 0 0 0-14-3L3 10M4 14a8 8 0 0 0 14 3l3-3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+  <symbol id="i-external" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M5 20h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-share" viewBox="0 0 24 24"><path d="M12 15V3M8 7l4-4 4 4M6 11H5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-8a1 1 0 0 0-1-1h-1" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3l10 18H2L12 3zM12 10v5M12 18v.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-offline" viewBox="0 0 24 24"><path d="M2 8.5a15 15 0 0 1 4-2.4M22 8.5a15 15 0 0 0-9-3.4M5 12.5a10 10 0 0 1 3-1.8M19 12.5a10 10 0 0 0-4-2.3M8.5 16.5a5 5 0 0 1 7 0M12 20h.01M3 3l18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+</svg>
+
+<div class="shell" id="shell">
+
+  <aside class="sidebar" aria-label="Menu">
+    <div class="brand"><img src="icons/icon-192.png" alt="" width="40" height="40"><span>CHAAJAO</span></div>
+    <nav class="side-nav" aria-label="Pages">
+      <a class="nav-link" href="#/" data-route="overview"><svg><use href="#i-chart"/></svg><span>Report</span></a>
+      <a class="nav-link" href="#/charts" data-route="charts"><svg><use href="#i-trend"/></svg><span>Growth Charts</span></a>
+      <a class="nav-link" href="#/video" data-route="video"><svg><use href="#i-video"/></svg><span>Video Report</span></a>
+    </nav>
+    <div class="side-foot">
+      <button class="btn btn-ghost btn-block" id="install-side" type="button" hidden><svg><use href="#i-download"/></svg>App Install Karein</button>
+      <p class="muted small">Developed by <b>Usman Khan</b></p>
+      <p class="muted small" id="ver"></p>
+    </div>
+  </aside>
+
+  <div class="content-col">
+    <header class="topbar">
+      <div class="top-title">
+        <img class="top-logo" src="icons/icon-192.png" alt="" width="32" height="32">
+        <h1 id="page-title">Social Media Report</h1>
+      </div>
+      <div class="top-actions">
+        <button class="status-chip" id="status-chip" type="button" aria-live="polite" aria-label="Data ki halat. Dabayein taake dobara load ho">
+          <span class="dot" id="status-dot"></span><span id="status-text">Load ho raha hai</span>
+        </button>
+        <button class="icon-btn" id="refresh-btn" type="button" aria-label="Data refresh karein"><svg><use href="#i-refresh"/></svg></button>
+      </div>
+    </header>
+
+    <div id="banners" class="banners"></div>
+
+    <main id="main" tabindex="-1">
+
+      <!-- OVERVIEW -->
+      <section class="view" id="view-overview" aria-labelledby="page-title">
+        <div id="hero" class="hero skeleton-block" aria-busy="true">
+          <div class="sk sk-line w40"></div><div class="sk sk-big"></div><div class="sk sk-line w60"></div>
+        </div>
+        <div id="error-state" class="state-card" hidden></div>
+        <div id="install-card" class="install-card" hidden></div>
+
+        <h2 class="sec-title" id="cards-title">Platforms</h2>
+        <div id="cards" class="cards" aria-busy="true">
+          <div class="pcard sk-card"><div class="sk sk-line w40"></div><div class="sk sk-line w70"></div><div class="sk sk-spark"></div></div>
+          <div class="pcard sk-card"><div class="sk sk-line w40"></div><div class="sk sk-line w70"></div><div class="sk sk-spark"></div></div>
+          <div class="pcard sk-card"><div class="sk sk-line w40"></div><div class="sk sk-line w70"></div><div class="sk sk-spark"></div></div>
+          <div class="pcard sk-card"><div class="sk sk-line w40"></div><div class="sk sk-line w70"></div><div class="sk sk-spark"></div></div>
+        </div>
+
+        <h2 class="sec-title">Quick Links</h2>
+        <div id="links" class="links-card"></div>
+        <p class="footer-note">Developed by <b>Usman Khan</b></p>
+      </section>
+
+      <!-- CHARTS -->
+      <section class="view" id="view-charts" aria-label="Growth Charts" hidden>
+        <div class="panel">
+          <div class="panel-head">
+            <div><h2 class="panel-title">Community Growth</h2><p class="muted small" id="growth-sub">Total followers / subscribers</p></div>
+            <div class="seg" id="range-seg" role="group" aria-label="Muddat chunein"></div>
+          </div>
+          <p class="growth-sum" id="growth-sum"></p>
+          <div class="chart-box" id="growth-chart"></div>
+          <p class="muted small" id="growth-note"></p>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><div><h2 class="panel-title">Platform Comparison</h2><p class="muted small">Latest hafte ke numbers. Kisi bhi row par tap karein.</p></div></div>
+          <div id="compare" class="compare"></div>
+          <p class="muted small" id="compare-note"></p>
+        </div>
+      </section>
+
+      <!-- VIDEO (placeholder, jaisa pehle tha) -->
+      <section class="view" id="view-video" aria-label="Video Report" hidden>
+        <div class="state-card">
+          <div class="state-icon"><svg><use href="#i-video"/></svg></div>
+          <h2>Video Report Jald Aa Raha Hai</h2>
+          <p class="muted">Ye section abhi taiyar ho raha hai. Jaise hi video performance ka data sheet mein finalize hoga, ye page platform-wise views, likes aur engagement ke sath live ho jayega.</p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <nav class="bottom-nav" aria-label="Pages">
+    <a class="bn-link" href="#/" data-route="overview"><svg><use href="#i-chart"/></svg><span>Report</span></a>
+    <a class="bn-link" href="#/charts" data-route="charts"><svg><use href="#i-trend"/></svg><span>Charts</span></a>
+    <a class="bn-link" href="#/video" data-route="video"><svg><use href="#i-video"/></svg><span>Video</span></a>
+  </nav>
+</div>
+
+<!-- Platform detail -->
+<div class="sheet-backdrop" id="sheet-backdrop" hidden></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title" hidden>
+  <div class="sheet-grab" aria-hidden="true"></div>
+  <div class="sheet-head">
+    <div class="sheet-id"><span class="pic" id="sheet-icon"></span><h2 id="sheet-title"></h2></div>
+    <button class="icon-btn" id="sheet-close" type="button" aria-label="Band karein"><svg><use href="#i-close"/></svg></button>
+  </div>
+  <div class="sheet-body" id="sheet-body"></div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="js/config.js"></script>
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
